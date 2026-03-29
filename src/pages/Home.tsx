@@ -1,8 +1,33 @@
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale } from 'lucide-react';
+import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale, Clock, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export default function Home() {
+  const [latestCases, setLatestCases] = useState<any[]>([]);
+  const [latestReports, setLatestReports] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Fetch latest misconduct cases (AI collected)
+    const qCases = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(3));
+    const unsubscribeCases = onSnapshot(qCases, (snapshot) => {
+      setLatestCases(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    // Fetch latest citizen reports
+    const qReports = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(3));
+    const unsubscribeReports = onSnapshot(qReports, (snapshot) => {
+      setLatestReports(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return () => {
+      unsubscribeCases();
+      unsubscribeReports();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -72,7 +97,7 @@ export default function Home() {
           />
           <DBLinkCard 
             title="不祥事DB"
-            description="AIがネット上のニュースから行政の不祥事を自動収集。市民による監視と再発防止のためのアーカイブ。"
+            description="AIがネット上のニュースや公開資料から、行政の不祥事や不作為を自動的に収集・要約。市民による常時監視を実現します。"
             icon={<Database className="w-12 h-12" />}
             color="bg-secondary-fixed"
             textColor="text-on-secondary-fixed"
@@ -112,6 +137,109 @@ export default function Home() {
           <StatItem icon={<Users />} value="8,500+" label="アクティブユーザー" />
           <StatItem icon={<FileSearch />} value="24,000+" label="公開ドキュメント" />
           <StatItem icon={<Globe />} value="12" label="連携自治体" />
+        </div>
+      </section>
+
+      {/* Live Feed Section */}
+      <section className="py-24 px-8 max-w-screen-2xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div>
+            <h2 className="text-4xl font-bold text-primary mb-4 flex items-center gap-3">
+              <Clock className="w-8 h-8 text-secondary" />
+              ライブ・フィード
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-container text-on-error-container animate-pulse">
+                LIVE
+              </span>
+            </h2>
+            <p className="text-on-surface-variant max-w-xl">
+              AIによる自動収集と市民からの報告。現在進行形の不作為をリアルタイムで追跡します。
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant"
+              title="最新の情報に更新"
+            >
+              <Activity className="w-5 h-5" />
+            </button>
+            <Link to="/collector" className="text-secondary font-bold flex items-center gap-2 hover:gap-4 transition-all">
+              全ての収集データを見る
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* AI Discoveries */}
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-primary flex items-center gap-2 mb-6">
+              <Database className="w-5 h-5 text-secondary" />
+              AI自動収集：最新の不祥事
+            </h3>
+            <div className="space-y-4">
+              {latestCases.length > 0 ? latestCases.map((item) => (
+                <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                    <span className="text-xs text-on-surface-variant">
+                      {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
+                    </span>
+                  </div>
+                  <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.keyword}</h4>
+                  <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{item.summary}</p>
+                  <div className="flex gap-3">
+                    {item.sources?.slice(0, 2).map((source: any, idx: number) => (
+                      <a 
+                        key={idx} 
+                        href={source.uri} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] bg-surface-container-high px-2 py-1 rounded flex items-center gap-1 hover:bg-secondary/10 transition-colors"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Source {idx + 1}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )) : (
+                <div className="p-12 text-center bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 text-on-surface-variant italic">
+                  AIが情報を収集中です...
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Citizen Reports */}
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-primary flex items-center gap-2 mb-6">
+              <Activity className="w-5 h-5 text-secondary" />
+              市民報告：最新の不作為
+            </h3>
+            <div className="space-y-4">
+              {latestReports.length > 0 ? latestReports.map((report) => (
+                <div key={report.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider">{report.category}</span>
+                    <span className="text-xs text-on-surface-variant">
+                      {report.createdAt?.toDate().toLocaleDateString('ja-JP')}
+                    </span>
+                  </div>
+                  <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{report.title}</h4>
+                  <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{report.description}</p>
+                  <Link to="/analysis" className="text-xs font-bold text-secondary flex items-center gap-1 hover:underline">
+                    AI法的精査を見る
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              )) : (
+                <div className="p-12 text-center bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 text-on-surface-variant italic">
+                  報告を待っています...
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 

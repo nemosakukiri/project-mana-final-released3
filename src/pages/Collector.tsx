@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCircle } from 'lucide-react';
+import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
 export default function Collector() {
@@ -13,6 +13,15 @@ export default function Collector() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [recentCollections, setRecentCollections] = useState<any[]>([]);
+
+  useEffect(() => {
+    const q = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(5));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setRecentCollections(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleCollect = async () => {
     if (!keyword.trim()) return;
@@ -116,7 +125,7 @@ export default function Collector() {
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
+            className="space-y-8 mb-16"
           >
             <div className="bg-white p-10 rounded-3xl shadow-md relative">
               <div className="flex justify-between items-center mb-8 border-b border-outline-variant/20 pb-4">
@@ -185,6 +194,42 @@ export default function Collector() {
             )}
           </motion.section>
         )}
+
+        {/* Recent Collections Feed */}
+        <section className="mt-16">
+          <div className="flex items-center gap-3 mb-8">
+            <Clock className="w-6 h-6 text-secondary" />
+            <h2 className="text-2xl font-bold text-primary">最近の収集アーカイブ</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {recentCollections.map((item) => (
+              <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
+                <div className="flex justify-between items-start mb-3">
+                  <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                  <span className="text-xs text-on-surface-variant">
+                    {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
+                  </span>
+                </div>
+                <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.keyword}</h4>
+                <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.summary}</p>
+                <div className="flex flex-wrap gap-2">
+                  {item.sources?.slice(0, 3).map((source: any, idx: number) => (
+                    <a 
+                      key={idx} 
+                      href={source.uri} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[10px] bg-surface-container-high px-2 py-1 rounded flex items-center gap-1 hover:bg-secondary/10 transition-colors"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      Source {idx + 1}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
