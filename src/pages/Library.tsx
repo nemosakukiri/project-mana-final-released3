@@ -13,7 +13,7 @@ export default function Library() {
               animate={{ opacity: 1, y: 0 }}
               className="text-6xl font-bold text-primary mb-6 leading-tight"
             >
-              市民の共有財産、<br />確かな記憶の書庫。
+              不作為の証拠を、<br />市民の手に。
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -21,7 +21,7 @@ export default function Library() {
               transition={{ delay: 0.1 }}
               className="text-xl text-on-surface-variant leading-relaxed font-body max-w-xl"
             >
-              公文書は、私たち市民の歩みを記録した大切な財産です。難しい言葉の壁を取り払い、誰もが自由に、民主主義の原点に触れられる場所を目指しています。
+              公文書は、行政が「何をしたか」だけでなく、「何をすべきだったか」を証明する唯一の手段です。沈黙の中に隠された不作為を、私たちは見逃しません。
             </motion.p>
           </div>
           <div className="lg:col-span-5">

@@ -24,7 +24,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             className="text-7xl md:text-8xl font-bold text-white mb-8 leading-tight font-headline"
           >
-            透明性が、<br />未来を創る。
+            不作為を、<br />可視化する。
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -32,8 +32,8 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="text-xl md:text-2xl text-primary-fixed-dim mb-12 leading-relaxed font-body max-w-2xl mx-auto"
           >
-            行政の不作為、不祥事、そして埋もれた公文書。<br />
-            私たちは市民の力で、真実を記録し、共有します。
+            なされるべきことが、なされない。その空白を記録し、<br />
+            市民の力で行政の責任を問い直します。
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -103,11 +103,11 @@ export default function Home() {
       <section id="about" className="py-24 px-8 max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div>
           <h2 className="text-5xl font-bold text-primary mb-8 leading-tight">
-            尊厳の奪還作戦、<br />その第一歩。
+            沈黙を、<br />記録に変える。
           </h2>
           <div className="space-y-6 text-lg text-on-surface-variant leading-relaxed">
             <p>
-              Project Manaは、市民が行政の監視者として機能するためのデジタル基盤です。情報の非対称性を解消し、民主主義をより強固なものにすることを目指しています。
+              Project Manaの核心は、行政の「不作為」を可視化することにあります。何が行われたかだけでなく、何が行われなかったかを記録することで、真の透明性を追求します。
             </p>
             <p>
               私たちは、単なるデータの蓄積ではなく、そのデータが「市民の武器」となるようなプラットフォームを構築しています。
