@@ -1,0 +1,54 @@
+{
+  "entities": {
+    "Report": {
+      "title": "Report",
+      "description": "A report of administrative inaction or misconduct submitted by a citizen.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the report."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the report (inaction, misconduct, other).",
+          "enum": ["inaction", "misconduct", "other"]
+        },
+        "description": {
+          "type": "string",
+          "description": "The detailed description of the incident."
+        },
+        "location": {
+          "type": "string",
+          "description": "The location where the incident occurred."
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date when the incident occurred."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who submitted the report."
+        },
+        "userEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the user who submitted the report."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the report was created."
+        }
+      },
+      "required": ["title", "category", "description", "location", "date", "userId", "userEmail", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Collection of citizen reports."
+    }
+  }
+}

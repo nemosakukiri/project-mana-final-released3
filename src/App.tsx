@@ -2,6 +2,8 @@ import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-ro
 import { Bell, UserCircle } from 'lucide-react';
 import Home from './pages/Home';
 import Library from './pages/Library';
+import Report from './pages/Report';
+import Analysis from './pages/Analysis';
 import React, { useEffect } from 'react';
 
 function ScrollToTop() {
@@ -27,7 +29,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             Project Mana
           </Link>
           
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             <Link to="/" className={`font-headline font-bold text-lg transition-colors ${
               isHome ? 'text-white border-b-2 border-white pb-1' : 'text-on-surface-variant hover:text-primary'
             }`}>ホーム</Link>
@@ -40,6 +42,12 @@ function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/library" className={`font-headline font-bold text-lg transition-colors ${
               location.pathname === '/library' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
             }`}>公文書ライブラリ</Link>
+            <Link to="/report" className={`font-headline font-bold text-lg transition-colors ${
+              location.pathname === '/report' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            }`}>体験報告</Link>
+            <Link to="/analysis" className={`font-headline font-bold text-lg transition-colors ${
+              location.pathname === '/analysis' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            }`}>AI解析</Link>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -83,6 +91,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/report" element={<Report />} />
+          <Route path="/analysis" element={<Analysis />} />
         </Routes>
       </Layout>
     </Router>

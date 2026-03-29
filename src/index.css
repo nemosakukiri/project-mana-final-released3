@@ -31,3 +31,29 @@ body {
 h1, h2, h3, h4 {
   font-family: var(--font-headline);
 }
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(18, 67, 67, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(18, 67, 67, 0.4);
+}
+
+/* Markdown Styles */
+.markdown-body h1 { @apply text-3xl font-bold mb-6 mt-8 text-white; }
+.markdown-body h2 { @apply text-2xl font-bold mb-4 mt-6 text-secondary; }
+.markdown-body h3 { @apply text-xl font-bold mb-3 mt-5 text-white; }
+.markdown-body p { @apply mb-4 leading-relaxed; }
+.markdown-body ul { @apply list-disc pl-6 mb-4; }
+.markdown-body ol { @apply list-decimal pl-6 mb-4; }
+.markdown-body li { @apply mb-2; }
+.markdown-body strong { @apply font-bold text-secondary; }
+.markdown-body blockquote { @apply border-l-4 border-secondary pl-4 italic my-6 text-primary-fixed-dim; }

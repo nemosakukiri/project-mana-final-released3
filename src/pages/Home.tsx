@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe } from 'lucide-react';
+import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Home() {
@@ -41,13 +41,13 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="flex flex-wrap justify-center gap-6"
           >
-            <Link to="/library" className="bg-secondary text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-secondary/90 transition-all flex items-center gap-2 group">
-              ライブラリを探索
+            <Link to="/report" className="bg-secondary text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-secondary/90 transition-all flex items-center gap-2 group">
+              体験を報告する
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <a href="#about" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
-              プロジェクトについて
-            </a>
+            <Link to="/library" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
+              ライブラリを探索
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -61,7 +61,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <DBLinkCard 
             title="不作為DB"
             description="なすべき公務が行われなかった事例を体系的に記録。市民の権利を守るためのデータベース。"
@@ -85,6 +85,22 @@ export default function Home() {
             color="bg-tertiary-fixed"
             textColor="text-on-tertiary-fixed"
             link="/library"
+          />
+          <DBLinkCard 
+            title="体験報告"
+            description="あなたの体験をデータ化し、不作為のデータベースへ。沈黙を強いられた人々の記録。"
+            icon={<Activity className="w-12 h-12" />}
+            color="bg-error-container"
+            textColor="text-on-error-container"
+            link="/report"
+          />
+          <DBLinkCard 
+            title="AI法的精査"
+            description="記録された証言をAIが法的・倫理的観点から解析。証拠としての価値を最大化します。"
+            icon={<Scale className="w-12 h-12" />}
+            color="bg-primary-fixed"
+            textColor="text-primary-fixed-dim"
+            link="/analysis"
           />
         </div>
       </section>
@@ -113,10 +129,16 @@ export default function Home() {
               私たちは、単なるデータの蓄積ではなく、そのデータが「市民の武器」となるようなプラットフォームを構築しています。
             </p>
           </div>
-          <button className="mt-12 text-secondary font-bold text-xl flex items-center gap-2 hover:gap-4 transition-all">
-            詳細なマニフェストを読む
-            <ArrowRight className="w-6 h-6" />
-          </button>
+          <div className="flex flex-wrap gap-6 mt-12">
+            <Link to="/report" className="bg-secondary text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-secondary/90 transition-all flex items-center gap-2 group">
+              体験を報告する
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <button className="text-primary font-bold text-lg flex items-center gap-2 hover:gap-4 transition-all">
+              詳細なマニフェストを読む
+              <ArrowRight className="w-6 h-6" />
+            </button>
+          </div>
         </div>
         <div className="relative">
           <div className="aspect-square bg-primary-fixed rounded-3xl overflow-hidden shadow-2xl rotate-3">

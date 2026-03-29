@@ -1,5 +1,6 @@
-import { Search, Bell, UserCircle, BookOpen, FileText, BarChart3, Image as ImageIcon, Download, Eye, HelpCircle, ChevronDown } from 'lucide-react';
+import { Search, Bell, UserCircle, BookOpen, FileText, BarChart3, Image as ImageIcon, Download, Eye, HelpCircle, ChevronDown, Scale, Send } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 export default function Library() {
   return (
@@ -19,10 +20,25 @@ export default function Library() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-on-surface-variant leading-relaxed font-body max-w-xl"
+              className="text-xl text-on-surface-variant leading-relaxed font-body max-w-xl mb-8"
             >
               公文書は、行政が「何をしたか」だけでなく、「何をすべきだったか」を証明する唯一の手段です。沈黙の中に隠された不作為を、私たちは見逃しません。
             </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex gap-4"
+            >
+              <Link to="/report" className="bg-secondary text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-secondary/90 transition-all flex items-center gap-2">
+                <Send className="w-5 h-5" />
+                体験を報告する
+              </Link>
+              <Link to="/analysis" className="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-primary/90 transition-all flex items-center gap-2">
+                <Scale className="w-5 h-5" />
+                AI解析を利用
+              </Link>
+            </motion.div>
           </div>
           <div className="lg:col-span-5">
             <motion.div 
@@ -208,6 +224,10 @@ function DocumentCard({ type, date, title, description, fileInfo, actionLabel, i
             <Eye className="w-3 h-3" />
             {actionLabel}
           </span>
+          <Link to="/analysis" className="ml-auto bg-secondary/10 text-secondary px-3 py-1 rounded-md hover:bg-secondary/20 transition-all flex items-center gap-1">
+            <Scale className="w-3 h-3" />
+            AI法的精査
+          </Link>
         </div>
       </div>
     </motion.article>

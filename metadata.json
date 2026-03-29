@@ -1,5 +1,5 @@
 {
-  "name": "Project Mana - 公文書ライブラリ",
-  "description": "市民の共有財産、確かな記憶の書庫。公文書を自由に閲覧・検索できるプラットフォーム。",
+  "name": "Project Mana - 不作為の可視化ポータル",
+  "description": "行政の不作為を記録し、法治主義の空白を埋める。当事者の声を証拠へと変え、AIによる法的精査を提供するプラットフォーム。",
   "requestFramePermissions": []
 }
