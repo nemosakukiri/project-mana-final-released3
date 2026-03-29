@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Bell, UserCircle } from 'lucide-react';
 import Home from './pages/Home';
 import Library from './pages/Library';
@@ -31,10 +31,10 @@ function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/" className={`font-headline font-bold text-lg transition-colors ${
               isHome ? 'text-white border-b-2 border-white pb-1' : 'text-on-surface-variant hover:text-primary'
             }`}>ホーム</Link>
-            <a href="#" className={`font-headline font-bold text-lg transition-colors ${
+            <a href="https://github.com/nemosakukiri/FUSAKUI-DB" target="_blank" rel="noopener noreferrer" className={`font-headline font-bold text-lg transition-colors ${
               isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary'
             }`}>不作為DB</a>
-            <a href="#" className={`font-headline font-bold text-lg transition-colors ${
+            <a href="https://github.com/nemosakukiri/misconduct-db-" target="_blank" rel="noopener noreferrer" className={`font-headline font-bold text-lg transition-colors ${
               isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary'
             }`}>不祥事DB</a>
             <Link to="/library" className={`font-headline font-bold text-lg transition-colors ${

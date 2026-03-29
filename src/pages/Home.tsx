@@ -68,7 +68,7 @@ export default function Home() {
             icon={<Shield className="w-12 h-12" />}
             color="bg-primary-container"
             textColor="text-primary-fixed"
-            link="#"
+            link="https://github.com/nemosakukiri/FUSAKUI-DB"
           />
           <DBLinkCard 
             title="不祥事DB"
@@ -76,7 +76,7 @@ export default function Home() {
             icon={<Database className="w-12 h-12" />}
             color="bg-secondary-fixed"
             textColor="text-on-secondary-fixed"
-            link="#"
+            link="https://github.com/nemosakukiri/misconduct-db-"
           />
           <DBLinkCard 
             title="公文書ライブラリ"
@@ -139,22 +139,37 @@ export default function Home() {
 }
 
 function DBLinkCard({ title, description, icon, color, textColor, link }: any) {
-  const isExternal = link === '#';
-  const Component = isExternal ? 'div' : Link;
+  const isExternal = link.startsWith('http');
+  const isPlaceholder = link === '#';
   
-  return (
-    <Component 
-      to={isExternal ? undefined : link} 
-      className={`p-10 rounded-3xl ${color} ${textColor} hover:scale-[1.02] transition-all cursor-pointer shadow-sm flex flex-col h-full`}
-    >
+  const content = (
+    <div className={`p-10 rounded-3xl ${color} ${textColor} hover:scale-[1.02] transition-all cursor-pointer shadow-sm flex flex-col h-full`}>
       <div className="mb-8 opacity-80">{icon}</div>
       <h3 className="text-3xl font-bold mb-4">{title}</h3>
       <p className="text-lg opacity-90 leading-relaxed mb-8 flex-1">{description}</p>
       <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-sm">
-        {isExternal ? '準備中' : 'アクセスする'}
-        {!isExternal && <ArrowRight className="w-4 h-4" />}
+        {isPlaceholder ? '準備中' : 'アクセスする'}
+        {!isPlaceholder && <ArrowRight className="w-4 h-4" />}
       </div>
-    </Component>
+    </div>
+  );
+
+  if (isPlaceholder) {
+    return content;
+  }
+
+  if (isExternal) {
+    return (
+      <a href={link} target="_blank" rel="noopener noreferrer" className="block h-full">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={link} className="block h-full">
+      {content}
+    </Link>
   );
 }
 
