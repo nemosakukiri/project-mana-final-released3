@@ -68,7 +68,7 @@ export default function Home() {
             icon={<Shield className="w-12 h-12" />}
             color="bg-primary-container"
             textColor="text-primary-fixed"
-            link="https://github.com/nemosakukiri/FUSAKUI-DB"
+            link="https://fusakui-db.vercel.app/"
           />
           <DBLinkCard 
             title="不祥事DB"
@@ -76,7 +76,7 @@ export default function Home() {
             icon={<Database className="w-12 h-12" />}
             color="bg-secondary-fixed"
             textColor="text-on-secondary-fixed"
-            link="https://github.com/nemosakukiri/misconduct-db-"
+            link="https://misconduct-db.vercel.app/"
           />
           <DBLinkCard 
             title="公文書ライブラリ"
