@@ -72,11 +72,11 @@ export default function Home() {
           />
           <DBLinkCard 
             title="不祥事DB"
-            description="行政内部で発生した不祥事や不正を記録。再発防止と責任追及のためのアーカイブ。"
+            description="AIがネット上のニュースから行政の不祥事を自動収集。市民による監視と再発防止のためのアーカイブ。"
             icon={<Database className="w-12 h-12" />}
             color="bg-secondary-fixed"
             textColor="text-on-secondary-fixed"
-            link="https://misconduct-db.vercel.app/"
+            link="/collector"
           />
           <DBLinkCard 
             title="公文書ライブラリ"

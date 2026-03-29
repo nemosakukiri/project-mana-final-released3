@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Library from './pages/Library';
 import Report from './pages/Report';
 import Analysis from './pages/Analysis';
+import Collector from './pages/Collector';
 import React, { useEffect } from 'react';
 
 function ScrollToTop() {
@@ -48,6 +49,9 @@ function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/analysis" className={`font-headline font-bold text-lg transition-colors ${
               location.pathname === '/analysis' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
             }`}>AI解析</Link>
+            <Link to="/collector" className={`font-headline font-bold text-lg transition-colors ${
+              location.pathname === '/collector' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            }`}>AI収集</Link>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -93,6 +97,7 @@ export default function App() {
           <Route path="/library" element={<Library />} />
           <Route path="/report" element={<Report />} />
           <Route path="/analysis" element={<Analysis />} />
+          <Route path="/collector" element={<Collector />} />
         </Routes>
       </Layout>
     </Router>
