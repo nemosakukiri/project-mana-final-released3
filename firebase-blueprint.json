@@ -1,126 +1,60 @@
 {
   "entities": {
-    "Report": {
-      "title": "Report",
-      "description": "A report of administrative inaction or misconduct submitted by a citizen.",
+    "misconduct": {
+      "title": "Misconduct News",
+      "description": "Collected news reports of administrative misconduct.",
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string",
-          "description": "The title of the report."
-        },
-        "category": {
-          "type": "string",
-          "description": "The category of the report (inaction, misconduct, other).",
-          "enum": ["inaction", "misconduct", "other"]
-        },
-        "description": {
-          "type": "string",
-          "description": "The detailed description of the incident."
-        },
-        "location": {
-          "type": "string",
-          "description": "The location where the incident occurred."
-        },
-        "date": {
-          "type": "string",
-          "format": "date",
-          "description": "The date when the incident occurred."
-        },
-        "userId": {
-          "type": "string",
-          "description": "The ID of the user who submitted the report."
-        },
-        "userEmail": {
-          "type": "string",
-          "format": "email",
-          "description": "The email of the user who submitted the report."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the report was created."
-        }
+        "title": { "type": "string", "description": "The title of the news report." },
+        "date": { "type": "string", "format": "date", "description": "The date of the report." },
+        "location": { "type": "string", "description": "The location where the misconduct occurred." },
+        "category": { "type": "string", "description": "The category of the misconduct (e.g., corruption, negligence)." },
+        "summary": { "type": "string", "description": "A brief summary of the news report." },
+        "url": { "type": "string", "format": "uri", "description": "The URL to the original news source." },
+        "source": { "type": "string", "description": "The name of the news source." },
+        "collectedAt": { "type": "string", "format": "date-time", "description": "When the news was collected by AI." }
       },
-      "required": ["title", "category", "description", "location", "date", "userId", "userEmail", "createdAt"]
+      "required": ["title", "date", "location", "category", "summary", "collectedAt"]
     },
-    "MisconductCase": {
-      "title": "MisconductCase",
-      "description": "An administrative misconduct or inaction case collected by AI.",
+    "inaction": {
+      "title": "Administrative Inaction",
+      "description": "Data regarding unexecuted budgets or delayed public projects.",
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string",
-          "description": "The title of the incident."
-        },
-        "description": {
-          "type": "string",
-          "description": "The summary of the incident."
-        },
-        "date": {
-          "type": "string",
-          "description": "The date of the incident."
-        },
-        "location": {
-          "type": "string",
-          "description": "The location of the incident."
-        },
-        "category": {
-          "type": "string",
-          "description": "The category of the misconduct (organizational, individual, other).",
-          "enum": ["organizational", "individual", "other"]
-        },
-        "sources": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": { "type": "string" },
-              "uri": { "type": "string" }
-            }
+        "project": { "type": "string", "description": "The name of the project or budget item." },
+        "budget": { "type": "number", "description": "The amount of unexecuted budget in JPY." },
+        "delay": { "type": "string", "description": "The duration of the delay (e.g., '3 years')." },
+        "location": { "type": "string", "description": "The municipality or region." },
+        "impact": { "type": "string", "description": "The social or economic impact of the inaction." },
+        "status": { "type": "string", "description": "The current status (e.g., 'Stalled', 'Delayed')." },
+        "reportedAt": { "type": "string", "format": "date-time", "description": "When this inaction was recorded." }
+      },
+      "required": ["project", "budget", "delay", "location", "impact", "status", "reportedAt"]
+    },
+    "aiColumn": {
+      "title": "AI Column/Analysis",
+      "description": "AI-generated analysis and columns based on misconduct and inaction data.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the column." },
+        "content": { "type": "string", "description": "The full content of the analysis." },
+        "indices": {
+          "type": "object",
+          "properties": {
+            "inactionIndex": { "type": "number", "description": "A calculated index of inaction." },
+            "integrityIndex": { "type": "number", "description": "A calculated index of civic integrity." },
+            "riskScore": { "type": "number", "description": "A calculated risk score." }
           }
         },
-        "collectedBy": {
-          "type": "string",
-          "description": "The ID of the collector (AI or user)."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        }
+        "relatedDataIds": { "type": "array", "items": { "type": "string" }, "description": "IDs of misconduct or inaction records used in this analysis." },
+        "publishedAt": { "type": "string", "format": "date-time", "description": "When the column was published." }
       },
-      "required": ["title", "description", "collectedBy", "createdAt"]
-    },
-    "TownEvaluation": {
-      "title": "TownEvaluation",
-      "description": "A citizen's evaluation of their town's human rights and livability.",
-      "type": "object",
-      "properties": {
-        "townName": { "type": "string" },
-        "transparency": { "type": "number" },
-        "accountability": { "type": "number" },
-        "inclusion": { "type": "number" },
-        "safety": { "type": "number" },
-        "humanRights": { "type": "number" },
-        "comment": { "type": "string" },
-        "userId": { "type": "string" },
-        "createdAt": { "type": "string", "format": "date-time" }
-      },
-      "required": ["townName", "transparency", "accountability", "inclusion", "safety", "humanRights", "userId", "createdAt"]
+      "required": ["title", "content", "indices", "publishedAt"]
     }
   },
   "firestore": {
-    "/reports/{reportId}": {
-      "schema": "Report",
-      "description": "Collection of citizen reports."
-    },
-    "/misconduct_cases/{caseId}": {
-      "schema": "MisconductCase",
-      "description": "Collection of AI-collected misconduct cases."
-    },
-    "/town_evaluations/{evaluationId}": {
-      "schema": "TownEvaluation",
-      "description": "Collection of citizen town evaluations."
-    }
+    "/misconduct": { "schema": "misconduct", "description": "Collection of misconduct news reports." },
+    "/inaction": { "schema": "inaction", "description": "Collection of administrative inaction data." },
+    "/aiColumns": { "schema": "aiColumn", "description": "Collection of AI-generated columns and analyses." }
   }
 }

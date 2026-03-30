@@ -1,35 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Search, FileText, Activity, ArrowRight, ShieldCheck, AlertTriangle, Scale } from 'lucide-react';
+import { Search, FileText, Activity, ArrowRight, ShieldCheck, AlertTriangle, Scale, Loader2, ChevronDown, Database, Cpu, Gavel, MapPin, Calendar, TrendingUp, BarChart, BookOpen, PenTool, Share2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { Link } from 'react-router-dom';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { Link, useLocation } from 'react-router-dom';
+import { collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../firebase';
+import { GoogleGenAI } from "@google/genai";
 
 export default function Analysis() {
-  const [reports, setReports] = useState<any[]>([]);
+  const location = useLocation();
+  const [misconducts, setMisconducts] = useState<any[]>([]);
+  const [inactions, setInactions] = useState<any[]>([]);
+  const [aiColumns, setAiColumns] = useState<any[]>([]);
+  
   const [selectedReport, setSelectedReport] = useState<any | null>(null);
   const [analysis, setAnalysis] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isGeneratingColumn, setIsGeneratingColumn] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(10));
-        const querySnapshot = await getDocs(q);
-        const fetchedReports = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setReports(fetchedReports);
-        if (fetchedReports.length > 0) {
-          setSelectedReport(fetchedReports[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching reports:', err);
-        setError('レポートの取得に失敗しました。');
-      }
+    // Fetch Misconducts
+    const qM = query(collection(db, 'misconduct'), orderBy('collectedAt', 'desc'), limit(50));
+    const unsubM = onSnapshot(qM, (snap) => {
+      setMisconducts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    // Fetch Inactions
+    const qI = query(collection(db, 'inaction'), orderBy('reportedAt', 'desc'), limit(50));
+    const unsubI = onSnapshot(qI, (snap) => {
+      setInactions(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    // Fetch AI Columns
+    const qC = query(collection(db, 'aiColumns'), orderBy('createdAt', 'desc'), limit(10));
+    const unsubC = onSnapshot(qC, (snap) => {
+      setAiColumns(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    if (location.state?.report) {
+      setSelectedReport(location.state.report);
+    }
+
+    return () => {
+      unsubM();
+      unsubI();
+      unsubC();
     };
-    fetchReports();
-  }, []);
+  }, [location.state]);
 
   const handleAnalyze = async () => {
     if (!selectedReport) return;
@@ -38,14 +56,17 @@ export default function Analysis() {
     setError('');
 
     try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = "gemini-3-flash-preview";
+      
       const prompt = `
         以下の行政不作為・不祥事の報告を、法的および倫理的な観点から詳細に解析してください。
         
-        タイトル: ${selectedReport.title}
+        タイトル: ${selectedReport.title || selectedReport.project}
         カテゴリー: ${selectedReport.category}
         場所: ${selectedReport.location}
-        日付: ${selectedReport.date}
-        内容: ${selectedReport.description}
+        日付: ${selectedReport.date || selectedReport.reportedAt}
+        内容: ${selectedReport.description || selectedReport.impact}
         
         解析には以下の項目を含めてください：
         1. 法的論点（どの法律や条例に抵触する可能性があるか）
@@ -56,194 +77,288 @@ export default function Analysis() {
         回答は、専門的かつ客観的なトーンで、Markdown形式で出力してください。
       `;
 
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
       });
 
-      if (!response.ok) {
-        throw new Error('AI解析に失敗しました。');
-      }
-
-      const data = await response.json();
-      setAnalysis(data.text || '解析結果を取得できませんでした。');
+      setAnalysis(response.text || 'Analysis results could not be generated.');
     } catch (err) {
       console.error('Error analyzing report:', err);
-      setError('AI解析中にエラーが発生しました。');
+      setError('An error occurred during the AI audit process.');
     } finally {
       setIsAnalyzing(false);
     }
   };
 
+  const generateAIColumn = async () => {
+    setIsGeneratingColumn(true);
+    setError('');
+    
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = "gemini-3-flash-preview";
+
+      const contextData = {
+        misconductCount: misconducts.length,
+        inactionCount: inactions.length,
+        recentMisconducts: misconducts.slice(0, 5).map(m => m.title),
+        recentInactions: inactions.slice(0, 5).map(i => i.project),
+      };
+
+      const prompt = `
+        Based on the following civic integrity data, write a sophisticated "AI Column" (editorial article).
+        
+        Data Context:
+        - Total Misconduct Cases: ${contextData.misconductCount}
+        - Total Inaction Cases: ${contextData.inactionCount}
+        - Recent Misconducts: ${contextData.recentMisconducts.join(', ')}
+        - Recent Inactions: ${contextData.recentInactions.join(', ')}
+        
+        The column should:
+        1. Calculate a "Civic Integrity Index" (0-100) based on the ratio of misconduct/inaction to population/time (simulate this based on trends).
+        2. Analyze the "Cost of Inaction" (economic and social impact).
+        3. Provide a scholarly perspective on the current state of civic transparency.
+        4. Include a catchy, authoritative title.
+        
+        Output format: JSON with fields "title", "content" (markdown), "integrityIndex" (number), "inactionCost" (string).
+      `;
+
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: { responseMimeType: "application/json" }
+      });
+
+      const data = JSON.parse(response.text);
+      
+      await addDoc(collection(db, 'aiColumns'), {
+        ...data,
+        createdAt: serverTimestamp(),
+        author: "Civic AI Auditor"
+      });
+
+    } catch (err) {
+      console.error('Column generation error:', err);
+      setError('Failed to generate AI Column.');
+    } finally {
+      setIsGeneratingColumn(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background pt-24">
+    <div className="min-h-screen bg-[#F5F5F4] pt-24 font-sans selection:bg-primary selection:text-on-primary">
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
-        {/* Header Section - Elegant Editorial */}
-        <section className="py-20 border-b border-border">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-9">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase mb-8"
-              >
-                AI Legal Scrutiny
-              </motion.div>
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-6xl lg:text-8xl font-headline mb-8 leading-[0.9] tracking-tighter"
-              >
-                AI法的精査・<span className="text-secondary italic">解析</span>
-              </motion.h1>
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-xl lg:text-2xl text-on-surface-variant leading-relaxed font-serif italic max-w-3xl"
-              >
-                記録された証言をAIが多角的に分析。法的な論点を整理し、行政の不作為を客観的な証拠へと昇華させます。
-              </motion.p>
-            </div>
-            <div className="lg:col-span-3 hidden lg:block">
-              <div className="aspect-square bg-surface border border-border p-8 flex flex-col items-center justify-center text-center group">
-                <Scale className="w-20 h-20 text-primary/20 group-hover:text-primary transition-colors mb-6" />
-                <span className="text-xs font-bold uppercase tracking-widest mb-4 text-on-surface-variant">Analysis Tool</span>
-                <Link to="/report" className="text-lg font-headline border-b border-primary text-primary hover:gap-4 transition-all">
-                  新規報告を行う
-                </Link>
+        
+        {/* Header Section */}
+        <header className="mb-20 border-b-4 border-primary pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+            <div className="lg:col-span-9 space-y-10">
+              <div className="flex items-center gap-6">
+                <div className="px-4 py-1 bg-primary text-on-primary text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
+                  Analysis Portal v5.0
+                </div>
+                <div className="h-[1px] w-12 bg-primary/30"></div>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">AI-Driven Civic Intelligence</span>
               </div>
+              <h1 className="text-primary font-headline text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
+                AI Column<br/>
+                <span className="text-tertiary italic">& Analysis</span>
+              </h1>
+              <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic max-w-3xl">
+                蓄積された不祥事・不作為データをAIが多角的に分析。独自の指数化と考察により、行政の透明性を数値化し、未来への提言を紡ぎ出します。
+              </p>
             </div>
+            <div className="lg:col-span-3">
+              <button 
+                onClick={generateAIColumn}
+                disabled={isGeneratingColumn}
+                className="w-full aspect-square border-4 border-primary p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group transition-all hover:bg-primary hover:text-on-primary"
+              >
+                {isGeneratingColumn ? (
+                  <Loader2 className="w-16 h-16 animate-spin text-tertiary" />
+                ) : (
+                  <PenTool className="w-16 h-16 text-tertiary mb-6" />
+                )}
+                <span className="text-[10px] font-bold uppercase tracking-widest mb-4 opacity-60">Insight Engine</span>
+                <span className="text-xl font-headline font-black uppercase tracking-tighter border-b-2 border-current">
+                  Generate Column
+                </span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* AI Column Feed */}
+        <section className="mb-32">
+          <div className="flex items-center gap-6 mb-12">
+            <TrendingUp className="w-8 h-8 text-tertiary" />
+            <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tighter">AI Editorial Feed</h2>
+            <div className="flex-1 h-[2px] bg-primary/10"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {aiColumns.map((column) => (
+              <motion.div 
+                key={column.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white border-2 border-primary p-10 flex flex-col group hover:shadow-2xl transition-all"
+              >
+                <div className="flex justify-between items-start mb-8">
+                  <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">
+                    {column.createdAt?.toDate().toLocaleDateString() || 'RECENT'}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-primary/30" />
+                    <span className="text-[10px] font-black text-primary uppercase">Index: {column.integrityIndex}</span>
+                  </div>
+                </div>
+                <h3 className="text-3xl font-headline font-black text-primary mb-6 leading-none tracking-tighter uppercase group-hover:text-tertiary transition-colors">
+                  {column.title}
+                </h3>
+                <div className="flex-1 prose prose-sm line-clamp-4 text-secondary italic mb-8">
+                  <ReactMarkdown>{column.content}</ReactMarkdown>
+                </div>
+                <div className="pt-8 border-t border-primary/5 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-primary/40 uppercase tracking-widest">By {column.author}</span>
+                  <button className="text-primary hover:text-tertiary transition-colors">
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-border">
-          {/* Sidebar: Report List */}
-          <aside className="lg:col-span-4 border-r border-border bg-surface flex flex-col">
-            <div className="p-8 border-b border-border bg-muted flex justify-between items-center">
-              <h2 className="text-2xl font-headline tracking-tighter flex items-center gap-3">
-                <Activity className="w-6 h-6 text-primary" />
-                Recent Reports
+        {/* Legal Scrutiny Tool */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-4 border-primary bg-white shadow-2xl shadow-primary/10 mb-32">
+          <aside className="lg:col-span-4 border-r-4 border-primary flex flex-col bg-[#FBFBFB]">
+            <div className="p-10 border-b-2 border-primary/10 bg-primary text-on-primary flex justify-between items-center">
+              <h2 className="text-2xl font-headline font-black tracking-tighter flex items-center gap-4 uppercase">
+                <Database className="w-6 h-6 text-tertiary" />
+                Archival Feed
               </h2>
             </div>
-            <div className="flex-1 overflow-y-auto max-h-[800px] custom-scrollbar">
-              <div className="divide-y divide-border">
-                {reports.map((report) => (
+            <div className="flex-1 overflow-y-auto max-h-[600px] custom-scrollbar">
+              <div className="divide-y-2 divide-primary/5">
+                {[...misconducts, ...inactions].sort((a, b) => {
+                  const dateA = new Date(a.collectedAt || a.reportedAt).getTime();
+                  const dateB = new Date(b.collectedAt || b.reportedAt).getTime();
+                  return dateB - dateA;
+                }).map((report) => (
                   <button
                     key={report.id}
                     onClick={() => setSelectedReport(report)}
-                    className={`w-full text-left p-8 transition-all group ${
-                      selectedReport?.id === report.id
-                        ? 'bg-primary/5 border-l-4 border-primary'
-                        : 'bg-surface hover:bg-muted'
+                    className={`w-full text-left p-10 transition-all relative group ${
+                      selectedReport?.id === report.id ? 'bg-white' : 'hover:bg-primary/5'
                     }`}
                   >
-                    <div className="flex gap-4 mb-3 items-center">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-primary bg-primary/10 px-2 py-0.5">
-                        {report.category === 'inaction' ? '不作為' : '不祥事'}
+                    {selectedReport?.id === report.id && (
+                      <div className="absolute left-0 top-0 w-2 h-full bg-tertiary"></div>
+                    )}
+                    <div className="flex gap-4 mb-4 items-center">
+                      <span className={`text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1 rounded-full ${
+                        report.category === 'inaction' || report.project ? 'bg-tertiary/10 text-tertiary' : 'bg-primary/10 text-primary'
+                      }`}>
+                        {report.category === 'inaction' || report.project ? 'Inaction' : 'Misconduct'}
                       </span>
-                      <span className="text-xs font-mono text-on-surface-variant">{report.date}</span>
+                      <span className="text-[10px] font-bold text-primary/30 uppercase tracking-widest">
+                        {new Date(report.collectedAt || report.reportedAt).toLocaleDateString()}
+                      </span>
                     </div>
-                    <h3 className="text-2xl font-headline mb-3 group-hover:text-primary transition-colors leading-tight tracking-tighter line-clamp-1">
-                      {report.title}
+                    <h3 className="text-2xl font-headline font-black mb-4 group-hover:text-primary transition-colors leading-none tracking-tighter line-clamp-1 uppercase">
+                      {report.title || report.project}
                     </h3>
-                    <p className="text-sm font-serif italic text-on-surface-variant line-clamp-2 leading-relaxed">
-                      {report.description}
-                    </p>
                   </button>
                 ))}
-                {reports.length === 0 && !error && (
-                  <div className="p-12 text-center bg-surface">
-                    <p className="text-lg font-serif italic text-on-surface-variant mb-6">報告データがありません</p>
-                    <Link to="/report" className="inline-flex items-center gap-3 text-xl font-headline border-b border-secondary text-secondary hover:gap-5 transition-all">
-                      最初の報告を行う
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                  </div>
-                )}
               </div>
             </div>
           </aside>
 
-          {/* Main Content: Analysis */}
-          <main className="lg:col-span-8 bg-background">
+          <main className="lg:col-span-8 bg-white flex flex-col">
             {selectedReport ? (
               <div className="flex flex-col h-full">
-                <div className="p-12 lg:p-16 border-b border-border">
-                  <div className="flex flex-wrap items-center gap-6 mb-8">
-                    <span className="bg-primary text-white px-4 py-1 font-headline text-sm tracking-widest uppercase">
-                      {selectedReport.category === 'inaction' ? '不作為' : '不祥事'}
-                    </span>
-                    <span className="text-lg font-serif italic text-on-surface-variant">
-                      {selectedReport.location} • {selectedReport.date}
-                    </span>
+                <div className="p-12 lg:p-20 border-b-2 border-primary/5 bg-[#FBFBFB]">
+                  <div className="flex flex-wrap items-center gap-8 mb-10">
+                    <div className="flex items-center gap-3">
+                      <MapPin className="w-4 h-4 text-tertiary" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{selectedReport.location}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-4 h-4 text-tertiary" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                        {new Date(selectedReport.collectedAt || selectedReport.reportedAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
-                  <h2 className="text-4xl lg:text-6xl font-headline mb-10 leading-tight tracking-tighter">{selectedReport.title}</h2>
-                  <div className="p-8 bg-surface border-l-4 border-primary text-xl font-serif italic text-on-surface-variant leading-relaxed mb-10">
-                    「{selectedReport.description}」
+                  <h2 className="text-5xl lg:text-7xl font-headline font-black mb-12 leading-[0.9] tracking-tighter text-primary uppercase">
+                    {selectedReport.title || selectedReport.project}
+                  </h2>
+                  <div className="p-10 bg-white border-2 border-primary/5 text-xl font-medium text-secondary leading-relaxed italic border-l-8 border-tertiary shadow-inner">
+                    "{selectedReport.description || selectedReport.impact}"
                   </div>
                   
                   <button
                     onClick={handleAnalyze}
                     disabled={isAnalyzing}
-                    className="w-full bg-primary text-white px-10 py-6 font-headline text-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
+                    className="group relative w-full mt-12 py-10 bg-primary text-on-primary overflow-hidden transition-all active:scale-[0.99] disabled:opacity-30"
                   >
-                    {isAnalyzing ? (
-                      <>
-                        <Activity className="w-8 h-8 animate-pulse" />
-                        AI解析中...
-                      </>
-                    ) : (
-                      <>
-                        AI法的精査を実行する
-                        <Scale className="w-8 h-8" />
-                      </>
-                    )}
+                    <div className="absolute inset-0 bg-tertiary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    <div className="relative z-10 flex items-center justify-center gap-8">
+                      {isAnalyzing ? (
+                        <>
+                          <Loader2 className="w-10 h-10 animate-spin text-tertiary" />
+                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Processing Audit...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Cpu className="w-10 h-10" />
+                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Execute AI Audit</span>
+                        </>
+                      )}
+                    </div>
                   </button>
                 </div>
 
-                <div className="flex-1 bg-background">
+                <div className="flex-1 p-12 lg:p-20 bg-white relative">
                   {analysis && (
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-12 lg:p-16 bg-surface border-t border-border"
+                      className="space-y-16"
                     >
-                      <div className="flex items-center gap-4 mb-10 text-primary">
-                        <ShieldCheck className="w-10 h-10" />
-                        <h3 className="text-2xl font-headline uppercase tracking-widest">AI Analysis Report</h3>
+                      <div className="flex items-center justify-between border-b-2 border-primary/10 pb-10">
+                        <div className="flex items-center gap-6">
+                          <div className="w-16 h-16 bg-primary text-on-primary flex items-center justify-center rounded-full">
+                            <Gavel className="w-8 h-8" />
+                          </div>
+                          <div>
+                            <h3 className="text-3xl font-headline font-black text-primary uppercase tracking-tight leading-none">Audit Findings</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mt-2">Protocol: Legal Scrutiny v5.0</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="prose prose-lg max-w-none markdown-body">
+                      
+                      <div className="prose prose-xl max-w-none font-medium text-secondary leading-relaxed prose-headings:font-headline prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-primary prose-strong:text-primary prose-blockquote:border-tertiary prose-blockquote:bg-tertiary/5 prose-blockquote:p-8 prose-blockquote:italic markdown-body">
                         <ReactMarkdown>{analysis}</ReactMarkdown>
                       </div>
                     </motion.div>
                   )}
-
-                  {error && (
-                    <div className="p-12 lg:p-16 bg-secondary/10 text-secondary flex items-center gap-6 border-t border-border">
-                      <AlertTriangle className="w-10 h-10 shrink-0" />
-                      <p className="text-xl font-headline uppercase tracking-tighter">{error}</p>
-                    </div>
-                  )}
-
                   {!analysis && !isAnalyzing && (
-                    <div className="h-full min-h-[400px] flex items-center justify-center p-12 lg:p-20 text-center">
-                      <div className="max-w-md">
-                        <Search className="w-20 h-20 mx-auto mb-6 opacity-10" />
-                        <p className="text-2xl font-serif italic text-on-surface-variant opacity-60">解析ボタンを押して、AIによる精査を開始してください</p>
-                      </div>
+                    <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center opacity-10">
+                      <Cpu className="w-32 h-32 mb-10" />
+                      <p className="text-4xl font-headline font-black uppercase tracking-tighter">Awaiting Audit Execution</p>
                     </div>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="h-full min-h-[600px] flex items-center justify-center p-12 lg:p-20 text-center">
-                <div className="max-w-md">
-                  <Search className="w-24 h-24 mx-auto mb-8 opacity-10" />
-                  <p className="text-3xl font-serif italic text-on-surface-variant opacity-60">左側のリストから解析する報告を選択してください</p>
+              <div className="h-full min-h-[600px] flex flex-col items-center justify-center text-center p-20">
+                <div className="w-40 h-40 border-4 border-primary/5 rounded-full flex items-center justify-center mb-12">
+                  <Search className="w-16 h-16 text-primary/10" />
                 </div>
+                <h3 className="text-4xl font-headline font-black text-primary/20 uppercase tracking-tighter mb-6">Select Archival Entry</h3>
               </div>
             )}
           </main>

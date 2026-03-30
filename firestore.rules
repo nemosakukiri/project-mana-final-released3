@@ -1,53 +1,78 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: /misconduct
+    // Fields: title, date, location, category, summary, url, source, collectedAt
+    //
+    // Collection: /inaction
+    // Fields: project, budget, delay, location, impact, status, reportedAt
+    //
+    // Collection: /aiColumns
+    // Fields: title, content, indices, relatedDataIds, publishedAt
+    // ===============================================================
+
     // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "nemosakukiri@gmail.com" && request.auth.token.email_verified == true));
     }
 
-    // Reports collection
-    match /reports/{reportId} {
-      // Anyone can read reports (for analysis)
-      allow read: if true;
-      
-      // Only authenticated users can create reports
-      allow create: if isAuthenticated() && 
-        request.resource.data.keys().hasAll(['title', 'category', 'description', 'location', 'date', 'userId', 'userEmail', 'createdAt']) &&
-        request.resource.data.userId == request.auth.uid;
-        
-      // No updates or deletes for now to maintain integrity of records
-      allow update, delete: if false;
+    // Validation functions
+    function isValidMisconduct(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.summary is string && data.summary.size() > 0 && data.summary.size() < 2000 &&
+             data.location is string && data.location.size() > 0 &&
+             data.category is string && data.category.size() > 0 &&
+             data.collectedAt is string;
     }
 
-    // Misconduct cases collection (AI collected)
-    match /misconduct_cases/{caseId} {
-      // Anyone can read the feed
-      allow read: if true;
-      
-      // Only authenticated users or the server (AI) can create
-      // Note: Server-side SDK bypasses rules, but we keep this for manual saves from UI
-      allow create: if isAuthenticated() && 
-        request.resource.data.keys().hasAll(['title', 'description', 'collectedBy', 'createdAt']);
-        
-      allow update, delete: if false;
+    function isValidInaction(data) {
+      return data.project is string && data.project.size() > 0 &&
+             data.budget is number && data.budget >= 0 &&
+             data.delay is string &&
+             data.location is string &&
+             data.status is string &&
+             data.reportedAt is string;
     }
 
-    // Town evaluations collection
-    match /town_evaluations/{evaluationId} {
-      // Anyone can read evaluations to see how their town is doing
+    function isValidAIColumn(data) {
+      return data.title is string && data.title.size() > 0 &&
+             data.content is string && data.content.size() > 0 &&
+             data.indices is map &&
+             data.publishedAt is string;
+    }
+
+    // Rules
+    match /misconduct/{docId} {
       allow read: if true;
-      
-      // Only authenticated users can create evaluations
-      allow create: if isAuthenticated() && 
-        request.resource.data.keys().hasAll(['townName', 'transparency', 'accountability', 'inclusion', 'safety', 'humanRights', 'userId', 'createdAt']) &&
-        request.resource.data.userId == request.auth.uid;
-        
-      allow update, delete: if false;
+      allow create, update: if isAuthenticated() && isValidMisconduct(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /inaction/{docId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated() && isValidInaction(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /aiColumns/{docId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated() && isValidAIColumn(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create, update: if isAuthenticated() && request.auth.uid == userId && 
+                             (!('role' in request.resource.data) || request.resource.data.role == 'user' || isAdmin());
     }
   }
 }

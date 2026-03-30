@@ -1,339 +1,456 @@
-import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Shield, ArrowRight, Activity, Database, Clock, ExternalLink, Loader2, BarChart3, BookOpen, TrendingUp, AlertTriangle } from 'lucide-react';
+import { 
+  Shield, 
+  ArrowRight, 
+  TrendingUp, 
+  AlertTriangle, 
+  History, 
+  MapPin, 
+  Clock, 
+  Link as LinkIcon,
+  Share2,
+  ChevronRight,
+  Gavel,
+  Database,
+  Activity,
+  FileText,
+  Search,
+  Cpu,
+  Scale
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
 
 export default function Home() {
-  const [latestCases, setLatestCases] = useState<any[]>([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    const qCases = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(3));
-    const unsubscribeCases = onSnapshot(qCases, (snapshot) => {
-      setLatestCases(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsubscribeCases();
-  }, []);
-
-  const handleForceRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      await fetch('/api/admin/collect', { method: 'POST' });
-    } catch (error) {
-      console.error('Refresh error:', error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="max-w-screen-2xl mx-auto px-8 py-20 lg:py-32 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-        <div className="lg:col-span-7">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-secondary font-bold tracking-[0.2em] text-xs uppercase mb-6 block"
-          >
-            Understanding Administrative Inaction
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-6xl lg:text-8xl font-headline font-bold text-primary leading-[1.05] mb-8"
-          >
-            「何もしない」という<br />
-            <span className="serif-italic text-secondary">静かな実害</span>を<br />
-            可視化する。
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-on-surface-variant leading-relaxed max-w-xl mb-12 font-serif"
-          >
-            行政不作為とは、行政機関が法律上の義務があるにもかかわらず、正当な理由なく必要な措置を講じない状態を指します。それは目に見える「失敗」ではなく、放置された「空白」によって市民の生活を蝕みます。
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-wrap gap-6"
-          >
-            <button className="bg-secondary text-white px-10 py-5 rounded-full font-bold shadow-2xl shadow-secondary/20 hover:brightness-110 transition-all flex items-center gap-3 group">
-              解説を詳しく読む
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <Link to="/collector" className="text-primary font-bold px-8 py-5 rounded-full hover:bg-primary/5 transition-all border border-primary/10">
-              最新の報告を見る
-            </Link>
-          </motion.div>
-        </div>
-        <div className="lg:col-span-5 relative">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="aspect-[4/5] bg-surface-container-highest rounded-[3rem] overflow-hidden relative shadow-2xl"
-          >
-            <img 
-              alt="Old archive library" 
-              className="object-cover w-full h-full opacity-90 mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-700" 
-              src="https://picsum.photos/seed/archive/800/1000"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="absolute -bottom-10 -left-10 bg-white p-10 rounded-3xl shadow-2xl max-w-[280px] border border-outline-variant/20"
-          >
-            <p className="text-lg font-serif italic text-primary leading-relaxed">
-              「制度は存在するが、運用が止まっている。それが最も深い孤独を生む。」
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Index & Comparison Section */}
-      <section className="bg-surface-container-low py-24 lg:py-32">
-        <div className="max-w-screen-2xl mx-auto px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-2xl">
-              <span className="editorial-label">Data Analysis</span>
-              <h2 className="text-5xl font-bold text-primary mb-6">不作為指数：地域別比較</h2>
-              <p className="text-on-surface-variant text-lg font-serif">
-                各自治体の対応速度、情報公開度、市民満足度を独自のアルゴリズムで指数化。
-                「沈黙の度合い」を客観的に比較します。
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button className="bg-white border border-outline-variant/30 px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-surface-container-high transition-all">
-                <TrendingUp className="w-4 h-4" />
-                ランキング詳細
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <IndexCard 
-              region="東京都 A区" 
-              score={78} 
-              trend="up" 
-              details="福祉サービスの申請遅延が目立つ。前月比+5pt。"
-              tags={["福祉", "窓口対応"]}
-            />
-            <IndexCard 
-              region="大阪府 B市" 
-              score={42} 
-              trend="down" 
-              details="情報公開請求への回答が迅速化。改善傾向。"
-              tags={["情報公開", "教育"]}
-            />
-            <IndexCard 
-              region="神奈川県 C市" 
-              score={92} 
-              trend="up" 
-              details="インフラ整備の長期放置が深刻。過去最高値を記録。"
-              tags={["インフラ", "安全"]}
-            />
-          </div>
-
-          <div className="mt-16 bg-white p-8 lg:p-12 rounded-[3rem] shadow-xl border border-outline-variant/20">
-            <div className="flex items-center gap-4 mb-8">
-              <BarChart3 className="w-8 h-8 text-secondary" />
-              <h3 className="text-2xl font-bold text-primary">分野別不作為トレンド</h3>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-              <TrendMini score={85} label="福祉・介護" />
-              <TrendMini score={45} label="教育・文化" />
-              <TrendMini score={62} label="都市計画" />
-              <TrendMini score={94} label="環境保護" />
-              <TrendMini score={30} label="医療・衛生" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Columns Section */}
-      <section className="py-24 lg:py-32 max-w-screen-2xl mx-auto px-8">
-        <div className="text-center mb-20">
-          <span className="editorial-label">Insights & Columns</span>
-          <h2 className="text-5xl font-bold text-primary mb-6">視点：不作為を読み解く</h2>
-          <p className="text-on-surface-variant text-lg font-serif max-w-2xl mx-auto">
-            専門家やジャーナリストによる、制度の隙間と市民生活の交差点を描くコラム集。
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          <ColumnCard 
-            title="「待機」という名の暴力"
-            author="佐藤 健一"
-            date="2024.03.15"
-            category="社会保障"
-            image="https://picsum.photos/seed/column1/600/400"
-            excerpt="なぜ福祉の現場では「調査中」という言葉が半年以上も続くのか。制度の疲弊と不作為の境界線を探る。"
-          />
-          <ColumnCard 
-            title="デジタル庁の死角"
-            author="田中 美咲"
-            date="2024.03.10"
-            category="行政DX"
-            image="https://picsum.photos/seed/column2/600/400"
-            excerpt="オンライン申請の裏側で止まっているアナログな承認プロセス。効率化の影に隠れた新しい不作為の形。"
-          />
-          <ColumnCard 
-            title="地方自治の再生と監視"
-            author="Robert Wilson"
-            date="2024.03.02"
-            category="政治学"
-            image="https://picsum.photos/seed/column3/600/400"
-            excerpt="市民による監視が機能しない時、自治体はどのようにして「何もしない」選択を正当化するのか。"
-          />
-        </div>
-
-        <div className="mt-16 text-center">
-          <button className="text-primary font-bold text-lg flex items-center gap-2 mx-auto hover:gap-4 transition-all group">
-            すべてのコラムを読む
-            <ArrowRight className="w-6 h-6 group-hover:text-secondary transition-colors" />
-          </button>
-        </div>
-      </section>
-
-      {/* Latest Feed Section */}
-      <section className="py-24 lg:py-32 bg-primary text-white overflow-hidden relative">
-        <div className="max-w-screen-2xl mx-auto px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
-            <div>
-              <h2 className="text-5xl font-bold mb-6 flex items-center gap-4">
-                <Activity className="w-10 h-10 text-secondary animate-pulse" />
-                リアルタイム・フィード
-              </h2>
-              <p className="text-primary-fixed text-lg font-serif opacity-80 max-w-xl">
-                AIによる自動収集と市民からの報告。現在進行形の不作為を秒単位で追跡します。
-              </p>
-            </div>
-            <button 
-              onClick={handleForceRefresh}
-              disabled={isRefreshing}
-              className="bg-secondary text-white px-8 py-4 rounded-full font-bold flex items-center gap-3 hover:scale-105 transition-all disabled:opacity-50"
-            >
-              {isRefreshing ? <Loader2 className="w-5 h-5 animate-spin" /> : <TrendingUp className="w-5 h-5" />}
-              AI収集を更新
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {latestCases.map((item) => (
-              <div key={item.id} className="bg-white/5 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all group">
-                <div className="flex justify-between items-start mb-6">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">AI Discovery</span>
-                  <span className="text-xs opacity-50">{item.createdAt?.toDate().toLocaleDateString('ja-JP')}</span>
+    <div className="min-h-screen bg-[#F5F5F4] pt-24 pb-32 font-sans selection:bg-primary selection:text-on-primary">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+        
+        {/* Hero Section - Bold Portal Entry */}
+        <section className="mb-32 border-b-4 border-primary pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-end">
+            <div className="lg:col-span-8 space-y-12">
+              <div className="flex items-center gap-6">
+                <div className="px-4 py-1 bg-primary text-on-primary text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
+                  Portal v4.0
                 </div>
-                <h3 className="text-xl font-bold mb-4 group-hover:text-secondary transition-colors">{item.title}</h3>
-                <p className="text-sm opacity-70 line-clamp-3 mb-6 font-serif">{item.description}</p>
-                <div className="flex items-center gap-2 text-xs font-bold text-secondary">
-                  <AlertTriangle className="w-4 h-4" />
-                  深刻度: {item.severityIndex || 5}/10
+                <div className="h-[1px] w-12 bg-primary/30"></div>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Civic Integrity Ledger</span>
+              </div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-primary font-headline text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.82] uppercase"
+              >
+                Civic<br/>
+                <span className="text-tertiary italic">Integrity</span><br/>
+                Portal
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-secondary text-2xl lg:text-3xl max-w-3xl leading-tight font-medium border-l-8 border-tertiary pl-10 italic"
+              >
+                行政の不祥事、不作為、そして法的精査。市民の知る権利を拡張し、透明な社会を構築するための統合ポータルサイト。
+              </motion.p>
+            </div>
+            <div className="lg:col-span-4 space-y-10">
+              <div className="aspect-square bg-white border-4 border-primary p-12 flex flex-col justify-between relative overflow-hidden group">
+                <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                <div className="relative z-10">
+                  <div className="text-[10px] font-bold text-primary group-hover:text-on-primary uppercase tracking-widest mb-4">Action Protocol</div>
+                  <h3 className="text-4xl font-headline font-black text-primary group-hover:text-on-primary uppercase tracking-tighter leading-none">Submit<br/>Evidence</h3>
+                </div>
+                <Link to="/report" className="relative z-10 flex items-center justify-between group/btn">
+                  <span className="text-lg font-headline font-black text-primary group-hover:text-on-primary uppercase border-b-2 border-primary group-hover:border-on-primary transition-all">Report Inaction</span>
+                  <ArrowRight className="w-8 h-8 text-tertiary group-hover:translate-x-4 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Portal Grid - The Three Pillars */}
+        <section className="mb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            {/* Pillar 1: Inaction DB */}
+            <Link to="/inaction-db" className="group relative bg-white border-4 border-primary p-12 flex flex-col justify-between aspect-[4/5] overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-tertiary text-on-tertiary flex items-center justify-center font-headline font-black text-4xl -rotate-12 translate-x-8 -translate-y-8 group-hover:rotate-0 transition-transform">
+                01
+              </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <FileText className="w-8 h-8 text-tertiary" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Database Alpha</span>
+                </div>
+                <h2 className="text-6xl font-headline font-black text-primary uppercase tracking-tighter leading-none mb-8">
+                  Inaction<br/>
+                  <span className="text-tertiary italic">Digitized</span><br/>
+                  DB
+                </h2>
+                <p className="text-lg font-medium text-secondary leading-relaxed italic border-l-4 border-primary/10 pl-6">
+                  「何もしないこと」の罪を、AIがデータ化。行政の不作為による損失と、放置された市民課題をアーカイブ。
+                </p>
+              </div>
+              <div className="relative z-10 flex items-center justify-between border-t-2 border-primary/5 pt-8">
+                <span className="text-xs font-black uppercase tracking-widest text-primary group-hover:text-tertiary transition-colors">Enter Database</span>
+                <ArrowRight className="w-8 h-8 text-tertiary group-hover:translate-x-4 transition-transform" />
+              </div>
+              <div className="absolute bottom-[-10%] right-[-10%] opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                <FileText className="w-64 h-64 rotate-12" />
+              </div>
+            </Link>
+
+            {/* Pillar 2: Misconduct DB */}
+            <Link to="/misconduct-db" className="group relative bg-primary text-on-primary p-12 flex flex-col justify-between aspect-[4/5] overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white text-primary flex items-center justify-center font-headline font-black text-4xl -rotate-12 translate-x-8 -translate-y-8 group-hover:rotate-0 transition-transform">
+                02
+              </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <Database className="w-8 h-8 text-tertiary" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/40">Database Beta</span>
+                </div>
+                <h2 className="text-6xl font-headline font-black text-white uppercase tracking-tighter leading-none mb-8">
+                  Misconduct<br/>
+                  <span className="text-tertiary italic">AI News</span><br/>
+                  DB
+                </h2>
+                <p className="text-lg font-medium text-white/70 leading-relaxed italic border-l-4 border-white/10 pl-6">
+                  Gemini AIによる常時ニュース収集と記録。行政の不祥事を、記者や学者のための「一次ソース」として体系化。
+                </p>
+              </div>
+              <div className="relative z-10 flex items-center justify-between border-t-2 border-white/5 pt-8">
+                <span className="text-xs font-black uppercase tracking-widest text-white group-hover:text-tertiary transition-colors">Access Archive</span>
+                <ArrowRight className="w-8 h-8 text-tertiary group-hover:translate-x-4 transition-transform" />
+              </div>
+              <div className="absolute bottom-[-10%] right-[-10%] opacity-[0.05] group-hover:opacity-[0.1] transition-opacity">
+                <Database className="w-64 h-64 rotate-12" />
+              </div>
+            </Link>
+
+            {/* Pillar 3: Analysis Site */}
+            <Link to="/analysis" className="group relative bg-white border-4 border-primary p-12 flex flex-col justify-between aspect-[4/5] overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-tertiary text-on-tertiary flex items-center justify-center font-headline font-black text-4xl -rotate-12 translate-x-8 -translate-y-8 group-hover:rotate-0 transition-transform">
+                03
+              </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <Cpu className="w-8 h-8 text-tertiary" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Analysis Engine</span>
+                </div>
+                <h2 className="text-6xl font-headline font-black text-primary uppercase tracking-tighter leading-none mb-8">
+                  AI Column<br/>
+                  <span className="text-tertiary italic">Portal</span><br/>
+                  Site
+                </h2>
+                <p className="text-lg font-medium text-secondary leading-relaxed italic border-l-4 border-primary/10 pl-6">
+                  蓄積されたデータをAIが多角的に指数化。独自の「市民整合性指数」と「不作為コスト」による定期コラムを配信。
+                </p>
+              </div>
+              <div className="relative z-10 flex items-center justify-between border-t-2 border-primary/5 pt-8">
+                <span className="text-xs font-black uppercase tracking-widest text-primary group-hover:text-tertiary transition-colors">Launch Audit</span>
+                <ArrowRight className="w-8 h-8 text-tertiary group-hover:translate-x-4 transition-transform" />
+              </div>
+              <div className="absolute bottom-[-10%] right-[-10%] opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                <Cpu className="w-64 h-64 rotate-12" />
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* Comparative Dashboard - Technical Analysis */}
+        <section className="mb-32">
+          <div className="flex items-end justify-between mb-16 border-b-2 border-primary/10 pb-8">
+            <div className="space-y-2">
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Comparative Metrics</div>
+              <h2 className="text-5xl font-headline font-black tracking-tighter uppercase text-primary">Civic Integrity Dashboard</h2>
+            </div>
+            <div className="hidden md:flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-primary"></div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/40">National Avg</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-tertiary"></div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Local Ledger</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+            {/* Metric 1: Inaction Wealth Index */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-8 bg-white border-4 border-primary p-12 lg:p-16 relative overflow-hidden shadow-2xl shadow-primary/5"
+            >
+              <div className="absolute top-0 left-0 w-full h-2 bg-tertiary"></div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-16">
+                  <div className="space-y-2">
+                    <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block">Index 01</span>
+                    <h3 className="text-primary font-headline text-5xl font-black uppercase tracking-tighter">Inaction Wealth Index</h3>
+                  </div>
+                  <div className="px-4 py-1 bg-error text-white text-[10px] font-bold tracking-widest uppercase rounded-full animate-pulse">Critical Alert</div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row items-end gap-20">
+                  <div className="flex-1 w-full space-y-10">
+                    <div className="relative h-64 flex items-end gap-8 border-b-2 border-primary/10 pb-6">
+                      {[
+                        { city: 'YOKOHAMA', val: '40%', amount: '¥120B' },
+                        { city: 'NAGOYA', val: '35%', amount: '¥95B' },
+                        { city: 'OSAKA', val: '45%', amount: '¥140B' },
+                        { city: 'KYOTO', val: '85%', amount: '¥182B', highlight: true },
+                      ].map((item, i) => (
+                        <div key={i} className="flex-1 flex flex-col items-center gap-4 group cursor-crosshair">
+                          <motion.div 
+                            initial={{ height: 0 }}
+                            whileInView={{ height: item.val }}
+                            transition={{ duration: 1, delay: i * 0.1 }}
+                            className={`w-full transition-all duration-700 relative ${
+                              item.highlight ? 'bg-tertiary' : 'bg-primary/10 group-hover:bg-primary/20'
+                            }`}
+                          >
+                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-primary text-on-primary text-[10px] font-bold px-3 py-2 rounded-none whitespace-nowrap transition-all uppercase tracking-widest">
+                              {item.amount}
+                            </div>
+                            {item.highlight && (
+                              <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-tertiary text-on-tertiary text-[10px] px-4 py-2 font-black whitespace-nowrap shadow-xl border border-white/20 uppercase tracking-widest">
+                                KYOTO: +82%
+                              </div>
+                            )}
+                          </motion.div>
+                          <span className={`text-[10px] font-black tracking-widest uppercase ${item.highlight ? 'text-tertiary' : 'text-primary/30'}`}>
+                            {item.city}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xl text-secondary leading-relaxed font-medium italic border-l-4 border-primary/10 pl-8">
+                      不作為蓄財（予算の未執行）に対し、市民課題の放置率が他都市平均を大幅に上回っています。
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-tertiary font-headline text-[10rem] font-black leading-none tracking-tighter">8.4</div>
+                    <div className="text-[10px] font-bold text-primary/30 uppercase tracking-[0.4em] mt-4">Scale / 10.0</div>
+                  </div>
                 </div>
               </div>
+            </motion.div>
+
+            {/* Metric 2: Stagnation Rate */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="md:col-span-4 bg-primary text-on-primary p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden shadow-2xl shadow-primary/20"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-x-10 -translate-y-10"></div>
+              <div className="relative z-10">
+                <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block mb-2">Index 02</span>
+                <h3 className="text-4xl font-headline font-black uppercase tracking-tighter leading-none">Update<br/>Stagnation</h3>
+              </div>
+              <div className="py-16 relative z-10">
+                <div className="relative w-48 h-48 mx-auto">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9155" fill="none" className="stroke-white/10" strokeWidth="4" />
+                    <motion.circle 
+                      cx="18" cy="18" r="15.9155" fill="none" className="stroke-tertiary" strokeWidth="4"
+                      strokeDasharray="72, 100"
+                      initial={{ strokeDasharray: "0, 100" }}
+                      whileInView={{ strokeDasharray: "72, 100" }}
+                      transition={{ duration: 1.5, delay: 0.5 }}
+                      strokeLinecap="butt"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-6xl font-headline font-black">72<small className="text-2xl ml-1">%</small></span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center space-y-4 relative z-10">
+                <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">System Performance</p>
+                <p className="text-2xl font-headline font-black text-tertiary uppercase tracking-tight">Worst in Class</p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Archive Feed - Editorial List Style */}
+        <section className="mb-32">
+          <div className="flex items-end justify-between mb-16 border-b-2 border-primary/10 pb-8">
+            <div className="space-y-2">
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Intelligence Feed</div>
+              <h2 className="text-5xl font-headline font-black tracking-tighter uppercase text-primary">Recent Documentation</h2>
+            </div>
+            <Link to="/misconduct-db" className="group flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-[0.3em] hover:text-tertiary transition-all">
+              Explore Full Archive
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-3 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-16">
+            {[
+              {
+                id: 'AS-2024-089',
+                date: '2024.10.12',
+                location: 'NAKAGYO WARD',
+                title: '【福祉不作為】生活保護申請窓口における水際作戦と記録の未作成',
+                desc: '相談者が3度にわたり来庁したにも関わらず、正式な受付を行わず「相談」として処理。法律で定められた教示義務を放棄し、困窮者の生存権を脅かす不作為が確認された。',
+                tags: ['PROCEDURAL LAW', 'WELFARE'],
+                img: 'https://picsum.photos/seed/integrity-089/1200/600?grayscale'
+              },
+              {
+                id: 'AS-2024-072',
+                date: '2024.09.28',
+                location: 'KYOTO CITY HALL',
+                title: '【環境不作為】アスベスト含有疑い施設における調査報告の2年間放置',
+                desc: '民間企業からの調査依頼に対し、受理後24ヶ月間にわたり実地調査を延期。担当部署の「人員不足」を理由とした組織的不作為による周辺住民への健康被害リスク。',
+                tags: ['ENVIRONMENTAL SAFETY', 'NEGLECT'],
+                img: 'https://picsum.photos/seed/integrity-072/1200/600?grayscale'
+              }
+            ].map((item, i) => (
+              <motion.article 
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group grid grid-cols-1 lg:grid-cols-12 gap-12 items-start border-b-2 border-primary/5 pb-16 last:border-0"
+              >
+                <div className="lg:col-span-5 relative overflow-hidden">
+                  <div className="aspect-[16/9] bg-white border-2 border-primary/5 overflow-hidden">
+                    <img 
+                      src={item.img} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="absolute top-4 left-4 bg-primary text-on-primary px-4 py-1 text-[10px] font-bold tracking-widest uppercase">
+                    ID: {item.id}
+                  </div>
+                </div>
+                <div className="lg:col-span-7 space-y-8">
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3 h-3 text-tertiary" />
+                      <span className="text-[10px] font-black tracking-widest text-primary/40 uppercase">{item.date}</span>
+                    </div>
+                    <div className="w-[1px] h-3 bg-primary/10"></div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-3 h-3 text-tertiary" />
+                      <span className="text-[10px] font-black tracking-widest text-primary/40 uppercase">{item.location}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-4xl lg:text-5xl font-headline font-black leading-[0.9] group-hover:text-tertiary transition-colors tracking-tighter uppercase text-primary">
+                    {item.title}
+                  </h3>
+                  <p className="text-xl font-medium text-secondary/60 leading-relaxed italic border-l-4 border-primary/5 pl-8">
+                    {item.desc}
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    {item.tags.map(tag => (
+                      <span key={tag} className="text-[10px] font-bold text-primary/30 border border-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">#{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </motion.article>
             ))}
           </div>
-        </div>
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-secondary/10 to-transparent pointer-events-none"></div>
-      </section>
-    </div>
-  );
-}
+        </section>
 
-function IndexCard({ region, score, trend, details, tags }: any) {
-  return (
-    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-outline-variant/10 hover:shadow-2xl transition-all group">
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h3 className="text-2xl font-bold text-primary mb-1">{region}</h3>
-          <div className="flex gap-2">
-            {tags.map((tag: string) => (
-              <span key={tag} className="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant/60">#{tag}</span>
-            ))}
+        {/* Accountability Timeline - Technical Vertical Rail */}
+        <section className="mb-32">
+          <div className="flex items-center gap-6 mb-20">
+            <div className="w-16 h-16 bg-primary text-on-primary flex items-center justify-center">
+              <History className="w-8 h-8" />
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Temporal Analysis</div>
+              <h2 className="text-4xl font-headline font-black tracking-tighter uppercase text-primary">
+                Chain of Inaction
+              </h2>
+            </div>
           </div>
-        </div>
-        <div className={`flex items-center gap-1 font-bold ${trend === 'up' ? 'text-error' : 'text-green-600'}`}>
-          {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : <TrendingUp className="w-4 h-4 rotate-180" />}
-          {trend === 'up' ? '+5%' : '-3%'}
-        </div>
-      </div>
-      
-      <div className="mb-8">
-        <div className="flex justify-between items-end mb-2">
-          <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">Inaction Index</span>
-          <span className="text-5xl font-headline font-bold text-primary">{score}</span>
-        </div>
-        <div className="h-3 w-full bg-surface-container-high rounded-full overflow-hidden">
-          <motion.div 
-            initial={{ width: 0 }}
-            whileInView={{ width: `${score}%` }}
-            className={`h-full ${score > 70 ? 'bg-error' : score > 40 ? 'bg-secondary' : 'bg-green-500'}`}
-          />
-        </div>
-      </div>
 
-      <p className="text-sm text-on-surface-variant font-serif leading-relaxed italic">
-        "{details}"
-      </p>
-    </div>
-  );
-}
+          <div className="relative">
+            <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-[2px] bg-primary/10 -translate-x-1/2"></div>
+            
+            <div className="space-y-24">
+              {[
+                {
+                  date: '2024.11.01',
+                  title: 'SYSTEM DEPLOYMENT POSTPONED',
+                  desc: '5年前から計画されていたデジタル化予算が「他事業への補填」を理由に凍結。市民サービスのアップデートが停止。',
+                  side: 'left'
+                },
+                {
+                  date: '2024.10.15',
+                  title: 'INFORMATION REQUEST DENIED',
+                  desc: '不作為蓄財に関する詳細データの開示を拒否。「意思決定の過程」であることを理由に透明性を遮断。',
+                  side: 'right'
+                }
+              ].map((item, i) => (
+                <div key={i} className={`relative flex flex-col md:flex-row items-center justify-between ${item.side === 'right' ? 'md:flex-row-reverse' : ''}`}>
+                  <div className={`hidden md:block md:w-[45%] ${item.side === 'left' ? 'text-right' : 'text-left'} space-y-2`}>
+                    <span className="text-tertiary font-black text-2xl tracking-tighter uppercase">{item.date}</span>
+                    <h4 className="text-primary text-2xl font-headline font-black uppercase tracking-tight">{item.title}</h4>
+                  </div>
+                  
+                  <div className="absolute left-0 md:left-1/2 w-6 h-6 bg-tertiary border-4 border-[#F5F5F4] -translate-x-1/2 z-10"></div>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0, x: item.side === 'left' ? 30 : -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="ml-12 md:ml-0 md:w-[45%] bg-white p-12 border-4 border-primary/5 shadow-2xl shadow-primary/5"
+                  >
+                    <div className="md:hidden mb-6 space-y-2">
+                      <span className="text-tertiary font-black text-xl tracking-tighter uppercase">{item.date}</span>
+                      <h4 className="text-primary font-headline font-black text-2xl uppercase tracking-tight">{item.title}</h4>
+                    </div>
+                    <p className="text-lg font-medium text-secondary/70 leading-relaxed italic border-l-4 border-tertiary/20 pl-6">{item.desc}</p>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-function TrendMini({ score, label }: any) {
-  return (
-    <div className="space-y-3">
-      <div className="flex justify-between items-end">
-        <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">{label}</span>
-        <span className="text-lg font-headline font-bold text-primary">{score}</span>
-      </div>
-      <div className="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
-        <motion.div 
-          initial={{ width: 0 }}
-          whileInView={{ width: `${score}%` }}
-          className={`h-full ${score > 70 ? 'bg-error' : 'bg-secondary'}`}
-        />
-      </div>
-    </div>
-  );
-}
+        {/* CTA Section - Immersive Full-Bleed */}
+        <section className="bg-primary text-on-primary p-16 lg:p-32 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
+            <div className="absolute top-[-20%] right-[-10%] w-[150%] aspect-square bg-tertiary blur-[150px] rounded-full"></div>
+          </div>
+          <div className="relative z-10 max-w-4xl space-y-12">
+            <div className="text-[10px] font-bold text-tertiary uppercase tracking-[0.4em]">Final Protocol</div>
+            <h2 className="font-headline text-7xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
+              Record the<br/>
+              <span className="text-tertiary italic">Unspoken</span>
+            </h2>
+            <p className="text-2xl lg:text-3xl text-white/70 leading-tight font-medium italic border-l-8 border-tertiary pl-12">
+              沈黙は現状を維持させます。匿名での報告、AIによる法的精査、そして公開。透明な社会への第一歩は、あなたの告発から始まります。
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-10 pt-12">
+              <Link to="/report" className="group relative px-16 py-6 bg-tertiary text-on-tertiary overflow-hidden transition-all active:scale-95">
+                <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                <span className="relative z-10 text-xl font-headline font-black uppercase tracking-widest group-hover:text-primary">Submit Report</span>
+              </Link>
+              <Link to="/misconduct-db" className="group flex items-center gap-4 text-xl font-headline font-black uppercase tracking-widest hover:text-tertiary transition-all">
+                Explore Archive
+                <ChevronRight className="w-8 h-8 group-hover:translate-x-4 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </section>
 
-function ColumnCard({ title, author, date, category, image, excerpt }: any) {
-  return (
-    <div className="group cursor-pointer">
-      <div className="aspect-[16/10] rounded-[2rem] overflow-hidden mb-6 shadow-lg relative">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0" 
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
-          {category}
-        </div>
       </div>
-      <div className="flex items-center gap-3 mb-3 text-xs text-on-surface-variant font-medium">
-        <span>{author}</span>
-        <span className="w-1 h-1 bg-outline-variant rounded-full"></span>
-        <span>{date}</span>
-      </div>
-      <h3 className="text-2xl font-bold text-primary mb-4 group-hover:text-secondary transition-colors leading-snug">
-        {title}
-      </h3>
-      <p className="text-on-surface-variant font-serif leading-relaxed line-clamp-2 opacity-80">
-        {excerpt}
-      </p>
     </div>
   );
 }

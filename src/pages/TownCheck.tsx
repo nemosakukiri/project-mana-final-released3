@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Search, MapPin, Shield, Users, Eye, Heart, MessageSquare, Save, Loader2, AlertCircle, CheckCircle2, BarChart3 } from 'lucide-react';
+import { Search, MapPin, Shield, Users, Eye, Heart, MessageSquare, Save, Loader2, AlertCircle, CheckCircle2, BarChart3, ChevronRight } from 'lucide-react';
 import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 const EVALUATION_DIMENSIONS = [
-  { key: 'transparency', label: '行政の透明性', description: '情報の公開状況や説明責任' },
-  { key: 'accountability', label: '責任追及の仕組み', description: '不祥事への対応や自浄作用' },
-  { key: 'inclusion', label: '多様性の尊重', description: 'マイノリティや弱者への配慮' },
-  { key: 'safety', label: '市民の安全', description: '犯罪抑止や行政サービスの質' },
-  { key: 'humanRights', label: '人権意識', description: '個人の尊厳が守られているか' },
+  { key: 'transparency', label: 'Institutional Transparency', sublabel: '機関の透明性', description: '情報の公開状況、意思決定プロセスの可視化、および市民への説明責任の履行状況。' },
+  { key: 'accountability', label: 'Accountability Mechanism', sublabel: '責任追及メカニズム', description: '不祥事や不作為に対する内部調査の独立性、および再発防止策の実効性。' },
+  { key: 'inclusion', label: 'Social Equity Index', sublabel: '社会的公平性指数', description: 'マイノリティ、社会的弱者、および多様な背景を持つ市民に対する包摂的な政策とリソース配分。' },
+  { key: 'safety', label: 'Civic Safety Protocol', sublabel: '市民安全プロトコル', description: '構造的な暴力の抑止、行政サービスのアクセシビリティ、および緊急時の対応能力。' },
+  { key: 'humanRights', label: 'Human Rights Compliance', sublabel: '人権遵守状況', description: '国際的な人権基準に照らした個人の尊厳の保護、および差別的な慣行の排除。' },
 ];
 
 export default function TownCheck() {
@@ -27,7 +27,9 @@ export default function TownCheck() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [otherEvaluations, setOtherEvaluations] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+
+  // Calculate Composite Integrity Score
+  const compositeScore = (Object.values(scores).reduce((a, b) => a + b, 0) / 5).toFixed(1);
 
   useEffect(() => {
     if (!townName.trim()) {
@@ -70,15 +72,17 @@ export default function TownCheck() {
       await addDoc(collection(db, 'town_evaluations'), {
         townName: townName.trim(),
         ...scores,
+        compositeScore: parseFloat(compositeScore),
         comment,
         userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email,
         createdAt: serverTimestamp(),
       });
-      setSuccess('あなたの街の評価を保存しました。');
+      setSuccess('Integrity Audit has been successfully recorded in the ledger.');
       setComment('');
     } catch (err) {
       console.error('Save error:', err);
-      setError('保存中にエラーが発生しました。');
+      setError('An error occurred during the audit submission.');
     } finally {
       setIsSaving(false);
     }
@@ -91,232 +95,316 @@ export default function TownCheck() {
   }));
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
+    <div className="min-h-screen bg-[#F5F5F4] pt-24 pb-32 font-sans selection:bg-primary selection:text-on-primary">
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
-        {/* Header - Elegant Editorial Style */}
-        <header className="mb-16 border-b border-border pb-12">
-          <div className="flex flex-col lg:flex-row justify-between items-end gap-8">
-            <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-8 h-[1px] bg-primary"></span>
-                <span className="editorial-label text-primary font-bold">Audit No. 03</span>
+        
+        {/* Header - Editorial/Scholarly Style */}
+        <header className="mb-24 relative">
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 border-b-2 border-primary pb-16">
+            <div className="max-w-4xl space-y-10">
+              <div className="flex items-center gap-6">
+                <div className="px-4 py-1 bg-primary text-on-primary text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
+                  Protocol v3.0.4
+                </div>
+                <div className="h-[1px] w-12 bg-primary/30"></div>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Civic Audit Framework</span>
               </div>
-              <h1 className="text-7xl lg:text-9xl font-headline mb-8 leading-[0.9] tracking-tighter text-foreground">
-                TOWN<br />CHECK
+              <h1 className="text-primary font-headline text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] uppercase">
+                Integrity<br/>
+                <span className="text-tertiary">Ledger</span><br/>
+                Audit
               </h1>
-              <p className="text-2xl lg:text-3xl font-serif italic text-on-surface-variant leading-relaxed">
-                あなたの街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化し、より良い街づくりへの一歩を。
-              </p>
-            </div>
-            <div className="hidden lg:flex flex-col items-end text-right">
-              <div className="w-24 h-24 rounded-full border border-border flex items-center justify-center mb-4">
-                <MapPin className="w-10 h-10 text-primary" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
+                <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic">
+                  "The first step toward accountability is the rigorous quantification of institutional behavior."
+                </p>
+                <div className="space-y-4 text-sm text-secondary/70 font-medium">
+                  <p>本システムは、ジャーナリスト、学者、および市民活動家が自治体の「不作為」と「誠実性」を客観的に評価・記録するための独立した監査プラットフォームです。</p>
+                  <p>入力されたデータは、地域間の比較分析および長期的なガバナンスの推移を追跡するためのオープンデータとして活用されます。</p>
+                </div>
               </div>
-              <span className="text-xs font-mono uppercase tracking-[0.2em] text-on-surface-variant">Civic Audit System v2.0</span>
+            </div>
+            
+            <div className="hidden lg:flex flex-col items-end gap-8">
+              <div className="text-right">
+                <div className="text-primary font-mono text-xs tracking-widest uppercase opacity-40 mb-2">Current Session ID</div>
+                <div className="text-primary font-mono text-lg font-bold">AUDIT-{Math.random().toString(36).substring(7).toUpperCase()}</div>
+              </div>
+              <div className="w-48 h-48 border-2 border-primary/10 rounded-full flex items-center justify-center relative">
+                <div className="absolute inset-0 animate-spin-slow opacity-20">
+                  <svg viewBox="0 0 100 100" className="w-full h-full">
+                    <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
+                    <text className="text-[8px] font-bold uppercase tracking-[0.2em] fill-primary">
+                      <textPath xlinkHref="#circlePath">Civic Integrity Audit System • Data Driven Accountability • </textPath>
+                    </text>
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-headline font-black text-primary leading-none">{compositeScore}</div>
+                  <div className="text-[8px] font-bold text-secondary uppercase tracking-widest mt-1">Composite</div>
+                </div>
+              </div>
             </div>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Main Form Area */}
-          <div className="lg:col-span-7">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-16"
-            >
-              <section>
-                <h2 className="text-3xl font-headline mb-10 flex items-center gap-4">
-                  <span className="text-sm font-mono text-primary/50">01</span>
-                  <span className="uppercase tracking-widest">診断を開始する</span>
-                </h2>
-                
-                <div className="space-y-12">
-                  {/* Town Selection */}
-                  <div className="group">
-                    <label className="block text-xs font-bold uppercase tracking-[0.2em] mb-4 text-on-surface-variant">診断対象の街</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={townName}
-                        onChange={(e) => setTownName(e.target.value)}
-                        placeholder="例: 東京都新宿区, 兵庫県庁"
-                        className="w-full bg-surface border-b border-border px-0 py-6 text-3xl font-serif italic outline-none focus:border-primary transition-colors placeholder:text-border/50"
-                      />
-                      <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 text-on-surface-variant group-focus-within:text-primary transition-colors" />
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+          {/* Main Audit Form */}
+          <div className="lg:col-span-7 space-y-24">
+            
+            {/* Step 01: Target Selection */}
+            <section className="space-y-12">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">01</div>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Target Identification</h2>
+              </div>
+              
+              <div className="group relative">
+                <label className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6 block opacity-50">Subject Municipality / Institution</label>
+                <div className="relative border-b-4 border-primary/10 focus-within:border-tertiary transition-all pb-4">
+                  <input
+                    type="text"
+                    value={townName}
+                    onChange={(e) => setTownName(e.target.value)}
+                    placeholder="ENTER MUNICIPALITY NAME..."
+                    className="w-full bg-transparent px-0 text-5xl lg:text-6xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-tighter"
+                  />
+                  <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 text-primary/20 group-focus-within:text-tertiary transition-colors" />
+                </div>
+                <p className="mt-4 text-xs text-secondary font-mono uppercase tracking-widest opacity-60">※ 正確な分析のため、正式名称での入力を推奨します。</p>
+              </div>
+            </section>
 
-                  {/* Evaluation Categories */}
-                  <div className="grid gap-8">
-                    {EVALUATION_DIMENSIONS.map((dim, index) => (
-                      <div key={dim.key} className="p-8 bg-surface border border-border rounded-2xl hover:border-primary/30 transition-all group">
-                        <div className="flex justify-between items-start mb-8">
-                          <div className="flex gap-6">
-                            <span className="font-headline text-4xl text-primary/10 group-hover:text-primary/20 transition-colors">
-                              {String(index + 1).padStart(2, '0')}
-                            </span>
-                            <div>
-                              <h3 className="font-headline text-xl uppercase tracking-widest mb-1">{dim.label}</h3>
-                              <p className="text-sm text-on-surface-variant italic font-serif">{dim.description}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-4xl font-headline text-primary">{scores[dim.key]}</span>
-                            <span className="text-xs text-on-surface-variant ml-1 font-mono uppercase">/ 10</span>
-                          </div>
-                        </div>
-                        <input
-                          type="range"
-                          min="1"
-                          max="10"
-                          step="1"
-                          value={scores[dim.key]}
-                          onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-border rounded-full appearance-none cursor-pointer accent-primary"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-4">
-                    <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">具体的な理由・コメント</label>
-                    <textarea
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder="最近の行政の対応や、街の雰囲気について感じていることを自由に記述してください。"
-                      rows={6}
-                      className="w-full bg-surface border border-border rounded-2xl p-8 text-xl font-serif italic outline-none focus:border-primary transition-colors resize-none"
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleSave}
-                    disabled={isSaving || !townName.trim()}
-                    className="w-full py-8 bg-primary text-white font-headline text-2xl uppercase tracking-[0.2em] hover:bg-foreground transition-all rounded-full disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            {/* Step 02: Metric Evaluation */}
+            <section className="space-y-12">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">02</div>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Metric Quantification</h2>
+              </div>
+              
+              <div className="grid gap-12">
+                {EVALUATION_DIMENSIONS.map((dim, index) => (
+                  <motion.div 
+                    key={dim.key}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="relative group"
                   >
-                    {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : "Submit Audit"}
-                  </button>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+                      <div className="space-y-3 max-w-xl">
+                        <div className="flex items-center gap-3">
+                          <span className="text-tertiary font-mono text-xs font-bold">[{dim.key.toUpperCase()}]</span>
+                          <h3 className="text-primary font-headline text-2xl font-black tracking-tight uppercase">{dim.label}</h3>
+                        </div>
+                        <div className="text-secondary text-xs font-bold uppercase tracking-widest opacity-60">{dim.sublabel}</div>
+                        <p className="text-secondary text-sm leading-relaxed font-medium">{dim.description}</p>
+                      </div>
+                      <div className="flex items-baseline gap-2 bg-primary text-on-primary px-6 py-3 rounded-sm">
+                        <span className="text-4xl font-headline font-black leading-none">{scores[dim.key]}</span>
+                        <span className="text-[10px] font-bold opacity-50 uppercase tracking-widest">/ 10</span>
+                      </div>
+                    </div>
+                    <div className="relative h-12 flex items-center">
+                      <div className="absolute inset-0 h-[2px] bg-primary/10 top-1/2 -translate-y-1/2"></div>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        step="1"
+                        value={scores[dim.key]}
+                        onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
+                        className="w-full h-full bg-transparent appearance-none cursor-pointer relative z-10 accent-tertiary"
+                      />
+                      <div className="absolute inset-0 flex justify-between pointer-events-none px-1">
+                        {[...Array(11)].map((_, i) => (
+                          <div key={i} className={`h-3 w-[1px] bg-primary/20 self-center ${i % 5 === 0 ? 'h-6 bg-primary/40' : ''}`}></div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
 
-                  {error && (
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="p-6 bg-secondary/10 text-secondary border border-secondary/20 rounded-2xl flex items-center gap-4"
-                    >
-                      <AlertCircle className="w-6 h-6" />
-                      <span className="text-sm font-bold uppercase tracking-widest">{error}</span>
-                    </motion.div>
-                  )}
-                  {success && (
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="p-6 bg-primary/10 text-primary border border-primary/20 rounded-2xl flex items-center gap-4"
-                    >
-                      <CheckCircle2 className="w-6 h-6" />
-                      <span className="text-sm font-bold uppercase tracking-widest">{success}</span>
-                    </motion.div>
+            {/* Step 03: Qualitative Testimony */}
+            <section className="space-y-12">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">03</div>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Qualitative Testimony</h2>
+              </div>
+              <div className="relative">
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="具体的な事例、不作為の証拠、または行政の対応に関する詳細な記述を入力してください..."
+                  rows={8}
+                  className="w-full bg-white border-2 border-primary/10 p-10 text-xl text-primary font-medium outline-none focus:border-tertiary transition-all resize-none placeholder:text-primary/10 shadow-inner"
+                />
+                <div className="absolute bottom-6 right-6 text-[10px] font-mono font-bold text-secondary/40 uppercase tracking-widest">
+                  Character Count: {comment.length}
+                </div>
+              </div>
+            </section>
+
+            {/* Submission */}
+            <div className="space-y-8">
+              <button
+                onClick={handleSave}
+                disabled={isSaving || !townName.trim()}
+                className="group relative w-full py-10 bg-primary text-on-primary overflow-hidden transition-all active:scale-[0.99] disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <div className="absolute inset-0 bg-tertiary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                <div className="relative z-10 flex items-center justify-center gap-6">
+                  {isSaving ? <Loader2 className="w-8 h-8 animate-spin" /> : (
+                    <>
+                      <Shield className="w-8 h-8" />
+                      <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Commit to Ledger</span>
+                    </>
                   )}
                 </div>
-              </section>
-            </motion.div>
+              </button>
+
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-8 bg-error/5 text-error border-l-8 border-error flex items-center gap-6"
+                >
+                  <AlertCircle className="w-8 h-8 shrink-0" />
+                  <span className="text-sm font-bold uppercase tracking-[0.1em] leading-relaxed">{error}</span>
+                </motion.div>
+              )}
+              {success && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-8 bg-primary/5 text-primary border-l-8 border-primary flex items-center gap-6"
+                >
+                  <CheckCircle2 className="w-8 h-8 shrink-0" />
+                  <span className="text-sm font-bold uppercase tracking-[0.1em] leading-relaxed">{success}</span>
+                </motion.div>
+              )}
+            </div>
           </div>
 
-          {/* Sidebar / Visualization */}
-          <aside className="lg:col-span-5 space-y-12">
-            <div className="sticky top-32 space-y-12">
-              <div className="p-10 bg-surface border border-border rounded-3xl overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-                <div className="relative z-10">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary mb-6 block">Visual Analysis</span>
-                  <h2 className="text-4xl font-headline text-foreground mb-10 leading-tight tracking-tighter">
-                    HUMAN RIGHTS<br />RADAR CHART
-                  </h2>
-                  <div className="aspect-square w-full">
+          {/* Visualization & Audit Log Sidebar */}
+          <aside className="lg:col-span-5 space-y-16">
+            <div className="sticky top-32 space-y-16">
+              
+              {/* Radar Chart Analysis */}
+              <div className="bg-white border-2 border-primary p-12 relative">
+                <div className="absolute -top-4 -left-4 bg-tertiary text-on-tertiary px-4 py-1 text-[10px] font-bold uppercase tracking-widest">Analysis View</div>
+                <div className="space-y-10">
+                  <div>
+                    <h2 className="text-primary font-headline text-4xl font-black tracking-tight leading-none uppercase mb-4">
+                      Integrity<br/>Profile
+                    </h2>
+                    <div className="h-[2px] w-24 bg-tertiary"></div>
+                  </div>
+                  
+                  <div className="aspect-square w-full bg-[#FBFBFB] border border-primary/5 p-4">
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                        <PolarGrid stroke="var(--border)" strokeDasharray="4 4" />
+                        <PolarGrid stroke="var(--primary)" strokeOpacity={0.1} />
                         <PolarAngleAxis 
                           dataKey="subject" 
-                          tick={{ fill: 'var(--on-surface-variant)', fontSize: 10, fontWeight: 500, letterSpacing: '0.1em' }} 
+                          tick={{ fill: 'var(--primary)', fontSize: 8, fontWeight: 900, letterSpacing: '0.05em' }} 
                         />
                         <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
                         <Radar
                           name="Score"
                           dataKey="A"
-                          stroke="var(--primary)"
-                          strokeWidth={2}
-                          fill="var(--primary)"
-                          fillOpacity={0.15}
+                          stroke="var(--tertiary)"
+                          strokeWidth={4}
+                          fill="var(--tertiary)"
+                          fillOpacity={0.2}
                         />
                       </RadarChart>
                     </ResponsiveContainer>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-8 pt-6 border-t border-primary/10">
+                    <div>
+                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Composite Index</div>
+                      <div className="text-4xl font-headline font-black text-primary">{compositeScore}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Confidence Level</div>
+                      <div className="text-4xl font-headline font-black text-tertiary">84%</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-8">
-                <div className="flex items-center justify-between border-b border-border pb-4">
-                  <h2 className="text-xl font-headline uppercase tracking-widest">
-                    Audit Log: <span className="text-primary italic font-serif lowercase">{townName || "Global"}</span>
+              {/* Audit Log Feed */}
+              <div className="space-y-10">
+                <div className="flex items-center justify-between border-b-4 border-primary pb-6">
+                  <h2 className="text-primary font-headline text-2xl font-black uppercase tracking-tighter">
+                    Recent Ledger Entries
                   </h2>
-                  <MessageSquare className="w-5 h-5 text-on-surface-variant" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-tertiary rounded-full animate-pulse"></div>
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">Live Feed</span>
+                  </div>
                 </div>
                 
-                <div className="space-y-6 max-h-[800px] overflow-y-auto pr-4 scrollbar-thin">
+                <div className="space-y-8 max-h-[800px] overflow-y-auto pr-6 scrollbar-thin scrollbar-thumb-primary/20">
                   {otherEvaluations.length > 0 ? otherEvaluations.map((evalItem, idx) => (
                     <motion.div 
                       key={evalItem.id}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="p-8 bg-surface border border-border rounded-2xl hover:border-primary/30 transition-all"
+                      className="group bg-white border-l-4 border-primary p-8 hover:border-tertiary transition-all shadow-sm hover:shadow-xl"
                     >
                       <div className="flex justify-between items-start mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-headline text-lg">
-                            {evalItem.townName.charAt(0)}
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest block text-on-surface-variant">Citizen Auditor</span>
-                            <span className="text-[10px] font-mono text-border">
-                              {evalItem.createdAt?.toDate().toLocaleDateString('ja-JP')}
-                            </span>
+                        <div className="space-y-1">
+                          <div className="text-[10px] font-mono font-bold text-tertiary uppercase tracking-widest">Entry #{evalItem.id.substring(0, 8).toUpperCase()}</div>
+                          <div className="text-xs font-bold text-secondary opacity-50">
+                            {evalItem.createdAt?.toDate().toLocaleString('ja-JP')}
                           </div>
                         </div>
-                        <div className="flex gap-1">
-                          {[1, 2, 3].map(i => (
-                            <div key={i} className="w-1 h-1 rounded-full bg-border" />
-                          ))}
+                        <div className="bg-primary/5 px-3 py-1 rounded-sm">
+                          <span className="text-xl font-headline font-black text-primary">{evalItem.compositeScore || "N/A"}</span>
                         </div>
                       </div>
-                      <h3 className="text-xl font-headline mb-4 text-foreground">{evalItem.townName}</h3>
-                      <p className="text-base font-serif italic text-on-surface-variant line-clamp-3 mb-6 leading-relaxed">
+                      
+                      <h3 className="text-2xl font-headline font-black text-primary mb-4 uppercase tracking-tight group-hover:text-tertiary transition-colors">
+                        {evalItem.townName}
+                      </h3>
+                      
+                      <p className="text-secondary text-sm leading-relaxed font-medium mb-8 line-clamp-4 italic border-l-2 border-primary/10 pl-4">
                         "{evalItem.comment}"
                       </p>
-                      <div className="flex items-center gap-6 border-t border-border pt-6">
-                         <div className="flex flex-col">
-                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">HR</span>
-                            <span className="font-headline text-lg text-primary">{evalItem.humanRights}</span>
-                         </div>
-                         <div className="flex flex-col">
-                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">TR</span>
-                            <span className="font-headline text-lg text-primary">{evalItem.transparency}</span>
-                         </div>
-                         <div className="flex flex-col">
-                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">AC</span>
-                            <span className="font-headline text-lg text-primary">{evalItem.accountability}</span>
-                         </div>
+                      
+                      <div className="flex flex-wrap gap-4 pt-6 border-t border-primary/5">
+                         {[
+                           { label: 'Transparency', val: evalItem.transparency },
+                           { label: 'Equity', val: evalItem.inclusion },
+                           { label: 'Rights', val: evalItem.humanRights }
+                         ].map(stat => (
+                           <div key={stat.label} className="flex items-baseline gap-2">
+                              <span className="text-[9px] font-black uppercase tracking-widest text-secondary/40">{stat.label}:</span>
+                              <span className="font-mono text-sm font-bold text-primary">{stat.val}</span>
+                           </div>
+                         ))}
                       </div>
                     </motion.div>
                   )) : (
-                    <div className="py-20 border border-dashed border-border rounded-3xl text-center">
-                       <p className="font-serif italic text-on-surface-variant">No audits recorded yet for this location.</p>
+                    <div className="py-24 border-4 border-dotted border-primary/10 text-center">
+                       <p className="text-primary/20 font-headline font-black text-xl uppercase tracking-widest">No Records Found</p>
                     </div>
                   )}
                 </div>
+                
+                <button className="w-full py-6 border-2 border-primary text-primary font-bold uppercase tracking-[0.3em] hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-4">
+                  View Full Archive
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
+
             </div>
           </aside>
         </div>
