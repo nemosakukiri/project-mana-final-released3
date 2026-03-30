@@ -10,8 +10,8 @@ export default function Home() {
   const [latestReports, setLatestReports] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch latest misconduct cases (AI collected)
-    const qCases = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(3));
+    // Fetch latest misconduct cases (AI collected) - showing 5 as requested
+    const qCases = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(5));
     const unsubscribeCases = onSnapshot(qCases, (snapshot) => {
       setLatestCases(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
@@ -152,7 +152,7 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-on-surface-variant max-w-xl">
-              AIによる自動収集と市民からの報告。現在進行形の不作為をリアルタイムで追跡します。
+              AIによる毎時自動収集と市民からの報告。現在進行形の不作為をリアルタイムで追跡します。
             </p>
           </div>
           <div className="flex items-center gap-4">

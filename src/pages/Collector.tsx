@@ -92,7 +92,7 @@ export default function Collector() {
             <h1 className="text-4xl font-bold text-primary">AI自動収集システム</h1>
           </motion.div>
           <p className="text-on-surface-variant text-lg max-w-2xl">
-            AIがインターネット上のニュースや公開資料から、行政の不祥事や不作為に関する情報を自動的に収集・要約します。
+            AIがインターネット上のニュースや公開資料から、行政の不祥事や不作為に関する情報を**毎時自動的に収集**・要約します。
           </p>
         </header>
 
