@@ -196,7 +196,17 @@ export default function Home() {
               {latestCases.length > 0 ? latestCases.map((item) => (
                 <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
                   <div className="flex justify-between items-start mb-3">
-                    <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                        item.category === 'individual' ? 'bg-orange-50 text-orange-600' : 
+                        item.category === 'organizational' ? 'bg-blue-50 text-blue-600' : 
+                        'bg-gray-50 text-gray-600'
+                      }`}>
+                        {item.category === 'individual' ? '個人' : 
+                         item.category === 'organizational' ? '組織' : '他'}
+                      </span>
+                    </div>
                     <span className="text-xs text-on-surface-variant">
                       {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
                     </span>

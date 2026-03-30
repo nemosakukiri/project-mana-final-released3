@@ -8,6 +8,7 @@ const INITIAL_CASES = [
   {
     title: "兵庫県知事 パワハラ・公益通報対応問題",
     description: "2024年、兵庫県知事によるパワーハラ疑惑や贈答品の受領を指摘する告発文書を巡り、県が公益通報者保護法を軽視し、通報者を特定・処分した疑いが浮上。県議会で不信任決議が可決される異例の事態に発展した。",
+    category: "organizational",
     date: "2024年〜継続中",
     location: "兵庫県庁",
     sourceUrl: "https://www.asahi.com/topics/word/%E5%85%B5%E5%BA%AB%E7%9C%8C%E7%9F%A5%E4%BA%8B.html",
@@ -16,34 +17,38 @@ const INITIAL_CASES = [
   {
     title: "自民党 派閥政治資金パーティー裏金事件",
     description: "自民党の主要派閥が政治資金パーティーの収入を収支報告書に記載せず、議員側に還流させて裏金化していた問題。行政の透明性を揺るがす重大な不祥事として、複数の議員が立件・離党する事態となった。",
+    category: "organizational",
     date: "2023年12月〜報道",
     location: "永田町・国会議事堂",
     sourceUrl: "https://www.nhk.or.jp/news/special/political-fund/",
     sourceTitle: "NHK NEWS WEB - 政治資金問題"
   },
   {
+    title: "【個人不祥事】市職員による公金横領事件",
+    description: "地方自治体の職員が、数年間にわたり公金を自身の口座に振り込ませ、私的に流用していたことが発覚。内部監査の網を潜り抜ける手口が問題視され、管理責任も問われている。",
+    category: "individual",
+    date: "2024年3月発覚",
+    location: "某地方自治体",
+    sourceUrl: "https://www.google.com/search?q=%E5%85%AC%E5%8B%99%E5%93%A1+%E6%A8%AA%E9%A0%98+%E3%83%80%E3%82%A4%E3%82%B8%E3%82%A7%E3%82%B9%E3%83%88",
+    sourceTitle: "ニュース検索 - 公務員 横領"
+  },
+  {
+    title: "【個人不祥事】警察官による酒気帯び運転・当て逃げ",
+    description: "非番の警察官が酒気帯び状態で車を運転し、物損事故を起こしたまま逃走。市民の信頼を裏切る行為として懲戒免職処分となった。警察組織全体の規律が改めて問われている。",
+    category: "individual",
+    date: "2024年2月",
+    location: "某県警",
+    sourceUrl: "https://www.google.com/search?q=%E8%AD%A6%E5%AF%9F%E5%AE%98+%E9%85%92%E6%B0%97%E5%B8%AF%E3%81%B3%E9%81%8B%E8%BB%A2",
+    sourceTitle: "ニュース検索 - 警察官 不祥事"
+  },
+  {
     title: "マイナンバーカード 紐付けミス・情報漏洩",
     description: "健康保険証や公金受取口座が別人の情報と紐付けられるトラブルが全国で相次いだ。デジタル庁の管理体制の不備や、不具合発覚後の対応の遅れが「行政の不作為」として厳しく批判された。",
+    category: "organizational",
     date: "2023年〜2024年",
     location: "デジタル庁・全国自治体",
     sourceUrl: "https://www.nikkei.com/topics/23052400",
     sourceTitle: "日本経済新聞 - マイナンバー問題"
-  },
-  {
-    title: "国土交通省 建設統計データ書き換え問題",
-    description: "国土交通省が「建設工事受注動態統計調査」のデータを長年にわたり二重計上するなど書き換えていた。政府統計の信頼性を根本から損なう組織的な不祥事であり、GDP算出への影響も懸念された。",
-    date: "2021年12月発覚",
-    location: "国土交通省",
-    sourceUrl: "https://www.mainichi.jp/articles/20211215/k00/00m/010/010000c",
-    sourceTitle: "毎日新聞 - 統計書き換え問題"
-  },
-  {
-    title: "大阪・関西万博 建設費大幅増額と不透明な予算管理",
-    description: "万博会場の建設費が当初予定の1.9倍（約2350億円）に膨れ上がり、国民負担が増大。資材高騰への予測の甘さや、追加費用の説明が不十分であるとして、行政の責任を問う声が強まっている。",
-    date: "2023年〜継続中",
-    location: "大阪府・日本博覧会協会",
-    sourceUrl: "https://www.yomiuri.co.jp/topics/20231020-OYT8T50030/",
-    sourceTitle: "読売新聞オンライン - 万博予算問題"
   }
 ];
 
@@ -104,6 +109,7 @@ export default function Collector() {
         await addDoc(collection(db, 'misconduct_cases'), {
           title: item.title,
           description: item.description,
+          category: item.category || "other",
           date: item.date || "",
           location: item.location || "",
           sources: [{ title: item.sourceTitle || "Source", uri: item.sourceUrl }],
@@ -199,7 +205,17 @@ export default function Collector() {
                   {results.map((item, idx) => (
                     <div key={idx} className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-xl font-bold text-primary">{item.title}</h3>
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-xl font-bold text-primary">{item.title}</h3>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full w-fit ${
+                            item.category === 'individual' ? 'bg-orange-100 text-orange-700' : 
+                            item.category === 'organizational' ? 'bg-blue-100 text-blue-700' : 
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {item.category === 'individual' ? '個人不祥事' : 
+                             item.category === 'organizational' ? '組織的不祥事' : 'その他'}
+                          </span>
+                        </div>
                         <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">NEW</span>
                       </div>
                       <p className="text-on-surface-variant mb-4 leading-relaxed">{item.description}</p>
@@ -247,7 +263,17 @@ export default function Collector() {
             {recentCollections.map((item) => (
               <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
                 <div className="flex justify-between items-start mb-3">
-                  <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
+                    <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                      item.category === 'individual' ? 'bg-orange-50 text-orange-600' : 
+                      item.category === 'organizational' ? 'bg-blue-50 text-blue-600' : 
+                      'bg-gray-50 text-gray-600'
+                    }`}>
+                      {item.category === 'individual' ? '個人' : 
+                       item.category === 'organizational' ? '組織' : '他'}
+                    </span>
+                  </div>
                   <span className="text-xs text-on-surface-variant">
                     {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
                   </span>

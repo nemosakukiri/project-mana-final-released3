@@ -65,6 +65,11 @@
           "type": "string",
           "description": "The location of the incident."
         },
+        "category": {
+          "type": "string",
+          "description": "The category of the misconduct (organizational, individual, other).",
+          "enum": ["organizational", "individual", "other"]
+        },
         "sources": {
           "type": "array",
           "items": {
