@@ -11,10 +11,10 @@ export default function Manifesto() {
         <header className="mb-24 border-b-4 border-primary pb-12">
           <div className="flex items-center gap-6 mb-8">
             <div className="px-4 py-1 bg-tertiary text-on-tertiary text-[10px] font-bold tracking-[0.2em] uppercase rounded-full">
-              Official Manifesto
+              Official Manifesto / 公式マニフェスト
             </div>
             <div className="h-[1px] w-12 bg-primary/30"></div>
-            <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project Mana Archive</span>
+            <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA Archive / プロジェクト・マナ アーカイブ</span>
           </div>
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
@@ -38,7 +38,7 @@ export default function Manifesto() {
             <section className="space-y-12">
               <div className="flex items-center gap-4">
                 <AlertTriangle className="w-8 h-8 text-tertiary" />
-                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Urgent Indictment Log #001</h2>
+                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Urgent Indictment Log #001 / 緊急告発ログ #001</h2>
               </div>
               
               <div className="bg-white border-4 border-primary p-12 shadow-2xl relative overflow-hidden">
@@ -66,7 +66,7 @@ export default function Manifesto() {
             <section className="space-y-12">
               <div className="flex items-center gap-4">
                 <Scale className="w-8 h-8 text-tertiary" />
-                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Analysis: 組織的加害の構造</h2>
+                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Analysis / 組織的加害の構造の分析</h2>
               </div>
               <div className="space-y-8 text-xl text-secondary leading-relaxed font-medium italic border-l-4 border-primary/10 pl-10">
                 <p>
@@ -81,7 +81,7 @@ export default function Manifesto() {
             <section className="space-y-12">
               <div className="flex items-center gap-4">
                 <History className="w-8 h-8 text-tertiary" />
-                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Archive: 不誠実な回答の記録</h2>
+                <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tight">Archive / 不誠実な回答の記録アーカイブ</h2>
               </div>
               <div className="bg-primary text-on-primary p-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 opacity-10">
@@ -92,7 +92,7 @@ export default function Manifesto() {
                   <p>「なお、法務局や厚生労働省等への通報については、貴殿の権利であり、当方として妨げるものではありません。ご自由になさってください。」</p>
                 </blockquote>
                 <div className="mt-12 text-[10px] font-bold text-white/40 uppercase tracking-[0.4em]">
-                  Confidential Document | Case File 001 | © 2026 Project Mana
+                  Confidential Document | Case File 001 | © 2026 Project MANA
                 </div>
               </div>
             </section>
@@ -103,11 +103,11 @@ export default function Manifesto() {
           <div className="lg:col-span-4 space-y-12">
             <div className="bg-white border-4 border-primary p-10 space-y-8">
               <div className="space-y-2">
-                <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block">Mission Statement</span>
-                <h4 className="text-primary font-headline text-3xl font-black uppercase tracking-tighter">Evidence Management</h4>
+                <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block">Mission Statement / ミッション・ステートメント</span>
+                <h4 className="text-primary font-headline text-3xl font-black uppercase tracking-tighter">Evidence Management / 証拠管理</h4>
               </div>
               <p className="text-lg text-secondary leading-tight italic font-medium">
-                Project Manaは、行政の不祥事、不作為、そして法的精査を記録し、市民の知る権利を拡張するための統合アーカイブです。
+                Project MANAは、MANAの思考を構造化し、行政の不祥事、不作為、そして法的精査を記録し、市民の知る権利を拡張するための統合アーカイブです。
               </p>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-widest">
@@ -133,7 +133,7 @@ export default function Manifesto() {
                 透明な社会への第一歩は、事実を記録し、公開することから始まります。
               </p>
               <Link to="/report" className="flex items-center justify-between group pt-4 border-t border-white/20">
-                <span className="text-xs font-black uppercase tracking-widest">Submit Evidence</span>
+                <span className="text-xs font-black uppercase tracking-widest">Submit Evidence / 証拠を報告する</span>
                 <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
@@ -144,7 +144,7 @@ export default function Manifesto() {
         {/* Footer Note */}
         <footer className="mt-32 pt-12 border-t-2 border-primary/10 text-center">
           <p className="text-[10px] font-bold text-primary/30 uppercase tracking-[0.5em]">
-            Project Mana: Evidence Management System / All Rights Reserved 2026
+            Project MANA: Evidence Management System / All Rights Reserved 2026
           </p>
         </footer>
 

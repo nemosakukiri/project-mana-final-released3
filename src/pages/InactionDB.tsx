@@ -114,7 +114,7 @@ export default function InactionDB() {
                   Archive v4.2
                 </div>
                 <div className="h-[1px] w-12 bg-primary/30"></div>
-                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Civic Evidence Repository</span>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA Archive</span>
               </div>
               
               <h1 className="text-primary font-headline text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] uppercase">
@@ -122,6 +122,9 @@ export default function InactionDB() {
                 <span className="text-tertiary italic">Wealth</span><br/>
                 Database
               </h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                不作為蓄財データベース：執行されない予算と放置された課題の記録
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
                 <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic">
@@ -177,7 +180,7 @@ export default function InactionDB() {
             <div className="max-w-4xl space-y-10">
               <div className="flex items-center gap-4">
                 <Cpu className="w-6 h-6 text-tertiary" />
-                <h2 className="text-2xl font-headline font-black tracking-tight uppercase">AI Inaction Digitizer</h2>
+                <h2 className="text-2xl font-headline font-black tracking-tight uppercase">AI Inaction Digitizer / AI不作為データ化エンジン</h2>
               </div>
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1 relative group">
@@ -185,8 +188,8 @@ export default function InactionDB() {
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="ENTER PROJECT OR REGION (E.G. ROAD CONSTRUCTION DELAY)..."
-                    className="w-full bg-[#FBFBFB] border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-2xl font-headline font-black text-primary outline-none placeholder:text-primary/5 uppercase tracking-tighter"
+                    placeholder="事業名や地域を入力（例：道路建設 遅延）..."
+                    className="w-full bg-[#FBFBFB] border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-2xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-tighter"
                   />
                   <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 text-primary/10 group-focus-within:text-tertiary transition-colors" />
                 </div>
@@ -200,7 +203,7 @@ export default function InactionDB() {
                     {isCollecting ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                       <>
                         <Activity className="w-6 h-6" />
-                        <span className="text-xl font-headline font-black uppercase tracking-widest">Digitize</span>
+                        <span className="text-xl font-headline font-black uppercase tracking-widest">Digitize / データ化開始</span>
                       </>
                     )}
                   </div>
@@ -228,9 +231,10 @@ export default function InactionDB() {
             <div className="flex justify-between items-end border-b-2 border-primary/10 pb-8">
               <div className="space-y-2">
                 <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Latest Records</h2>
-                <div className="h-[2px] w-16 bg-tertiary"></div>
+                <div className="text-xs font-bold text-primary/40 uppercase tracking-widest">最新の不作為記録</div>
+                <div className="h-[2px] w-16 bg-tertiary mt-2"></div>
               </div>
-              <span className="text-[10px] font-mono font-bold text-secondary uppercase tracking-widest opacity-40">Total Entries: {displayItems.length}_Verified</span>
+              <span className="text-[10px] font-mono font-bold text-secondary uppercase tracking-widest opacity-40">Total Entries: {displayItems.length}_Verified / 検証済み総数</span>
             </div>
 
             <div className="space-y-12">
@@ -259,7 +263,7 @@ export default function InactionDB() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-x-8 -translate-y-8"></div>
                 <h3 className="text-3xl font-headline font-black mb-10 flex items-center gap-4 tracking-tight uppercase">
                   <HelpCircle className="w-8 h-8 text-tertiary" />
-                  Audit Tips
+                  Audit Tips / 診断のヒント
                 </h3>
                 <ul className="space-y-10">
                   <li className="flex gap-6 group">
@@ -310,19 +314,19 @@ function DocumentCard({ type, id, date, title, description, budget, delay, locat
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-4 border-y border-primary/5">
             <div>
-              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Budget</span>
+              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Budget / 予算</span>
               <span className="text-sm font-black text-primary">¥{budget?.toLocaleString()}</span>
             </div>
             <div>
-              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Delay</span>
+              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Delay / 遅延期間</span>
               <span className="text-sm font-black text-primary">{delay}</span>
             </div>
             <div>
-              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Location</span>
+              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Location / 場所</span>
               <span className="text-sm font-black text-primary">{location}</span>
             </div>
             <div>
-              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Status</span>
+              <span className="block text-[8px] font-bold text-primary/30 uppercase tracking-widest">Status / 状況</span>
               <span className="text-sm font-black text-tertiary">{status}</span>
             </div>
           </div>
@@ -338,7 +342,7 @@ function DocumentCard({ type, id, date, title, description, budget, delay, locat
               className="group/link flex items-center gap-3 text-xs font-black uppercase tracking-widest text-primary border-b-2 border-primary/20 pb-1 hover:border-primary transition-all"
             >
               <Scale className="w-4 h-4" />
-              AI Legal Audit
+              AI Legal Audit / AI法的精査
               <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
             </Link>
           </div>

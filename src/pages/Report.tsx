@@ -62,21 +62,23 @@ export default function Report() {
             <CheckCircle className="w-12 h-12 text-primary" />
           </div>
           <h2 className="text-6xl font-headline text-primary mb-8 font-black uppercase tracking-tighter leading-none">
-            Evidence<br/>Recorded
+            Evidence<br/>Recorded / 記録完了
           </h2>
           <div className="h-[2px] w-24 bg-tertiary mx-auto mb-10"></div>
           <p className="text-xl font-medium text-secondary leading-relaxed mb-16 italic border-l-4 border-primary/10 pl-8 text-left">
             "Your testimony has been successfully integrated into the Civic Integrity Ledger. This record serves as primary evidence for future institutional audits."
+            <br/><br/>
+            証言は誠実性台帳に正常に統合されました。この記録は、将来の機関監査における主要な証拠として機能します。
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button 
               onClick={() => setStatus('idle')}
               className="bg-primary text-on-primary px-10 py-6 font-headline text-xl uppercase tracking-widest hover:bg-tertiary transition-all"
             >
-              New Submission
+              New Submission / 新規報告
             </button>
             <Link to="/" className="border-2 border-primary text-primary px-10 py-6 font-headline text-xl uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">
-              Return Home
+              Return Home / ホームへ戻る
             </Link>
           </div>
         </motion.div>
@@ -107,6 +109,9 @@ export default function Report() {
                 Document<br/>
                 <span className="text-tertiary italic">Inaction</span>
               </h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                不作為の記録：市民による行政監視と証言の集積
+              </div>
               <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic">
                 行政の不作為、不祥事、または制度的な欠陥に関する証言を記録します。入力された情報は、AIによる法的精査および公共のアーカイブとして活用されます。
               </p>
@@ -133,7 +138,7 @@ export default function Report() {
                 {/* Title Input */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">01. Case Title</label>
+                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">01. Case Title / 事案の名称</label>
                     <div className="h-[1px] flex-1 bg-primary/5"></div>
                   </div>
                   <input 
@@ -141,8 +146,8 @@ export default function Report() {
                     type="text" 
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="ENTER CASE TITLE..."
-                    className="w-full bg-transparent border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-4xl font-headline font-black text-primary outline-none placeholder:text-primary/5 uppercase tracking-tighter"
+                    placeholder="事案の名称を入力してください..."
+                    className="w-full bg-transparent border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-4xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-tighter"
                   />
                 </div>
 
@@ -150,7 +155,7 @@ export default function Report() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">02. Classification</label>
+                      <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">02. Classification / 分類</label>
                       <div className="h-[1px] flex-1 bg-primary/5"></div>
                     </div>
                     <div className="relative border-b-4 border-primary/10 focus-within:border-tertiary transition-all">
@@ -169,7 +174,7 @@ export default function Report() {
 
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">03. Jurisdiction</label>
+                      <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">03. Jurisdiction / 管轄・場所</label>
                       <div className="h-[1px] flex-1 bg-primary/5"></div>
                     </div>
                     <div className="relative border-b-4 border-primary/10 focus-within:border-tertiary transition-all">
@@ -178,8 +183,8 @@ export default function Report() {
                         type="text" 
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        placeholder="MUNICIPALITY / REGION"
-                        className="w-full bg-transparent px-0 py-6 text-xl font-headline font-black text-primary outline-none placeholder:text-primary/5 uppercase tracking-widest"
+                        placeholder="自治体名・地域名"
+                        className="w-full bg-transparent px-0 py-6 text-xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-widest"
                       />
                       <MapPin className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 text-primary/20" />
                     </div>
@@ -189,7 +194,7 @@ export default function Report() {
                 {/* Date Input */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">04. Occurrence Date</label>
+                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">04. Occurrence Date / 発生日</label>
                     <div className="h-[1px] flex-1 bg-primary/5"></div>
                   </div>
                   <div className="relative border-b-4 border-primary/10 focus-within:border-tertiary transition-all">
@@ -207,7 +212,7 @@ export default function Report() {
                 {/* Description Input */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">05. Detailed Testimony</label>
+                    <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">05. Detailed Testimony / 詳細な証言</label>
                     <div className="h-[1px] flex-1 bg-primary/5"></div>
                   </div>
                   <textarea 
@@ -216,7 +221,7 @@ export default function Report() {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="どのような不作為や不祥事があったのか、客観的な事実に基づき具体的に記述してください..."
-                    className="w-full bg-[#FBFBFB] border-2 border-primary/5 p-10 text-xl text-primary font-medium outline-none focus:border-tertiary transition-all resize-none placeholder:text-primary/5 shadow-inner"
+                    className="w-full bg-[#FBFBFB] border-2 border-primary/5 p-10 text-xl text-primary font-medium outline-none focus:border-tertiary transition-all resize-none placeholder:text-primary/10 shadow-inner"
                   />
                 </div>
 
@@ -241,7 +246,7 @@ export default function Report() {
                     {status === 'submitting' ? <Loader2 className="w-8 h-8 animate-spin" /> : (
                       <>
                         <Send className="w-8 h-8" />
-                        <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Commit to Ledger</span>
+                        <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Commit to Ledger / 台帳に記録</span>
                       </>
                     )}
                   </div>
@@ -262,7 +267,7 @@ export default function Report() {
                     <ShieldCheck className="w-10 h-10 text-primary" />
                   </div>
                   <div className="space-y-6">
-                    <h3 className="text-primary font-headline text-3xl font-black uppercase tracking-tight leading-none">Privacy &<br/>Integrity</h3>
+                    <h3 className="text-primary font-headline text-3xl font-black uppercase tracking-tight leading-none">Privacy &<br/>Integrity / プライバシーと誠実性</h3>
                     <div className="h-[2px] w-16 bg-tertiary"></div>
                     <p className="text-sm font-medium text-secondary leading-relaxed italic border-l-4 border-primary/10 pl-6">
                       送信された情報は、Project Manaの独立したデータベースに暗号化され保存されます。個人を特定できる情報は、法的義務または本人の明示的な同意がない限り、第三者に公開されることはありません。
@@ -276,7 +281,7 @@ export default function Report() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-x-8 -translate-y-8"></div>
                 <h3 className="text-2xl font-headline font-black mb-10 flex items-center gap-4 tracking-tight uppercase">
                   <Info className="w-6 h-6 text-tertiary" />
-                  Submission Guide
+                  Submission Guide / 報告ガイド
                 </h3>
                 <ul className="space-y-8">
                   <li className="space-y-2">

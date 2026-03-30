@@ -158,13 +158,16 @@ export default function Collector() {
                   AI Harvester v3.0
                 </div>
                 <div className="h-[1px] w-12 bg-primary/30"></div>
-                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Intelligence Gathering</span>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA Intelligence</span>
               </div>
               <h1 className="text-primary font-headline text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
                 Misconduct<br/>
                 <span className="text-tertiary italic">Database</span><br/>
                 Archive
               </h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                不祥事データベース・アーカイブ：行政の不正と腐敗の記録
+              </div>
               <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic max-w-3xl">
                 AIによる常時監視と記録。行政の不祥事を、記者や学者のための「一次ソース」として体系化し、データとして蓄積します。
               </p>
@@ -191,7 +194,7 @@ export default function Collector() {
             <div className="max-w-4xl space-y-10">
               <div className="flex items-center gap-4">
                 <Cpu className="w-6 h-6 text-tertiary" />
-                <h2 className="text-2xl font-headline font-black tracking-tight uppercase">Autonomous Intelligence Request</h2>
+                <h2 className="text-2xl font-headline font-black tracking-tight uppercase">Autonomous Intelligence Request / AI情報収集リクエスト</h2>
               </div>
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1 relative group">
@@ -199,8 +202,8 @@ export default function Collector() {
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="ENTER SEARCH PARAMETERS (E.G. MUNICIPAL SCANDAL 2024)..."
-                    className="w-full bg-[#FBFBFB] border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-2xl font-headline font-black text-primary outline-none placeholder:text-primary/5 uppercase tracking-tighter"
+                    placeholder="検索キーワードを入力（例：自治体 不祥事 2024）..."
+                    className="w-full bg-[#FBFBFB] border-b-4 border-primary/10 focus:border-tertiary transition-all px-0 py-6 text-2xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-tighter"
                   />
                   <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 text-primary/10 group-focus-within:text-tertiary transition-colors" />
                 </div>
@@ -214,7 +217,7 @@ export default function Collector() {
                     {isCollecting ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                       <>
                         <Activity className="w-6 h-6" />
-                        <span className="text-xl font-headline font-black uppercase tracking-widest">Collect</span>
+                        <span className="text-xl font-headline font-black uppercase tracking-widest">Collect / 収集開始</span>
                       </>
                     )}
                   </div>
@@ -243,12 +246,13 @@ export default function Collector() {
           <div className="lg:col-span-8 space-y-16">
             <div className="flex items-end justify-between border-b-2 border-primary/10 pb-8">
               <div className="space-y-2">
-                <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Archive Status</div>
+                <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Archive Status / アーカイブ状況</div>
                 <h2 className="text-4xl font-headline font-black tracking-tighter uppercase text-primary">Latest Discoveries</h2>
+                <div className="text-xs font-bold text-primary/40 uppercase tracking-widest">最近収集された不祥事記録</div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-2 h-2 bg-tertiary rounded-full animate-pulse"></div>
-                <span className="text-[10px] font-bold tracking-[0.3em] text-primary/40 uppercase">Updated Hourly</span>
+                <span className="text-[10px] font-bold tracking-[0.3em] text-primary/40 uppercase">Updated Hourly / 1時間ごとに更新</span>
               </div>
             </div>
 
@@ -324,7 +328,7 @@ export default function Collector() {
                         className="group/link flex items-center gap-3 text-xs font-black uppercase tracking-widest text-primary border-b-2 border-primary/20 pb-1 hover:border-primary transition-all"
                       >
                         <Cpu className="w-4 h-4 text-tertiary" />
-                        Execute AI Scrutiny
+                        Execute AI Scrutiny / AI法的精査を実行
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
                       </Link>
                     </div>
@@ -341,7 +345,7 @@ export default function Collector() {
               {/* Audit Widget */}
               <div className="bg-primary text-on-primary p-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-x-10 -translate-y-10"></div>
-                <h2 className="text-3xl font-headline font-black mb-10 tracking-tighter uppercase relative z-10">Citizen Audit</h2>
+                <h2 className="text-3xl font-headline font-black mb-10 tracking-tighter uppercase relative z-10">Citizen Audit / 市民診断</h2>
                 <Link to="/town-check" className="group block p-10 bg-white/10 border-2 border-white/20 hover:bg-white/20 transition-all relative z-10">
                   <div className="flex items-center justify-between mb-10">
                     <div className="w-16 h-16 border-2 border-tertiary rounded-full flex items-center justify-center">
@@ -358,12 +362,12 @@ export default function Collector() {
               
               {/* Resources Widget */}
               <div className="bg-white border-4 border-primary p-12 relative">
-                <div className="absolute -top-4 -left-4 bg-tertiary text-on-tertiary px-4 py-1 text-[10px] font-bold uppercase tracking-widest">Resources</div>
+                <div className="absolute -top-4 -left-4 bg-tertiary text-on-tertiary px-4 py-1 text-[10px] font-bold uppercase tracking-widest">Resources / リソース</div>
                 <div className="space-y-12">
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
                       <BarChart3 className="w-6 h-6 text-primary" />
-                      <h4 className="text-2xl font-headline font-black uppercase tracking-tight">Scholarly Toolkit</h4>
+                      <h4 className="text-2xl font-headline font-black uppercase tracking-tight">Scholarly Toolkit / 研究用ツール</h4>
                     </div>
                     <p className="text-sm font-medium text-secondary/60 leading-relaxed italic border-l-4 border-primary/10 pl-6">
                       すべてのデータはCSV形式でダウンロード可能です。研究や報道の一次資料として活用してください。
@@ -372,7 +376,7 @@ export default function Collector() {
                       onClick={exportToCSV}
                       className="w-full py-6 bg-primary text-on-primary font-headline text-xl font-black uppercase tracking-widest hover:bg-tertiary transition-all"
                     >
-                      Download CSV
+                      Download CSV / データを保存
                     </button>
                   </div>
                   <div className="aspect-square bg-[#FBFBFB] border-2 border-primary/5 flex flex-col items-center justify-center text-center p-10">
@@ -386,7 +390,7 @@ export default function Collector() {
               <div className="bg-error/5 border-l-8 border-error p-8 flex items-start gap-6">
                 <ShieldAlert className="w-8 h-8 text-error shrink-0" />
                 <div className="space-y-2">
-                  <h4 className="text-sm font-black text-error uppercase tracking-widest">Integrity Alert</h4>
+                  <h4 className="text-sm font-black text-error uppercase tracking-widest">Integrity Alert / 整合性アラート</h4>
                   <p className="text-xs font-medium text-error/60 leading-relaxed italic">
                     不正確な情報の投稿は、アーカイブの信頼性を損なう可能性があります。事実に即した記録を心がけてください。
                   </p>

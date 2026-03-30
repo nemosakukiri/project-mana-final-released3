@@ -1,5 +1,5 @@
 {
-  "name": "Project Mana - 不作為可視化ダッシュボード",
-  "description": "AI自動収集と市民報告を統合した、行政不作為のリアルタイム監視プラットフォーム。沈黙を記録に変え、透明性を追求します。",
+  "name": "Project MANA",
+  "description": "MANAの思考を構造化した、行政不作為のリアルタイム監視・可視化プラットフォーム。沈黙を記録に変え、透明性を追求します。",
   "requestFramePermissions": []
 }

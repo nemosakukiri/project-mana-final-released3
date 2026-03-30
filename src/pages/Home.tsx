@@ -34,17 +34,19 @@ export default function Home() {
                   Portal v4.0
                 </div>
                 <div className="h-[1px] w-12 bg-primary/30"></div>
-                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Civic Integrity Ledger</span>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA</span>
               </div>
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-primary font-headline text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.82] uppercase"
               >
-                Civic<br/>
-                <span className="text-tertiary italic">Integrity</span><br/>
-                Portal
+                Project<br/>
+                <span className="text-tertiary italic">MANA</span>
               </motion.h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                Project MANA：MANAの思考を構造化した行政監視ポータル
+              </div>
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -58,11 +60,12 @@ export default function Home() {
               <Link to="/manifesto" className="aspect-square bg-tertiary border-4 border-primary p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer">
                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                 <div className="relative z-10">
-                  <div className="text-[10px] font-bold text-on-tertiary group-hover:text-on-primary uppercase tracking-widest mb-4">Foundation</div>
+                  <div className="text-[10px] font-bold text-on-tertiary group-hover:text-on-primary uppercase tracking-widest mb-4">Foundation / 設立趣旨</div>
                   <h3 className="text-4xl font-headline font-black text-on-tertiary group-hover:text-on-primary uppercase tracking-tighter leading-none">Our<br/>Manifesto</h3>
+                  <div className="text-[10px] font-bold text-on-tertiary/60 group-hover:text-on-primary/60 uppercase mt-2">プロジェクト・マナ マニフェスト</div>
                 </div>
                 <div className="relative z-10 flex items-center justify-between group/btn">
-                  <span className="text-lg font-headline font-black text-on-tertiary group-hover:text-on-primary uppercase border-b-2 border-on-tertiary group-hover:border-on-primary transition-all">Read Vision</span>
+                  <span className="text-lg font-headline font-black text-on-tertiary group-hover:text-on-primary uppercase border-b-2 border-on-tertiary group-hover:border-on-primary transition-all">Read Vision / 理念を読む</span>
                   <ArrowRight className="w-8 h-8 text-white group-hover:translate-x-4 transition-transform" />
                 </div>
               </Link>
@@ -82,7 +85,7 @@ export default function Home() {
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-8">
                   <FileText className="w-8 h-8 text-tertiary" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Database Alpha</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Database Alpha / 不作為データベース</span>
                 </div>
                 <h2 className="text-6xl font-headline font-black text-primary uppercase tracking-tighter leading-none mb-8">
                   Inaction<br/>
@@ -110,7 +113,7 @@ export default function Home() {
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-8">
                   <Database className="w-8 h-8 text-tertiary" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/40">Database Beta</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/40">Database Beta / 不祥事データベース</span>
                 </div>
                 <h2 className="text-6xl font-headline font-black text-white uppercase tracking-tighter leading-none mb-8">
                   Misconduct<br/>
@@ -138,7 +141,7 @@ export default function Home() {
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-8">
                   <Cpu className="w-8 h-8 text-tertiary" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Analysis Engine</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Analysis Engine / AI考察ポータル</span>
                 </div>
                 <h2 className="text-6xl font-headline font-black text-primary uppercase tracking-tighter leading-none mb-8">
                   AI Column<br/>
@@ -164,8 +167,9 @@ export default function Home() {
         <section className="mb-32">
           <div className="flex items-end justify-between mb-16 border-b-2 border-primary/10 pb-8">
             <div className="space-y-2">
-              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Comparative Metrics</div>
-              <h2 className="text-5xl font-headline font-black tracking-tighter uppercase text-primary">Civic Integrity Dashboard</h2>
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Comparative Metrics / 比較指標</div>
+              <h2 className="text-5xl font-headline font-black tracking-tighter uppercase text-primary">Project MANA Dashboard</h2>
+              <div className="text-xs font-bold text-primary/40 uppercase tracking-widest">市民整合性ダッシュボード</div>
             </div>
             <div className="hidden md:flex items-center gap-8">
               <div className="flex items-center gap-2">
@@ -191,10 +195,10 @@ export default function Home() {
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-16">
                   <div className="space-y-2">
-                    <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block">Index 01</span>
+                    <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block">Index 01 / 不作為蓄財指数</span>
                     <h3 className="text-primary font-headline text-5xl font-black uppercase tracking-tighter">Inaction Wealth Index</h3>
                   </div>
-                  <div className="px-4 py-1 bg-error text-white text-[10px] font-bold tracking-widest uppercase rounded-full animate-pulse">Critical Alert</div>
+                  <div className="px-4 py-1 bg-error text-white text-[10px] font-bold tracking-widest uppercase rounded-full animate-pulse">Critical Alert / 警告</div>
                 </div>
 
                 <div className="flex flex-col lg:flex-row items-end gap-20">
@@ -252,7 +256,7 @@ export default function Home() {
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-x-10 -translate-y-10"></div>
               <div className="relative z-10">
-                <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block mb-2">Index 02</span>
+                <span className="text-tertiary text-[10px] font-bold tracking-[0.3em] uppercase block mb-2">Index 02 / 更新停滞率</span>
                 <h3 className="text-4xl font-headline font-black uppercase tracking-tighter leading-none">Update<br/>Stagnation</h3>
               </div>
               <div className="py-16 relative z-10">
@@ -285,11 +289,12 @@ export default function Home() {
         <section className="mb-32">
           <div className="flex items-end justify-between mb-16 border-b-2 border-primary/10 pb-8">
             <div className="space-y-2">
-              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Intelligence Feed</div>
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Intelligence Feed / 最新の記録</div>
               <h2 className="text-5xl font-headline font-black tracking-tighter uppercase text-primary">Recent Documentation</h2>
+              <div className="text-xs font-bold text-primary/40 uppercase tracking-widest">アーカイブされた最新の不作為・不祥事</div>
             </div>
             <Link to="/misconduct-db" className="group flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-[0.3em] hover:text-tertiary transition-all">
-              Explore Full Archive
+              Explore Full Archive / 全記録を見る
               <ArrowRight className="w-5 h-5 group-hover:translate-x-3 transition-transform" />
             </Link>
           </div>
@@ -372,10 +377,11 @@ export default function Home() {
               <History className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Temporal Analysis</div>
+              <div className="text-[10px] font-bold text-tertiary uppercase tracking-widest">Temporal Analysis / 時系列分析</div>
               <h2 className="text-4xl font-headline font-black tracking-tighter uppercase text-primary">
                 Chain of Inaction
               </h2>
+              <div className="text-xs font-bold text-primary/40 uppercase tracking-widest">不作為の連鎖：放置された課題の履歴</div>
             </div>
           </div>
 
@@ -429,21 +435,22 @@ export default function Home() {
             <div className="absolute top-[-20%] right-[-10%] w-[150%] aspect-square bg-tertiary blur-[150px] rounded-full"></div>
           </div>
           <div className="relative z-10 max-w-4xl space-y-12">
-            <div className="text-[10px] font-bold text-tertiary uppercase tracking-[0.4em]">Final Protocol</div>
+            <div className="text-[10px] font-bold text-tertiary uppercase tracking-[0.4em]">Final Protocol / 最終プロトコル</div>
             <h2 className="font-headline text-7xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
               Record the<br/>
               <span className="text-tertiary italic">Unspoken</span>
             </h2>
+            <div className="text-2xl font-headline font-black text-tertiary uppercase tracking-widest">語られぬ不作為を記録せよ</div>
             <p className="text-2xl lg:text-3xl text-white/70 leading-tight font-medium italic border-l-8 border-tertiary pl-12">
               沈黙は現状を維持させます。匿名での報告、AIによる法的精査、そして公開。透明な社会への第一歩は、あなたの告発から始まります。
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-10 pt-12">
               <Link to="/report" className="group relative px-16 py-6 bg-tertiary text-on-tertiary overflow-hidden transition-all active:scale-95">
                 <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                <span className="relative z-10 text-xl font-headline font-black uppercase tracking-widest group-hover:text-primary">Submit Report</span>
+                <span className="relative z-10 text-xl font-headline font-black uppercase tracking-widest group-hover:text-primary">Submit Report / 告発する</span>
               </Link>
               <Link to="/misconduct-db" className="group flex items-center gap-4 text-xl font-headline font-black uppercase tracking-widest hover:text-tertiary transition-all">
-                Explore Archive
+                Explore Archive / アーカイブを探索
                 <ChevronRight className="w-8 h-8 group-hover:translate-x-4 transition-transform" />
               </Link>
             </div>

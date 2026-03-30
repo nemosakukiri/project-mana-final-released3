@@ -159,12 +159,15 @@ export default function Analysis() {
                   Analysis Portal v5.0
                 </div>
                 <div className="h-[1px] w-12 bg-primary/30"></div>
-                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">AI-Driven Civic Intelligence</span>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA Intelligence</span>
               </div>
               <h1 className="text-primary font-headline text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
                 AI Column<br/>
                 <span className="text-tertiary italic">& Analysis</span>
               </h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                AIコラム＆多角分析：データに基づく客観的考察と指数化
+              </div>
               <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic max-w-3xl">
                 蓄積された不祥事・不作為データをAIが多角的に分析。独自の指数化と考察により、行政の透明性を数値化し、未来への提言を紡ぎ出します。
               </p>
@@ -180,9 +183,9 @@ export default function Analysis() {
                 ) : (
                   <PenTool className="w-16 h-16 text-tertiary mb-6" />
                 )}
-                <span className="text-[10px] font-bold uppercase tracking-widest mb-4 opacity-60">Insight Engine</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest mb-4 opacity-60">Insight Engine / 洞察エンジン</span>
                 <span className="text-xl font-headline font-black uppercase tracking-tighter border-b-2 border-current">
-                  Generate Column
+                  Generate Column / コラム生成
                 </span>
               </button>
             </div>
@@ -193,7 +196,7 @@ export default function Analysis() {
         <section className="mb-32">
           <div className="flex items-center gap-6 mb-12">
             <TrendingUp className="w-8 h-8 text-tertiary" />
-            <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tighter">AI Editorial Feed</h2>
+            <h2 className="text-4xl font-headline font-black text-primary uppercase tracking-tighter">AI Editorial Feed / AIエディトリアル・フィード</h2>
             <div className="flex-1 h-[2px] bg-primary/10"></div>
           </div>
           
@@ -237,7 +240,7 @@ export default function Analysis() {
             <div className="p-10 border-b-2 border-primary/10 bg-primary text-on-primary flex justify-between items-center">
               <h2 className="text-2xl font-headline font-black tracking-tighter flex items-center gap-4 uppercase">
                 <Database className="w-6 h-6 text-tertiary" />
-                Archival Feed
+                Archival Feed / アーカイブ一覧
               </h2>
             </div>
             <div className="flex-1 overflow-y-auto max-h-[600px] custom-scrollbar">
@@ -309,12 +312,12 @@ export default function Analysis() {
                       {isAnalyzing ? (
                         <>
                           <Loader2 className="w-10 h-10 animate-spin text-tertiary" />
-                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Processing Audit...</span>
+                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Processing Audit... / 解析中...</span>
                         </>
                       ) : (
                         <>
                           <Cpu className="w-10 h-10" />
-                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Execute AI Audit</span>
+                          <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Execute AI Audit / AI法的精査を実行</span>
                         </>
                       )}
                     </div>
@@ -334,8 +337,8 @@ export default function Analysis() {
                             <Gavel className="w-8 h-8" />
                           </div>
                           <div>
-                            <h3 className="text-3xl font-headline font-black text-primary uppercase tracking-tight leading-none">Audit Findings</h3>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mt-2">Protocol: Legal Scrutiny v5.0</p>
+                            <h3 className="text-3xl font-headline font-black text-primary uppercase tracking-tight leading-none">Audit Findings / 解析結果</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mt-2">Protocol: Legal Scrutiny v5.0 / 法的精査プロトコル</p>
                           </div>
                         </div>
                       </div>
@@ -348,7 +351,7 @@ export default function Analysis() {
                   {!analysis && !isAnalyzing && (
                     <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center opacity-10">
                       <Cpu className="w-32 h-32 mb-10" />
-                      <p className="text-4xl font-headline font-black uppercase tracking-tighter">Awaiting Audit Execution</p>
+                      <p className="text-4xl font-headline font-black uppercase tracking-tighter">Awaiting Audit Execution / 解析実行待機中</p>
                     </div>
                   )}
                 </div>
@@ -358,7 +361,7 @@ export default function Analysis() {
                 <div className="w-40 h-40 border-4 border-primary/5 rounded-full flex items-center justify-center mb-12">
                   <Search className="w-16 h-16 text-primary/10" />
                 </div>
-                <h3 className="text-4xl font-headline font-black text-primary/20 uppercase tracking-tighter mb-6">Select Archival Entry</h3>
+                <h3 className="text-4xl font-headline font-black text-primary/20 uppercase tracking-tighter mb-6">Select Archival Entry / アーカイブを選択してください</h3>
               </div>
             )}
           </main>

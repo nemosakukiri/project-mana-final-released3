@@ -107,13 +107,16 @@ export default function TownCheck() {
                   Protocol v3.0.4
                 </div>
                 <div className="h-[1px] w-12 bg-primary/30"></div>
-                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Civic Audit Framework</span>
+                <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">Project MANA Audit Framework</span>
               </div>
               <h1 className="text-primary font-headline text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] uppercase">
-                Integrity<br/>
-                <span className="text-tertiary">Ledger</span><br/>
+                Project<br/>
+                <span className="text-tertiary">MANA</span><br/>
                 Audit
               </h1>
+              <div className="text-primary/40 text-sm font-bold tracking-[0.2em] uppercase mt-4">
+                誠実性台帳監査：自治体のガバナンスと人権遵守の定量的評価
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
                 <p className="text-secondary text-xl leading-relaxed font-medium border-l-4 border-tertiary pl-8 italic">
                   "The first step toward accountability is the rigorous quantification of institutional behavior."
@@ -135,7 +138,7 @@ export default function TownCheck() {
                   <svg viewBox="0 0 100 100" className="w-full h-full">
                     <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
                     <text className="text-[8px] font-bold uppercase tracking-[0.2em] fill-primary">
-                      <textPath xlinkHref="#circlePath">Civic Integrity Audit System • Data Driven Accountability • </textPath>
+                      <textPath xlinkHref="#circlePath">Project MANA Audit System • Data Driven Accountability • </textPath>
                     </text>
                   </svg>
                 </div>
@@ -156,17 +159,17 @@ export default function TownCheck() {
             <section className="space-y-12">
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">01</div>
-                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Target Identification</h2>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Target Identification / 評価対象の特定</h2>
               </div>
               
               <div className="group relative">
-                <label className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6 block opacity-50">Subject Municipality / Institution</label>
+                <label className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6 block opacity-50">Subject Municipality / Institution / 対象自治体・機関名</label>
                 <div className="relative border-b-4 border-primary/10 focus-within:border-tertiary transition-all pb-4">
                   <input
                     type="text"
                     value={townName}
                     onChange={(e) => setTownName(e.target.value)}
-                    placeholder="ENTER MUNICIPALITY NAME..."
+                    placeholder="自治体名を入力してください..."
                     className="w-full bg-transparent px-0 text-5xl lg:text-6xl font-headline font-black text-primary outline-none placeholder:text-primary/10 uppercase tracking-tighter"
                   />
                   <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 text-primary/20 group-focus-within:text-tertiary transition-colors" />
@@ -179,7 +182,7 @@ export default function TownCheck() {
             <section className="space-y-12">
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">02</div>
-                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Metric Quantification</h2>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Metric Quantification / 指標の定量化</h2>
               </div>
               
               <div className="grid gap-12">
@@ -232,7 +235,7 @@ export default function TownCheck() {
             <section className="space-y-12">
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 border-2 border-primary flex items-center justify-center font-headline font-black text-xl">03</div>
-                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Qualitative Testimony</h2>
+                <h2 className="text-primary font-headline text-4xl font-black tracking-tight uppercase">Qualitative Testimony / 定性的証言</h2>
               </div>
               <div className="relative">
                 <textarea
@@ -260,7 +263,7 @@ export default function TownCheck() {
                   {isSaving ? <Loader2 className="w-8 h-8 animate-spin" /> : (
                     <>
                       <Shield className="w-8 h-8" />
-                      <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Commit to Ledger</span>
+                      <span className="text-3xl font-headline font-black uppercase tracking-[0.2em]">Commit to Ledger / 台帳に記録</span>
                     </>
                   )}
                 </div>
@@ -299,7 +302,7 @@ export default function TownCheck() {
                 <div className="space-y-10">
                   <div>
                     <h2 className="text-primary font-headline text-4xl font-black tracking-tight leading-none uppercase mb-4">
-                      Integrity<br/>Profile
+                      Integrity<br/>Profile / 誠実性プロファイル
                     </h2>
                     <div className="h-[2px] w-24 bg-tertiary"></div>
                   </div>
@@ -327,11 +330,11 @@ export default function TownCheck() {
 
                   <div className="grid grid-cols-2 gap-8 pt-6 border-t border-primary/10">
                     <div>
-                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Composite Index</div>
+                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Composite Index / 総合指数</div>
                       <div className="text-4xl font-headline font-black text-primary">{compositeScore}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Confidence Level</div>
+                      <div className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1 opacity-40">Confidence Level / 信頼度</div>
                       <div className="text-4xl font-headline font-black text-tertiary">84%</div>
                     </div>
                   </div>
@@ -342,11 +345,11 @@ export default function TownCheck() {
               <div className="space-y-10">
                 <div className="flex items-center justify-between border-b-4 border-primary pb-6">
                   <h2 className="text-primary font-headline text-2xl font-black uppercase tracking-tighter">
-                    Recent Ledger Entries
+                    Recent Ledger Entries / 最近の台帳記録
                   </h2>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-tertiary rounded-full animate-pulse"></div>
-                    <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">Live Feed</span>
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">Live Feed / ライブフィード</span>
                   </div>
                 </div>
                 
