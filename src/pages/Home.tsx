@@ -55,17 +55,17 @@ export default function Home() {
               </motion.p>
             </div>
             <div className="lg:col-span-4 space-y-10">
-              <div className="aspect-square bg-white border-4 border-primary p-12 flex flex-col justify-between relative overflow-hidden group">
+              <Link to="/manifesto" className="aspect-square bg-tertiary border-4 border-primary p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer">
                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                 <div className="relative z-10">
-                  <div className="text-[10px] font-bold text-primary group-hover:text-on-primary uppercase tracking-widest mb-4">Action Protocol</div>
-                  <h3 className="text-4xl font-headline font-black text-primary group-hover:text-on-primary uppercase tracking-tighter leading-none">Submit<br/>Evidence</h3>
+                  <div className="text-[10px] font-bold text-on-tertiary group-hover:text-on-primary uppercase tracking-widest mb-4">Foundation</div>
+                  <h3 className="text-4xl font-headline font-black text-on-tertiary group-hover:text-on-primary uppercase tracking-tighter leading-none">Our<br/>Manifesto</h3>
                 </div>
-                <Link to="/report" className="relative z-10 flex items-center justify-between group/btn">
-                  <span className="text-lg font-headline font-black text-primary group-hover:text-on-primary uppercase border-b-2 border-primary group-hover:border-on-primary transition-all">Report Inaction</span>
-                  <ArrowRight className="w-8 h-8 text-tertiary group-hover:translate-x-4 transition-transform" />
-                </Link>
-              </div>
+                <div className="relative z-10 flex items-center justify-between group/btn">
+                  <span className="text-lg font-headline font-black text-on-tertiary group-hover:text-on-primary uppercase border-b-2 border-on-tertiary group-hover:border-on-primary transition-all">Read Vision</span>
+                  <ArrowRight className="w-8 h-8 text-white group-hover:translate-x-4 transition-transform" />
+                </div>
+              </Link>
             </div>
           </div>
         </section>

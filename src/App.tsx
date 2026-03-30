@@ -1,11 +1,12 @@
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Bell, UserCircle, Shield, Database, FileSearch, Activity, MapPin, Scale, Archive, Cpu } from 'lucide-react';
+import { Bell, UserCircle, Shield, Database, FileSearch, Activity, MapPin, Scale, Archive, Cpu, FileText } from 'lucide-react';
 import Home from './pages/Home';
 import InactionDB from './pages/InactionDB';
 import Report from './pages/Report';
 import Analysis from './pages/Analysis';
 import MisconductDB from './pages/MisconductDB';
 import TownCheck from './pages/TownCheck';
+import Manifesto from './pages/Manifesto';
 import React, { useEffect } from 'react';
 
 function ScrollToTop() {
@@ -42,6 +43,7 @@ function Layout({ children }: { children: React.ReactNode }) {
               { path: '/inaction-db', label: '不作為DB', icon: <Archive className="w-4 h-4" /> },
               { path: '/misconduct-db', label: '不祥事DB', icon: <Database className="w-4 h-4" /> },
               { path: '/analysis', label: '考察サイト', icon: <Cpu className="w-4 h-4" /> },
+              { path: '/manifesto', label: 'マニフェスト', icon: <FileText className="w-4 h-4" /> },
               { path: '/town-check', label: '診断', icon: <Activity className="w-4 h-4" /> },
               { path: '/report', label: '告発', icon: <Scale className="w-4 h-4" /> },
             ].map((item) => (
@@ -93,6 +95,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                   <li><Link to="/inaction-db" className="text-sm font-semibold text-secondary hover:text-primary transition-colors">不作為DB</Link></li>
                   <li><Link to="/misconduct-db" className="text-sm font-semibold text-secondary hover:text-primary transition-colors">不祥事DB</Link></li>
                   <li><Link to="/analysis" className="text-sm font-semibold text-secondary hover:text-primary transition-colors">考察サイト</Link></li>
+                  <li><Link to="/manifesto" className="text-sm font-semibold text-secondary hover:text-primary transition-colors">マニフェスト</Link></li>
                 </ul>
               </div>
               <div className="space-y-4">
@@ -143,6 +146,7 @@ export default function App() {
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/report" element={<Report />} />
           <Route path="/town-check" element={<TownCheck />} />
+          <Route path="/manifesto" element={<Manifesto />} />
         </Routes>
       </Layout>
     </Router>
