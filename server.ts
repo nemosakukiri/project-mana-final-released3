@@ -23,7 +23,7 @@ async function runAutomatedCollection() {
     const keyword = "行政 不祥事 不作為 最新ニュース";
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例をちょうど5つ抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。
+      contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。
       
       キーワード: ${keyword}
       
@@ -86,7 +86,7 @@ async function startServer() {
     try {
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を3つから5つ抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。\n\nキーワード: ${keyword}`,
+        contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。\n\nキーワード: ${keyword}`,
         config: {
           tools: [{ googleSearch: {} }],
         },

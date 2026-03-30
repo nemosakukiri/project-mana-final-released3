@@ -16,7 +16,7 @@ export default function Collector() {
   const [recentCollections, setRecentCollections] = useState<any[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(5));
+    const q = query(collection(db, 'misconduct_cases'), orderBy('createdAt', 'desc'), limit(10));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setRecentCollections(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
