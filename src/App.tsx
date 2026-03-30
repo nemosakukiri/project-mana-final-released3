@@ -1,10 +1,11 @@
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Bell, UserCircle } from 'lucide-react';
+import { Bell, UserCircle, Shield, Database, FileSearch, Activity, MapPin } from 'lucide-react';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Report from './pages/Report';
 import Analysis from './pages/Analysis';
 import Collector from './pages/Collector';
+import TownCheck from './pages/TownCheck';
 import React, { useEffect } from 'react';
 
 function ScrollToTop() {
@@ -37,6 +38,9 @@ function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/collector" className={`font-headline font-bold text-lg transition-colors ${
               location.pathname === '/collector' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
             }`}>不祥事DB (AI収集)</Link>
+            <Link to="/town-check" className={`font-headline font-bold text-lg transition-colors ${
+              location.pathname === '/town-check' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            }`}>街の診断</Link>
             <a href="https://fusakui-db.vercel.app/" target="_blank" rel="noopener noreferrer" className={`font-headline font-bold text-lg transition-colors ${
               isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary'
             }`}>不作為DB</a>
@@ -95,6 +99,7 @@ export default function App() {
           <Route path="/report" element={<Report />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/collector" element={<Collector />} />
+          <Route path="/town-check" element={<TownCheck />} />
         </Routes>
       </Layout>
     </Router>

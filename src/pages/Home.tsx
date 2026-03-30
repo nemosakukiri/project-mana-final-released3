@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale, Clock, ExternalLink, Loader2 } from 'lucide-react';
+import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale, Clock, ExternalLink, Loader2, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -141,6 +141,14 @@ export default function Home() {
             textColor="text-primary-fixed-dim"
             link="/analysis"
           />
+          <DBLinkCard 
+            title="街の診断"
+            description="あなたの住む街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化します。"
+            icon={<MapPin className="w-12 h-12" />}
+            color="bg-secondary-container"
+            textColor="text-on-secondary-container"
+            link="/town-check"
+          />
         </div>
       </section>
 
@@ -213,6 +221,29 @@ export default function Home() {
                   </div>
                   <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.title}</h4>
                   <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{item.description}</p>
+                  
+                  {/* Visual Indices (Mini) */}
+                  <div className="flex gap-4 mb-4 bg-surface-container-low p-2 rounded-lg">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
+                        <span>深刻度</span>
+                        <span>{item.severityIndex || 5}</span>
+                      </div>
+                      <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+                        <div className="h-full bg-error" style={{ width: `${(item.severityIndex || 5) * 10}%` }} />
+                      </div>
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
+                        <span>影響</span>
+                        <span>{item.impactIndex || 5}</span>
+                      </div>
+                      <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+                        <div className="h-full bg-secondary" style={{ width: `${(item.impactIndex || 5) * 10}%` }} />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex gap-3">
                     {item.sources?.slice(0, 2).map((source: any, idx: number) => (
                       <a 

@@ -52,12 +52,15 @@ async function runAutomatedCollection() {
               title: { type: "STRING", description: "事例のタイトル" },
               description: { type: "STRING", description: "事例の要約内容" },
               category: { type: "STRING", enum: ["organizational", "individual", "other"], description: "不祥事のカテゴリー（組織的、個人的、その他）" },
+              severityIndex: { type: "INTEGER", description: "深刻度指数 (1-10)" },
+              impactIndex: { type: "INTEGER", description: "社会的影響度指数 (1-10)" },
+              recurrenceRisk: { type: "INTEGER", description: "再発リスク指数 (1-10)" },
               date: { type: "STRING", description: "発生日または報道日" },
               location: { type: "STRING", description: "場所" },
               sourceUrl: { type: "STRING", description: "ソースURL" },
               sourceTitle: { type: "STRING", description: "ソースのタイトル" }
             },
-            required: ["title", "description", "sourceUrl"]
+            required: ["title", "description", "sourceUrl", "severityIndex", "impactIndex", "recurrenceRisk"]
           }
         }
       },
@@ -70,6 +73,9 @@ async function runAutomatedCollection() {
           title: caseItem.title,
           description: caseItem.description,
           category: caseItem.category || "other",
+          severityIndex: caseItem.severityIndex || 5,
+          impactIndex: caseItem.impactIndex || 5,
+          recurrenceRisk: caseItem.recurrenceRisk || 5,
           date: caseItem.date || "",
           location: caseItem.location || "",
           sources: [{ title: caseItem.sourceTitle || "Source", uri: caseItem.sourceUrl }],
@@ -130,12 +136,15 @@ async function startServer() {
                 title: { type: "STRING", description: "事例のタイトル" },
                 description: { type: "STRING", description: "事例の要約内容" },
                 category: { type: "STRING", enum: ["organizational", "individual", "other"], description: "不祥事のカテゴリー（組織的、個人的、その他）" },
+                severityIndex: { type: "INTEGER", description: "深刻度指数 (1-10)" },
+                impactIndex: { type: "INTEGER", description: "社会的影響度指数 (1-10)" },
+                recurrenceRisk: { type: "INTEGER", description: "再発リスク指数 (1-10)" },
                 date: { type: "STRING", description: "発生日または報道日" },
                 location: { type: "STRING", description: "場所" },
                 sourceUrl: { type: "STRING", description: "ソースURL" },
                 sourceTitle: { type: "STRING", description: "ソースのタイトル" }
               },
-              required: ["title", "description", "sourceUrl"]
+              required: ["title", "description", "sourceUrl", "severityIndex", "impactIndex", "recurrenceRisk"]
             }
           }
         },

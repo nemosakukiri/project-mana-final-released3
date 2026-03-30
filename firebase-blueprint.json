@@ -90,6 +90,23 @@
         }
       },
       "required": ["title", "description", "collectedBy", "createdAt"]
+    },
+    "TownEvaluation": {
+      "title": "TownEvaluation",
+      "description": "A citizen's evaluation of their town's human rights and livability.",
+      "type": "object",
+      "properties": {
+        "townName": { "type": "string" },
+        "transparency": { "type": "number" },
+        "accountability": { "type": "number" },
+        "inclusion": { "type": "number" },
+        "safety": { "type": "number" },
+        "humanRights": { "type": "number" },
+        "comment": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["townName", "transparency", "accountability", "inclusion", "safety", "humanRights", "userId", "createdAt"]
     }
   },
   "firestore": {
@@ -100,6 +117,10 @@
     "/misconduct_cases/{caseId}": {
       "schema": "MisconductCase",
       "description": "Collection of AI-collected misconduct cases."
+    },
+    "/town_evaluations/{evaluationId}": {
+      "schema": "TownEvaluation",
+      "description": "Collection of citizen town evaluations."
     }
   }
 }

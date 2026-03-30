@@ -9,6 +9,9 @@ const INITIAL_CASES = [
     title: "兵庫県知事 パワハラ・公益通報対応問題",
     description: "2024年、兵庫県知事によるパワーハラ疑惑や贈答品の受領を指摘する告発文書を巡り、県が公益通報者保護法を軽視し、通報者を特定・処分した疑いが浮上。県議会で不信任決議が可決される異例の事態に発展した。",
     category: "organizational",
+    severityIndex: 9,
+    impactIndex: 10,
+    recurrenceRisk: 4,
     date: "2024年〜継続中",
     location: "兵庫県庁",
     sourceUrl: "https://www.asahi.com/topics/word/%E5%85%B5%E5%BA%AB%E7%9C%8C%E7%9F%A5%E4%BA%8B.html",
@@ -18,6 +21,9 @@ const INITIAL_CASES = [
     title: "自民党 派閥政治資金パーティー裏金事件",
     description: "自民党の主要派閥が政治資金パーティーの収入を収支報告書に記載せず、議員側に還流させて裏金化していた問題。行政の透明性を揺るがす重大な不祥事として、複数の議員が立件・離党する事態となった。",
     category: "organizational",
+    severityIndex: 10,
+    impactIndex: 10,
+    recurrenceRisk: 8,
     date: "2023年12月〜報道",
     location: "永田町・国会議事堂",
     sourceUrl: "https://www.nhk.or.jp/news/special/political-fund/",
@@ -27,6 +33,9 @@ const INITIAL_CASES = [
     title: "【個人不祥事】市職員による公金横領事件",
     description: "地方自治体の職員が、数年間にわたり公金を自身の口座に振り込ませ、私的に流用していたことが発覚。内部監査の網を潜り抜ける手口が問題視され、管理責任も問われている。",
     category: "individual",
+    severityIndex: 6,
+    impactIndex: 4,
+    recurrenceRisk: 7,
     date: "2024年3月発覚",
     location: "某地方自治体",
     sourceUrl: "https://www.google.com/search?q=%E5%85%AC%E5%8B%99%E5%93%A1+%E6%A8%AA%E9%A0%98+%E3%83%80%E3%82%A4%E3%82%B8%E3%82%A7%E3%82%B9%E3%83%88",
@@ -36,6 +45,9 @@ const INITIAL_CASES = [
     title: "【個人不祥事】警察官による酒気帯び運転・当て逃げ",
     description: "非番の警察官が酒気帯び状態で車を運転し、物損事故を起こしたまま逃走。市民の信頼を裏切る行為として懲戒免職処分となった。警察組織全体の規律が改めて問われている。",
     category: "individual",
+    severityIndex: 7,
+    impactIndex: 5,
+    recurrenceRisk: 6,
     date: "2024年2月",
     location: "某県警",
     sourceUrl: "https://www.google.com/search?q=%E8%AD%A6%E5%AF%9F%E5%AE%98+%E9%85%92%E6%B0%97%E5%B8%AF%E3%81%B3%E9%81%8B%E8%BB%A2",
@@ -45,6 +57,9 @@ const INITIAL_CASES = [
     title: "マイナンバーカード 紐付けミス・情報漏洩",
     description: "健康保険証や公金受取口座が別人の情報と紐付けられるトラブルが全国で相次いだ。デジタル庁の管理体制の不備や、不具合発覚後の対応の遅れが「行政の不作為」として厳しく批判された。",
     category: "organizational",
+    severityIndex: 8,
+    impactIndex: 9,
+    recurrenceRisk: 9,
     date: "2023年〜2024年",
     location: "デジタル庁・全国自治体",
     sourceUrl: "https://www.nikkei.com/topics/23052400",
@@ -219,6 +234,50 @@ export default function Collector() {
                         <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">NEW</span>
                       </div>
                       <p className="text-on-surface-variant mb-4 leading-relaxed">{item.description}</p>
+                      
+                      {/* Visual Indices */}
+                      <div className="grid grid-cols-3 gap-4 mb-6 bg-white/50 p-4 rounded-xl border border-outline-variant/5">
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
+                            <span>深刻度</span>
+                            <span>{item.severityIndex || 5}/10</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(item.severityIndex || 5) * 10}%` }}
+                              className="h-full bg-error"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
+                            <span>社会的影響</span>
+                            <span>{item.impactIndex || 5}/10</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(item.impactIndex || 5) * 10}%` }}
+                              className="h-full bg-secondary"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
+                            <span>再発リスク</span>
+                            <span>{item.recurrenceRisk || 5}/10</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(item.recurrenceRisk || 5) * 10}%` }}
+                              className="h-full bg-primary"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="flex flex-wrap gap-4 text-sm text-on-surface-variant mb-4">
                         {item.date && <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {item.date}</span>}
                         {item.location && <span className="flex items-center gap-1"><Globe className="w-4 h-4" /> {item.location}</span>}
@@ -280,6 +339,29 @@ export default function Collector() {
                 </div>
                 <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.title}</h4>
                 <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.description}</p>
+                
+                {/* Visual Indices (Mini) */}
+                <div className="flex gap-4 mb-4 bg-surface-container-low p-2 rounded-lg">
+                  <div className="flex-1 space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
+                      <span>深刻度</span>
+                      <span>{item.severityIndex || 5}</span>
+                    </div>
+                    <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+                      <div className="h-full bg-error" style={{ width: `${(item.severityIndex || 5) * 10}%` }} />
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
+                      <span>影響</span>
+                      <span>{item.impactIndex || 5}</span>
+                    </div>
+                    <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+                      <div className="h-full bg-secondary" style={{ width: `${(item.impactIndex || 5) * 10}%` }} />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-wrap gap-2">
                   {item.sources?.slice(0, 3).map((source: any, idx: number) => (
                     <a 
