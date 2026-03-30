@@ -186,8 +186,8 @@ export default function Home() {
                       {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
                     </span>
                   </div>
-                  <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.keyword}</h4>
-                  <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{item.summary}</p>
+                  <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.title}</h4>
+                  <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{item.description}</p>
                   <div className="flex gap-3">
                     {item.sources?.slice(0, 2).map((source: any, idx: number) => (
                       <a 

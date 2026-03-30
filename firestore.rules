@@ -23,5 +23,18 @@ service cloud.firestore {
       // No updates or deletes for now to maintain integrity of records
       allow update, delete: if false;
     }
+
+    // Misconduct cases collection (AI collected)
+    match /misconduct_cases/{caseId} {
+      // Anyone can read the feed
+      allow read: if true;
+      
+      // Only authenticated users or the server (AI) can create
+      // Note: Server-side SDK bypasses rules, but we keep this for manual saves from UI
+      allow create: if isAuthenticated() && 
+        request.resource.data.keys().hasAll(['title', 'description', 'collectedBy', 'createdAt']);
+        
+      allow update, delete: if false;
+    }
   }
 }

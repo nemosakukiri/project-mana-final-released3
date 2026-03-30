@@ -43,12 +43,58 @@
         }
       },
       "required": ["title", "category", "description", "location", "date", "userId", "userEmail", "createdAt"]
+    },
+    "MisconductCase": {
+      "title": "MisconductCase",
+      "description": "An administrative misconduct or inaction case collected by AI.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the incident."
+        },
+        "description": {
+          "type": "string",
+          "description": "The summary of the incident."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date of the incident."
+        },
+        "location": {
+          "type": "string",
+          "description": "The location of the incident."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "uri": { "type": "string" }
+            }
+          }
+        },
+        "collectedBy": {
+          "type": "string",
+          "description": "The ID of the collector (AI or user)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["title", "description", "collectedBy", "createdAt"]
     }
   },
   "firestore": {
     "/reports/{reportId}": {
       "schema": "Report",
       "description": "Collection of citizen reports."
+    },
+    "/misconduct_cases/{caseId}": {
+      "schema": "MisconductCase",
+      "description": "Collection of AI-collected misconduct cases."
     }
   }
 }

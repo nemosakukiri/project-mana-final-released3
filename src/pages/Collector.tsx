@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
 export default function Collector() {
   const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState<string>('');
-  const [sources, setSources] = useState<any[]>([]);
+  const [results, setResults] = useState<any[]>([]);
   const [isCollecting, setIsCollecting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
@@ -26,8 +24,7 @@ export default function Collector() {
   const handleCollect = async () => {
     if (!keyword.trim()) return;
     setIsCollecting(true);
-    setResults('');
-    setSources([]);
+    setResults([]);
     setError('');
     setSuccess('');
 
@@ -41,8 +38,7 @@ export default function Collector() {
       if (!response.ok) throw new Error('AI自動収集に失敗しました。');
 
       const data = await response.json();
-      setResults(data.text);
-      setSources(data.sources || []);
+      setResults(data.cases || []);
     } catch (err) {
       console.error('Collection error:', err);
       setError('AI自動収集中にエラーが発生しました。');
@@ -52,7 +48,7 @@ export default function Collector() {
   };
 
   const handleSave = async () => {
-    if (!results || !auth.currentUser) {
+    if (results.length === 0 || !auth.currentUser) {
       if (!auth.currentUser) setError('保存するにはログインが必要です。');
       return;
     }
@@ -61,14 +57,19 @@ export default function Collector() {
     setSuccess('');
 
     try {
-      await addDoc(collection(db, 'misconduct_cases'), {
-        keyword,
-        summary: results,
-        sources: sources,
-        collectedBy: auth.currentUser.uid,
-        createdAt: serverTimestamp(),
-      });
-      setSuccess('データベースに保存しました。');
+      for (const item of results) {
+        await addDoc(collection(db, 'misconduct_cases'), {
+          title: item.title,
+          description: item.description,
+          date: item.date || "",
+          location: item.location || "",
+          sources: [{ title: item.sourceTitle || "Source", uri: item.sourceUrl }],
+          collectedBy: auth.currentUser.uid,
+          createdAt: serverTimestamp(),
+        });
+      }
+      setSuccess(`${results.length}件の事例をデータベースに保存しました。`);
+      setResults([]); // Clear results after saving
     } catch (err) {
       console.error('Save error:', err);
       setError('保存中にエラーが発生しました。');
@@ -121,7 +122,7 @@ export default function Collector() {
         </section>
 
         {/* Results Area */}
-        {(results || isCollecting) && (
+        {(results.length > 0 || isCollecting) && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -131,16 +132,16 @@ export default function Collector() {
               <div className="flex justify-between items-center mb-8 border-b border-outline-variant/20 pb-4">
                 <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
                   <Activity className="w-6 h-6 text-secondary" />
-                  収集結果の要約
+                  AI収集結果 ({results.length}件)
                 </h2>
-                {results && (
+                {results.length > 0 && (
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
                     className="flex items-center gap-2 text-primary font-bold hover:text-secondary transition-colors disabled:opacity-50"
                   >
                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    DBに保存
+                    全てDBに保存
                   </button>
                 )}
               </div>
@@ -148,11 +149,32 @@ export default function Collector() {
               {isCollecting ? (
                 <div className="py-20 flex flex-col items-center justify-center gap-4 text-on-surface-variant">
                   <Loader2 className="w-12 h-12 animate-spin text-secondary" />
-                  <p className="animate-pulse">AIが情報を収集中です...</p>
+                  <p className="animate-pulse">AIが最新情報を収集中です...</p>
                 </div>
               ) : (
-                <div className="markdown-body">
-                  <ReactMarkdown>{results}</ReactMarkdown>
+                <div className="grid grid-cols-1 gap-6">
+                  {results.map((item, idx) => (
+                    <div key={idx} className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-xl font-bold text-primary">{item.title}</h3>
+                        <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">NEW</span>
+                      </div>
+                      <p className="text-on-surface-variant mb-4 leading-relaxed">{item.description}</p>
+                      <div className="flex flex-wrap gap-4 text-sm text-on-surface-variant mb-4">
+                        {item.date && <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {item.date}</span>}
+                        {item.location && <span className="flex items-center gap-1"><Globe className="w-4 h-4" /> {item.location}</span>}
+                      </div>
+                      <a 
+                        href={item.sourceUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-secondary font-bold hover:underline"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        {item.sourceTitle || "ソースを確認"}
+                      </a>
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -169,29 +191,6 @@ export default function Collector() {
                 </div>
               )}
             </div>
-
-            {/* Sources */}
-            {sources.length > 0 && (
-              <div className="bg-surface-container p-8 rounded-3xl">
-                <h3 className="text-lg font-bold text-primary mb-4">参照ソース</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {sources.map((source, idx) => (
-                    <a
-                      key={idx}
-                      href={source.uri}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-white rounded-xl border border-outline-variant/20 hover:border-secondary transition-all flex items-center justify-between group"
-                    >
-                      <span className="text-sm font-medium text-on-surface-variant truncate pr-4">
-                        {source.title || source.uri}
-                      </span>
-                      <ArrowRight className="w-4 h-4 text-secondary opacity-0 group-hover:opacity-100 transition-all" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
           </motion.section>
         )}
 
@@ -210,8 +209,8 @@ export default function Collector() {
                     {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
                   </span>
                 </div>
-                <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.keyword}</h4>
-                <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.summary}</p>
+                <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.title}</h4>
+                <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {item.sources?.slice(0, 3).map((source: any, idx: number) => (
                     <a 

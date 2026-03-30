@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import fs from 'fs';
+import { Type } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,30 +24,45 @@ async function runAutomatedCollection() {
     const keyword = "行政 不祥事 不作為 最新ニュース";
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。
+      contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。
       
-      キーワード: ${keyword}
-      
-      出力は日本語で、市民が監視しやすいように簡潔にまとめてください。`,
+      キーワード: ${keyword}`,
       config: {
         tools: [{ googleSearch: {} }],
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING, description: "事例のタイトル" },
+              description: { type: Type.STRING, description: "事例の要約内容" },
+              date: { type: Type.STRING, description: "発生日または報道日" },
+              location: { type: Type.STRING, description: "場所" },
+              sourceUrl: { type: Type.STRING, description: "ソースURL" },
+              sourceTitle: { type: Type.STRING, description: "ソースのタイトル" }
+            },
+            required: ["title", "description", "sourceUrl"]
+          }
+        }
       },
     });
 
-    const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
-    const sources = groundingMetadata?.groundingChunks?.map((chunk: any) => ({
-      title: chunk.web?.title,
-      uri: chunk.web?.uri
-    })) || [];
-
-    await addDoc(collection(db, 'misconduct_cases'), {
-      keyword: "自動収集 (毎時更新)",
-      summary: response.text,
-      sources: sources,
-      collectedBy: "AI-SYSTEM",
-      createdAt: serverTimestamp(),
-    });
-    console.log("Automated collection successful.");
+    const cases = JSON.parse(response.text);
+    
+    for (const caseItem of cases) {
+      await addDoc(collection(db, 'misconduct_cases'), {
+        title: caseItem.title,
+        description: caseItem.description,
+        date: caseItem.date || "",
+        location: caseItem.location || "",
+        sources: [{ title: caseItem.sourceTitle || "Source", uri: caseItem.sourceUrl }],
+        collectedBy: "AI-SYSTEM",
+        createdAt: serverTimestamp(),
+      });
+    }
+    
+    console.log(`Automated collection successful: ${cases.length} items saved.`);
   } catch (error) {
     console.error("Automated Collection Error:", error);
   }
@@ -86,23 +102,30 @@ async function startServer() {
     try {
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。各事例には、日付、場所、内容、およびソースURLを含めてください。\n\nキーワード: ${keyword}`,
+        contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。\n\nキーワード: ${keyword}`,
         config: {
           tools: [{ googleSearch: {} }],
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING, description: "事例のタイトル" },
+                description: { type: Type.STRING, description: "事例の要約内容" },
+                date: { type: Type.STRING, description: "発生日または報道日" },
+                location: { type: Type.STRING, description: "場所" },
+                sourceUrl: { type: Type.STRING, description: "ソースURL" },
+                sourceTitle: { type: Type.STRING, description: "ソースのタイトル" }
+              },
+              required: ["title", "description", "sourceUrl"]
+            }
+          }
         },
       });
 
-      // Extract grounding metadata for sources
-      const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
-      const sources = groundingMetadata?.groundingChunks?.map((chunk: any) => ({
-        title: chunk.web?.title,
-        uri: chunk.web?.uri
-      })) || [];
-
-      res.json({ 
-        text: response.text,
-        sources: sources
-      });
+      const cases = JSON.parse(response.text);
+      res.json({ cases });
     } catch (error) {
       console.error("AI Collection Error:", error);
       res.status(500).json({ error: "AI自動収集中にエラーが発生しました。" });
