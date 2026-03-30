@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale, Clock, ExternalLink } from 'lucide-react';
+import { Shield, Database, FileSearch, ArrowRight, Activity, Users, Globe, Scale, Clock, ExternalLink, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -8,6 +8,20 @@ import { db } from '../firebase';
 export default function Home() {
   const [latestCases, setLatestCases] = useState<any[]>([]);
   const [latestReports, setLatestReports] = useState<any[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleForceRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch('/api/admin/collect', { method: 'POST' });
+      if (!response.ok) throw new Error('Refresh failed');
+      // The onSnapshot will pick up changes automatically
+    } catch (error) {
+      console.error('Refresh error:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     // Fetch latest misconduct cases (AI collected) - showing 5 as requested
@@ -157,11 +171,12 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => window.location.reload()} 
-              className="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant"
-              title="最新の情報に更新"
+              onClick={handleForceRefresh} 
+              disabled={isRefreshing}
+              className="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant disabled:opacity-50"
+              title="最新の情報にAI収集を強制実行"
             >
-              <Activity className="w-5 h-5" />
+              {isRefreshing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Activity className="w-5 h-5" />}
             </button>
             <Link to="/collector" className="text-secondary font-bold flex items-center gap-2 hover:gap-4 transition-all">
               全ての収集データを見る
@@ -204,8 +219,16 @@ export default function Home() {
                   </div>
                 </div>
               )) : (
-                <div className="p-12 text-center bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 text-on-surface-variant italic">
-                  AIが情報を収集中です...
+                <div className="p-12 text-center bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30">
+                  <p className="text-on-surface-variant italic mb-6">AIが情報を収集中です...</p>
+                  <button 
+                    onClick={handleForceRefresh}
+                    disabled={isRefreshing}
+                    className="bg-secondary text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 mx-auto hover:bg-secondary/90 transition-all disabled:opacity-50"
+                  >
+                    {isRefreshing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Activity className="w-5 h-5" />}
+                    今すぐAI収集を実行
+                  </button>
                 </div>
               )}
             </div>

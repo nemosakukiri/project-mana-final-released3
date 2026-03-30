@@ -21,12 +21,25 @@ const db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
 async function runAutomatedCollection() {
   console.log("Starting automated collection...");
   try {
-    const keyword = "行政 不祥事 不作為 最新ニュース";
+    // Check if we already have recent data to avoid redundant calls
+    // (Optional: but good for stability)
+    
+    const keyword = "日本 国内 行政 不祥事 不作為 最新ニュース 報道";
+    console.log(`Querying AI with keyword: ${keyword}`);
+    
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `以下のキーワードに関連する最新の行政不祥事や不作為に関するニュースや報告を検索し、重要な事例を【最低5つ】抽出して要約してください。
+      contents: `日本国内の最新の行政不祥事、公務員の不正、または行政の不作為に関するニュースを検索し、重要な事例を【最低5つ】抽出して要約してください。
       
-      キーワード: ${keyword}`,
+      キーワード: ${keyword}
+      
+      各事例について、以下の情報を正確に抽出してください：
+      1. タイトル (具体的かつ簡潔に)
+      2. 内容の要約 (何が起きたか、何が問題か)
+      3. 報道日または発生時期
+      4. 場所 (都道府県・市区町村)
+      5. ソースURL (信頼できるニュースサイトのURL)
+      6. ソース名 (メディア名)`,
       config: {
         tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
@@ -35,12 +48,12 @@ async function runAutomatedCollection() {
           items: {
             type: Type.OBJECT,
             properties: {
-              title: { type: Type.STRING, description: "事例のタイトル" },
-              description: { type: Type.STRING, description: "事例の要約内容" },
-              date: { type: Type.STRING, description: "発生日または報道日" },
-              location: { type: Type.STRING, description: "場所" },
-              sourceUrl: { type: Type.STRING, description: "ソースURL" },
-              sourceTitle: { type: Type.STRING, description: "ソースのタイトル" }
+              title: { type: Type.STRING },
+              description: { type: Type.STRING },
+              date: { type: Type.STRING },
+              location: { type: Type.STRING },
+              sourceUrl: { type: Type.STRING },
+              sourceTitle: { type: Type.STRING }
             },
             required: ["title", "description", "sourceUrl"]
           }
@@ -48,18 +61,33 @@ async function runAutomatedCollection() {
       },
     });
 
+    if (!response.text) {
+      console.error("AI returned empty response text.");
+      return;
+    }
+
     const cases = JSON.parse(response.text);
+    console.log(`AI found ${cases.length} cases.`);
+    
+    if (cases.length === 0) {
+      console.warn("AI found 0 cases. Search might have failed or no recent news.");
+      return;
+    }
     
     for (const caseItem of cases) {
-      await addDoc(collection(db, 'misconduct_cases'), {
-        title: caseItem.title,
-        description: caseItem.description,
-        date: caseItem.date || "",
-        location: caseItem.location || "",
-        sources: [{ title: caseItem.sourceTitle || "Source", uri: caseItem.sourceUrl }],
-        collectedBy: "AI-SYSTEM",
-        createdAt: serverTimestamp(),
-      });
+      try {
+        await addDoc(collection(db, 'misconduct_cases'), {
+          title: caseItem.title || "不明な事案",
+          description: caseItem.description || "詳細情報なし",
+          date: caseItem.date || "最近",
+          location: caseItem.location || "日本国内",
+          sources: [{ title: caseItem.sourceTitle || "ニュースソース", uri: caseItem.sourceUrl }],
+          collectedBy: "AI-SYSTEM",
+          createdAt: serverTimestamp(),
+        });
+      } catch (dbError) {
+        console.error("Error saving case to Firestore:", dbError);
+      }
     }
     
     console.log(`Automated collection successful: ${cases.length} items saved.`);
@@ -94,6 +122,16 @@ async function startServer() {
     } catch (error) {
       console.error("AI Analysis Error:", error);
       res.status(500).json({ error: "AI解析中にエラーが発生しました。" });
+    }
+  });
+
+  app.post("/api/admin/collect", async (req, res) => {
+    try {
+      await runAutomatedCollection();
+      res.json({ success: true, message: "Automated collection triggered." });
+    } catch (error) {
+      console.error("Manual trigger error:", error);
+      res.status(500).json({ error: "Failed to trigger collection." });
     }
   });
 

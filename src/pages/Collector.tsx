@@ -4,9 +4,52 @@ import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCirc
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
+const INITIAL_CASES = [
+  {
+    title: "兵庫県知事 パワハラ・公益通報対応問題",
+    description: "2024年、兵庫県知事によるパワーハラ疑惑や贈答品の受領を指摘する告発文書を巡り、県が公益通報者保護法を軽視し、通報者を特定・処分した疑いが浮上。県議会で不信任決議が可決される異例の事態に発展した。",
+    date: "2024年〜継続中",
+    location: "兵庫県庁",
+    sourceUrl: "https://www.asahi.com/topics/word/%E5%85%B5%E5%BA%AB%E7%9C%8C%E7%9F%A5%E4%BA%8B.html",
+    sourceTitle: "朝日新聞デジタル - 兵庫県知事問題"
+  },
+  {
+    title: "自民党 派閥政治資金パーティー裏金事件",
+    description: "自民党の主要派閥が政治資金パーティーの収入を収支報告書に記載せず、議員側に還流させて裏金化していた問題。行政の透明性を揺るがす重大な不祥事として、複数の議員が立件・離党する事態となった。",
+    date: "2023年12月〜報道",
+    location: "永田町・国会議事堂",
+    sourceUrl: "https://www.nhk.or.jp/news/special/political-fund/",
+    sourceTitle: "NHK NEWS WEB - 政治資金問題"
+  },
+  {
+    title: "マイナンバーカード 紐付けミス・情報漏洩",
+    description: "健康保険証や公金受取口座が別人の情報と紐付けられるトラブルが全国で相次いだ。デジタル庁の管理体制の不備や、不具合発覚後の対応の遅れが「行政の不作為」として厳しく批判された。",
+    date: "2023年〜2024年",
+    location: "デジタル庁・全国自治体",
+    sourceUrl: "https://www.nikkei.com/topics/23052400",
+    sourceTitle: "日本経済新聞 - マイナンバー問題"
+  },
+  {
+    title: "国土交通省 建設統計データ書き換え問題",
+    description: "国土交通省が「建設工事受注動態統計調査」のデータを長年にわたり二重計上するなど書き換えていた。政府統計の信頼性を根本から損なう組織的な不祥事であり、GDP算出への影響も懸念された。",
+    date: "2021年12月発覚",
+    location: "国土交通省",
+    sourceUrl: "https://www.mainichi.jp/articles/20211215/k00/00m/010/010000c",
+    sourceTitle: "毎日新聞 - 統計書き換え問題"
+  },
+  {
+    title: "大阪・関西万博 建設費大幅増額と不透明な予算管理",
+    description: "万博会場の建設費が当初予定の1.9倍（約2350億円）に膨れ上がり、国民負担が増大。資材高騰への予測の甘さや、追加費用の説明が不十分であるとして、行政の責任を問う声が強まっている。",
+    date: "2023年〜継続中",
+    location: "大阪府・日本博覧会協会",
+    sourceUrl: "https://www.yomiuri.co.jp/topics/20231020-OYT8T50030/",
+    sourceTitle: "読売新聞オンライン - 万博予算問題"
+  }
+];
+
 export default function Collector() {
   const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<any[]>(INITIAL_CASES);
   const [isCollecting, setIsCollecting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
