@@ -77,81 +77,89 @@ export default function Analysis() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="max-w-screen-2xl mx-auto">
-        {/* Header Section - Mondrian Style */}
-        <section className="grid grid-cols-12 border-b-8 border-black bg-white">
-          <div className="col-span-12 lg:col-span-9 p-16 border-r-8 border-black">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-[6vw] font-headline mb-8 leading-none tracking-tighter"
-            >
-              AI法的精査・<span className="text-secondary italic">解析</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-2xl text-on-surface-variant leading-relaxed font-serif italic max-w-3xl"
-            >
-              記録された証言をAIが多角的に分析。法的な論点を整理し、行政の不作為を客観的な証拠へと昇華させます。
-            </motion.p>
-          </div>
-          <div className="col-span-12 lg:col-span-3 grid grid-rows-2">
-            <div className="bg-mondrian-blue border-b-8 border-black p-12 flex items-center justify-center">
-               <Scale className="w-24 h-24 text-white" />
+    <div className="min-h-screen bg-background pt-24">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+        {/* Header Section - Elegant Editorial */}
+        <section className="py-20 border-b border-border">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-9">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase mb-8"
+              >
+                AI Legal Scrutiny
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-6xl lg:text-8xl font-headline mb-8 leading-[0.9] tracking-tighter"
+              >
+                AI法的精査・<span className="text-secondary italic">解析</span>
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl lg:text-2xl text-on-surface-variant leading-relaxed font-serif italic max-w-3xl"
+              >
+                記録された証言をAIが多角的に分析。法的な論点を整理し、行政の不作為を客観的な証拠へと昇華させます。
+              </motion.p>
             </div>
-            <div className="bg-mondrian-yellow p-12 flex flex-col items-center justify-center">
-               <span className="text-black font-headline text-3xl mb-4 uppercase tracking-widest">Analysis Tool</span>
-               <Link to="/report" className="text-xl font-bold border-b-4 border-black hover:bg-black hover:text-white transition-all px-4 py-2">
+            <div className="lg:col-span-3 hidden lg:block">
+              <div className="aspect-square bg-surface border border-border p-8 flex flex-col items-center justify-center text-center group">
+                <Scale className="w-20 h-20 text-primary/20 group-hover:text-primary transition-colors mb-6" />
+                <span className="text-xs font-bold uppercase tracking-widest mb-4 text-on-surface-variant">Analysis Tool</span>
+                <Link to="/report" className="text-lg font-headline border-b border-primary text-primary hover:gap-4 transition-all">
                   新規報告を行う
-               </Link>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="grid grid-cols-12 gap-0 border-b-8 border-black">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-border">
           {/* Sidebar: Report List */}
-          <aside className="col-span-12 lg:col-span-4 border-r-8 border-black bg-white flex flex-col">
-            <div className="p-12 border-b-8 border-black bg-black text-white flex justify-between items-center">
-              <h2 className="text-4xl font-headline uppercase tracking-tighter flex items-center gap-4">
-                <Activity className="w-10 h-10" />
+          <aside className="lg:col-span-4 border-r border-border bg-surface flex flex-col">
+            <div className="p-8 border-b border-border bg-muted flex justify-between items-center">
+              <h2 className="text-2xl font-headline tracking-tighter flex items-center gap-3">
+                <Activity className="w-6 h-6 text-primary" />
                 Recent Reports
               </h2>
             </div>
-            <div className="flex-1 overflow-y-auto max-h-[100vh] custom-scrollbar">
-              <div className="divide-y-8 divide-black">
+            <div className="flex-1 overflow-y-auto max-h-[800px] custom-scrollbar">
+              <div className="divide-y divide-border">
                 {reports.map((report) => (
                   <button
                     key={report.id}
                     onClick={() => setSelectedReport(report)}
-                    className={`w-full text-left p-12 transition-all group ${
+                    className={`w-full text-left p-8 transition-all group ${
                       selectedReport?.id === report.id
-                        ? 'bg-mondrian-yellow'
-                        : 'bg-white hover:bg-mondrian-blue/5'
+                        ? 'bg-primary/5 border-l-4 border-primary'
+                        : 'bg-surface hover:bg-muted'
                     }`}
                   >
-                    <div className="flex gap-4 mb-4 items-center">
-                      <span className="bg-black px-4 py-1 font-headline text-sm text-white tracking-widest">
+                    <div className="flex gap-4 mb-3 items-center">
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-primary bg-primary/10 px-2 py-0.5">
                         {report.category === 'inaction' ? '不作為' : '不祥事'}
                       </span>
-                      <span className="text-sm font-mono opacity-60">{report.date}</span>
+                      <span className="text-xs font-mono text-on-surface-variant">{report.date}</span>
                     </div>
-                    <h3 className="text-3xl font-headline mb-4 group-hover:text-secondary transition-colors leading-none tracking-tighter line-clamp-1">
+                    <h3 className="text-2xl font-headline mb-3 group-hover:text-primary transition-colors leading-tight tracking-tighter line-clamp-1">
                       {report.title}
                     </h3>
-                    <p className="text-lg font-serif italic text-on-surface-variant line-clamp-2 leading-relaxed">
+                    <p className="text-sm font-serif italic text-on-surface-variant line-clamp-2 leading-relaxed">
                       {report.description}
                     </p>
                   </button>
                 ))}
                 {reports.length === 0 && !error && (
-                  <div className="p-20 text-center bg-white">
-                    <p className="text-xl font-serif italic opacity-60 mb-8">報告データがありません</p>
-                    <Link to="/report" className="inline-flex items-center gap-4 text-2xl font-headline border-b-4 border-secondary hover:text-secondary transition-all pb-2">
+                  <div className="p-12 text-center bg-surface">
+                    <p className="text-lg font-serif italic text-on-surface-variant mb-6">報告データがありません</p>
+                    <Link to="/report" className="inline-flex items-center gap-3 text-xl font-headline border-b border-secondary text-secondary hover:gap-5 transition-all">
                       最初の報告を行う
-                      <ArrowRight className="w-6 h-6" />
+                      <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
                 )}
@@ -160,72 +168,81 @@ export default function Analysis() {
           </aside>
 
           {/* Main Content: Analysis */}
-          <main className="col-span-12 lg:col-span-8 bg-white">
+          <main className="lg:col-span-8 bg-background">
             {selectedReport ? (
               <div className="flex flex-col h-full">
-                <div className="p-16 border-b-8 border-black">
+                <div className="p-12 lg:p-16 border-b border-border">
                   <div className="flex flex-wrap items-center gap-6 mb-8">
-                    <span className="bg-secondary text-white px-6 py-2 font-headline text-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="bg-primary text-white px-4 py-1 font-headline text-sm tracking-widest uppercase">
                       {selectedReport.category === 'inaction' ? '不作為' : '不祥事'}
                     </span>
-                    <span className="text-2xl font-serif italic text-on-surface-variant">
+                    <span className="text-lg font-serif italic text-on-surface-variant">
                       {selectedReport.location} • {selectedReport.date}
                     </span>
                   </div>
-                  <h2 className="text-6xl font-headline mb-12 leading-none tracking-tighter">{selectedReport.title}</h2>
-                  <div className="p-12 bg-mondrian-yellow/10 border-l-8 border-mondrian-yellow text-2xl font-serif italic text-on-surface-variant leading-relaxed mb-12">
+                  <h2 className="text-4xl lg:text-6xl font-headline mb-10 leading-tight tracking-tighter">{selectedReport.title}</h2>
+                  <div className="p-8 bg-surface border-l-4 border-primary text-xl font-serif italic text-on-surface-variant leading-relaxed mb-10">
                     「{selectedReport.description}」
                   </div>
                   
                   <button
                     onClick={handleAnalyze}
                     disabled={isAnalyzing}
-                    className="w-full bg-secondary text-white px-12 py-8 font-headline text-3xl border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-6 disabled:opacity-50 disabled:scale-100"
+                    className="w-full bg-primary text-white px-10 py-6 font-headline text-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
                   >
-                    {isAnalyzing ? 'AI解析中...' : 'AI法的精査を実行する'}
-                    <Scale className="w-10 h-10" />
+                    {isAnalyzing ? (
+                      <>
+                        <Activity className="w-8 h-8 animate-pulse" />
+                        AI解析中...
+                      </>
+                    ) : (
+                      <>
+                        AI法的精査を実行する
+                        <Scale className="w-8 h-8" />
+                      </>
+                    )}
                   </button>
                 </div>
 
-                <div className="flex-1 bg-white">
+                <div className="flex-1 bg-background">
                   {analysis && (
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-16 bg-black text-white"
+                      className="p-12 lg:p-16 bg-surface border-t border-border"
                     >
-                      <div className="flex items-center gap-6 mb-12 text-mondrian-yellow">
-                        <ShieldCheck className="w-12 h-12" />
-                        <h3 className="text-4xl font-headline uppercase tracking-widest">AI Analysis Report</h3>
+                      <div className="flex items-center gap-4 mb-10 text-primary">
+                        <ShieldCheck className="w-10 h-10" />
+                        <h3 className="text-2xl font-headline uppercase tracking-widest">AI Analysis Report</h3>
                       </div>
-                      <div className="prose prose-invert prose-2xl max-w-none markdown-body">
+                      <div className="prose prose-lg max-w-none markdown-body">
                         <ReactMarkdown>{analysis}</ReactMarkdown>
                       </div>
                     </motion.div>
                   )}
 
                   {error && (
-                    <div className="p-16 bg-secondary text-white flex items-center gap-8 border-t-8 border-black">
-                      <AlertTriangle className="w-16 h-16 shrink-0" />
-                      <p className="text-3xl font-headline uppercase tracking-tighter">{error}</p>
+                    <div className="p-12 lg:p-16 bg-secondary/10 text-secondary flex items-center gap-6 border-t border-border">
+                      <AlertTriangle className="w-10 h-10 shrink-0" />
+                      <p className="text-xl font-headline uppercase tracking-tighter">{error}</p>
                     </div>
                   )}
 
                   {!analysis && !isAnalyzing && (
-                    <div className="h-full min-h-[400px] flex items-center justify-center p-20 text-center">
-                      <div>
-                        <Search className="w-32 h-32 mx-auto mb-8 opacity-10" />
-                        <p className="text-3xl font-serif italic opacity-40">解析ボタンを押して、AIによる精査を開始してください</p>
+                    <div className="h-full min-h-[400px] flex items-center justify-center p-12 lg:p-20 text-center">
+                      <div className="max-w-md">
+                        <Search className="w-20 h-20 mx-auto mb-6 opacity-10" />
+                        <p className="text-2xl font-serif italic text-on-surface-variant opacity-60">解析ボタンを押して、AIによる精査を開始してください</p>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="h-full min-h-[600px] flex items-center justify-center p-20 text-center">
-                <div>
-                  <Search className="w-48 h-48 mx-auto mb-12 opacity-10" />
-                  <p className="text-4xl font-serif italic opacity-40">左側のリストから解析する報告を選択してください</p>
+              <div className="h-full min-h-[600px] flex items-center justify-center p-12 lg:p-20 text-center">
+                <div className="max-w-md">
+                  <Search className="w-24 h-24 mx-auto mb-8 opacity-10" />
+                  <p className="text-3xl font-serif italic text-on-surface-variant opacity-60">左側のリストから解析する報告を選択してください</p>
                 </div>
               </div>
             )}

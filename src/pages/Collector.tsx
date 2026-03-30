@@ -175,118 +175,119 @@ export default function Collector() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="max-w-screen-2xl mx-auto">
-        {/* Header - Mondrian Style */}
-        <header className="grid grid-cols-12 border-b-8 border-black bg-white">
-          <div className="col-span-12 lg:col-span-8 p-16 border-r-8 border-black">
-            <span className="editorial-label">Archive No. 02</span>
-            <h1 className="text-[10vw] font-headline mb-6 leading-none tracking-tighter">MISCONDUCT<br />DATABASE</h1>
-            <p className="text-3xl font-serif italic text-on-surface-variant leading-relaxed max-w-2xl">
-              AIによる常時監視と記録。行政の不作為と不祥事を、記者や学者のための「一次ソース」として体系化します。
-            </p>
-          </div>
-          <div className="col-span-12 lg:col-span-4 grid grid-rows-2">
-            <div className="bg-mondrian-yellow border-b-8 border-black p-12 flex items-center justify-center">
-               <Database className="w-24 h-24 text-black" />
+    <div className="min-h-screen bg-background pt-24">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+        {/* Header - Elegant Editorial */}
+        <header className="py-20 border-b border-border">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-8">
+              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase mb-8">Archive No. 02</span>
+              <h1 className="text-6xl lg:text-9xl font-headline mb-8 leading-[0.85] tracking-tighter uppercase">MISCONDUCT<br />DATABASE</h1>
+              <p className="text-xl lg:text-2xl font-serif italic text-on-surface-variant leading-relaxed max-w-2xl">
+                AIによる常時監視と記録。行政の不作為と不祥事を、記者や学者のための「一次ソース」として体系化します。
+              </p>
             </div>
-            <div className="bg-secondary p-12 flex flex-col items-center justify-center gap-6">
-              <button 
-                onClick={exportToCSV}
-                className="w-full py-6 bg-white text-black font-headline text-2xl hover:bg-black hover:text-white transition-all border-4 border-black"
-              >
-                DOWNLOAD CSV
-              </button>
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              <div className="aspect-square bg-surface border border-border p-10 flex flex-col items-center justify-center text-center group">
+                <Database className="w-20 h-20 text-primary/20 group-hover:text-primary transition-colors mb-8" />
+                <button 
+                  onClick={exportToCSV}
+                  className="w-full py-4 bg-primary text-white font-headline text-lg hover:bg-primary/90 transition-all"
+                >
+                  DOWNLOAD CSV
+                </button>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Search Area - Mondrian Style */}
-        <section className="grid grid-cols-12 border-b-8 border-black bg-white">
-          <div className="col-span-12 lg:col-span-9 p-16 border-r-8 border-black">
-            <h2 className="text-5xl font-headline mb-12 uppercase">AI自動収集リクエスト</h2>
-            <div className="flex flex-col md:flex-row gap-0 border-8 border-black">
-              <input
-                type="text"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                placeholder="キーワードを入力（例：自治体 不祥事 2024）"
-                className="flex-1 bg-white px-8 py-8 outline-none text-3xl font-serif italic"
-              />
+        {/* Search Area */}
+        <section className="py-16 border-b border-border">
+          <div className="max-w-4xl">
+            <h2 className="text-3xl font-headline mb-8 tracking-tighter uppercase">AI自動収集リクエスト</h2>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="キーワードを入力（例：自治体 不祥事 2024）"
+                  className="w-full bg-surface border border-border px-8 py-5 outline-none text-xl font-serif italic focus:border-primary transition-colors"
+                />
+                <Search className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-on-surface-variant opacity-30" />
+              </div>
               <button
                 onClick={handleCollect}
                 disabled={isCollecting || !keyword.trim()}
-                className="bg-black text-white px-16 py-8 font-headline text-3xl hover:bg-secondary transition-all disabled:opacity-50 border-l-8 border-black"
+                className="bg-foreground text-background px-12 py-5 font-headline text-xl hover:bg-primary transition-all disabled:opacity-50"
               >
-                {isCollecting ? <Loader2 className="w-10 h-10 animate-spin" /> : "START"}
+                {isCollecting ? <Loader2 className="w-6 h-6 animate-spin" /> : "COLLECT"}
               </button>
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-3 bg-mondrian-blue p-12 flex items-center justify-center">
-             <span className="text-white font-headline text-6xl rotate-90 tracking-widest">SEARCH</span>
-          </div>
         </section>
 
-        {/* Results and Archive Grid - Mondrian Style */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-8 border-black">
+        {/* Results and Archive Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 py-16">
           {/* Main Feed */}
-          <div className="lg:col-span-8 border-r-8 border-black bg-white">
-            <div className="p-12 border-b-8 border-black flex items-center justify-between bg-mondrian-yellow/10">
-              <h2 className="text-6xl font-headline uppercase">Latest Discoveries</h2>
-              <span className="text-xl font-mono font-bold">UPDATED HOURLY</span>
+          <div className="lg:col-span-8">
+            <div className="flex items-end justify-between mb-12">
+              <h2 className="text-4xl font-headline tracking-tighter uppercase">Latest Discoveries</h2>
+              <span className="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">UPDATED HOURLY</span>
             </div>
 
             {isCollecting && (
-              <div className="py-32 text-center border-b-8 border-black">
-                <Loader2 className="w-24 h-24 animate-spin mx-auto text-secondary mb-8" />
-                <p className="font-serif italic text-4xl">AIが深層ウェブから情報を抽出中...</p>
+              <div className="py-24 text-center border border-border bg-surface/50">
+                <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary mb-6" />
+                <p className="font-serif italic text-2xl text-on-surface-variant">AIが深層ウェブから情報を抽出中...</p>
               </div>
             )}
 
-            <div className="divide-y-8 divide-black">
+            <div className="space-y-12">
               {(results.length > 0 ? results : recentCollections.slice(0, 15)).map((item, idx) => (
                 <motion.article 
                   key={item.id || idx}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="p-12 hover:bg-mondrian-yellow/5 transition-colors group"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="group bg-surface border border-border p-8 hover:border-primary/30 transition-all"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-                    <div className="md:col-span-4 aspect-[4/3] border-8 border-black bg-black overflow-hidden relative">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <div className="md:col-span-4 aspect-[4/3] bg-muted overflow-hidden relative border border-border">
                       <img 
                         src={`https://picsum.photos/seed/${item.id || idx}/600/450?grayscale`} 
                         alt="" 
-                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all"
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute top-4 left-4 bg-secondary text-white px-4 py-2 font-headline text-lg border-2 border-black">
+                      <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 font-headline text-xs tracking-widest uppercase">
                         {item.category}
                       </div>
                     </div>
                     <div className="md:col-span-8 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center gap-4 mb-4">
-                          <span className="text-sm font-mono font-bold bg-black text-white px-3 py-1">{item.date || "DATE UNKNOWN"}</span>
-                          <span className="text-sm font-mono font-bold border-2 border-black px-3 py-1">{item.location}</span>
+                          <span className="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">{item.date || "DATE UNKNOWN"}</span>
+                          <span className="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase border-l border-border pl-4">{item.location}</span>
                         </div>
-                        <h3 className="text-5xl font-headline mb-6 leading-tight group-hover:text-secondary transition-colors uppercase">{item.title}</h3>
-                        <p className="text-xl font-serif italic text-on-surface-variant leading-relaxed line-clamp-3 mb-8">
+                        <h3 className="text-3xl lg:text-4xl font-headline mb-4 leading-tight group-hover:text-primary transition-colors tracking-tighter uppercase">{item.title}</h3>
+                        <p className="text-lg font-serif italic text-on-surface-variant leading-relaxed line-clamp-3 mb-6">
                           {item.description}
                         </p>
                       </div>
                       
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="p-4 border-4 border-black bg-white">
-                          <span className="block text-xs font-bold uppercase mb-1">Severity</span>
-                          <span className="text-2xl font-headline">{item.severityIndex}/10</span>
+                      <div className="grid grid-cols-3 gap-4 border-t border-border pt-6">
+                        <div>
+                          <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Severity</span>
+                          <span className="text-xl font-headline">{item.severityIndex}/10</span>
                         </div>
-                        <div className="p-4 border-4 border-black bg-white">
-                          <span className="block text-xs font-bold uppercase mb-1">Impact</span>
-                          <span className="text-2xl font-headline">{item.impactIndex}/10</span>
+                        <div>
+                          <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Impact</span>
+                          <span className="text-xl font-headline">{item.impactIndex}/10</span>
                         </div>
-                        <div className="p-4 border-4 border-black bg-white">
-                          <span className="block text-xs font-bold uppercase mb-1">Risk</span>
-                          <span className="text-2xl font-headline">{item.recurrenceRisk}/10</span>
+                        <div>
+                          <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Risk</span>
+                          <span className="text-xl font-headline">{item.recurrenceRisk}/10</span>
                         </div>
                       </div>
                     </div>
@@ -296,45 +297,45 @@ export default function Collector() {
             </div>
           </div>
 
-          {/* Sidebar - Mondrian Style */}
-          <aside className="lg:col-span-4 bg-white flex flex-col">
-            <div className="p-12 border-b-8 border-black bg-mondrian-blue text-white">
-               <h2 className="text-5xl font-headline mb-8 uppercase">Citizen Audit</h2>
-               <Link to="/town-check" className="group block p-10 border-8 border-black bg-white text-black hover:bg-black hover:text-white transition-all">
+          {/* Sidebar */}
+          <aside className="lg:col-span-4 space-y-12">
+            <div className="p-8 bg-primary text-white">
+               <h2 className="text-3xl font-headline mb-8 tracking-tighter uppercase">Citizen Audit</h2>
+               <Link to="/town-check" className="group block p-8 bg-white/10 border border-white/20 hover:bg-white/20 transition-all">
                   <div className="flex items-center justify-between mb-8">
-                    <MapPin className="w-16 h-16" />
-                    <ArrowRight className="w-10 h-10 group-hover:translate-x-4 transition-transform" />
+                    <MapPin className="w-12 h-12" />
+                    <ArrowRight className="w-8 h-8 group-hover:translate-x-3 transition-transform" />
                   </div>
-                  <h3 className="text-4xl font-headline mb-4 uppercase">街の診断へ</h3>
-                  <p className="text-xl font-serif italic opacity-80">
+                  <h3 className="text-2xl font-headline mb-2 uppercase">街の診断へ</h3>
+                  <p className="text-lg font-serif italic text-white/70">
                     あなたの街の住みやすさを評価。
                   </p>
                </Link>
             </div>
             
-            <div className="p-12 border-b-8 border-black bg-mondrian-yellow">
-               <h2 className="text-5xl font-headline mb-8 uppercase text-black">Resources</h2>
+            <div className="p-8 bg-surface border border-border">
+               <h2 className="text-3xl font-headline mb-8 tracking-tighter uppercase">Resources</h2>
                <div className="space-y-8">
-                  <div className="p-8 border-8 border-black bg-white">
-                    <h4 className="text-2xl font-headline mb-4 uppercase">Journalist Toolkit</h4>
-                    <p className="text-lg font-serif italic mb-6">
+                  <div className="p-6 bg-background border border-border">
+                    <h4 className="text-xl font-headline mb-2 uppercase">Journalist Toolkit</h4>
+                    <p className="text-sm font-serif italic text-on-surface-variant mb-6">
                       すべてのデータはCSV形式でダウンロード可能です。
                     </p>
                     <button 
                       onClick={exportToCSV}
-                      className="w-full py-4 bg-black text-white font-headline text-xl hover:bg-secondary transition-all"
+                      className="w-full py-4 bg-foreground text-background font-headline text-lg hover:bg-primary transition-all"
                     >
                       DOWNLOAD CSV
                     </button>
                   </div>
-                  <div className="aspect-square bg-secondary border-8 border-black flex items-center justify-center">
-                     <Database className="w-32 h-32 text-white" />
+                  <div className="aspect-square bg-primary/5 border border-primary/10 flex items-center justify-center">
+                     <Database className="w-24 h-24 text-primary/20" />
                   </div>
                </div>
             </div>
             
-            <div className="flex-1 bg-black p-12 flex items-end">
-               <span className="text-white font-headline text-4xl tracking-tighter opacity-40">PROJECT MANA ARCHIVE</span>
+            <div className="pt-12 border-t border-border">
+               <span className="text-xs font-bold tracking-[0.2em] text-on-surface-variant uppercase opacity-40">PROJECT MANA ARCHIVE</span>
             </div>
           </aside>
         </div>

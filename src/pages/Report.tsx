@@ -49,25 +49,27 @@ export default function Report() {
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-8">
+      <div className="min-h-screen flex items-center justify-center bg-background px-6">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-2xl w-full bg-white p-16 border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] text-center"
+          className="max-w-2xl w-full bg-surface p-12 lg:p-20 border border-border rounded-[2.5rem] text-center shadow-2xl shadow-primary/5"
         >
-          <CheckCircle className="w-32 h-32 text-secondary mx-auto mb-12" />
-          <h2 className="text-5xl font-headline text-black mb-8 uppercase tracking-tighter">Report Submitted</h2>
-          <p className="text-2xl font-serif italic text-on-surface-variant mb-12 leading-relaxed">
+          <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-10">
+            <CheckCircle className="w-12 h-12 text-primary" />
+          </div>
+          <h2 className="text-5xl font-headline text-foreground mb-8 tracking-tighter">Report Submitted</h2>
+          <p className="text-xl font-serif italic text-on-surface-variant mb-12 leading-relaxed">
             あなたの貴重な証言は、不作為のデータベースに記録されました。沈黙を破る第一歩をありがとうございます。
           </p>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <button 
               onClick={() => setStatus('idle')}
-              className="bg-black text-white px-12 py-6 font-headline text-2xl border-4 border-black hover:bg-secondary transition-all shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+              className="bg-primary text-white px-10 py-5 rounded-full font-headline text-xl uppercase tracking-widest hover:bg-foreground transition-all"
             >
               別の報告を行う
             </button>
-            <Link to="/" className="text-2xl font-headline border-b-4 border-black hover:text-secondary hover:border-secondary transition-all pb-2 uppercase tracking-widest">
+            <Link to="/" className="text-sm font-mono uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors py-4">
               ホームへ戻る
             </Link>
           </div>
@@ -77,119 +79,133 @@ export default function Report() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-20">
-      <div className="max-w-4xl mx-auto px-8">
-        <Link to="/" className="inline-flex items-center gap-4 text-2xl font-headline border-b-4 border-black mb-16 hover:text-secondary hover:border-secondary transition-all pb-2 uppercase tracking-widest group">
-          <ArrowLeft className="w-6 h-6 group-hover:-translate-x-2 transition-transform" />
+    <div className="min-h-screen bg-background pt-24 pb-20">
+      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+        <Link to="/" className="inline-flex items-center gap-3 text-xs font-mono uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary transition-all mb-16 group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Home
         </Link>
 
-        {/* Header Section - Mondrian Style */}
-        <section className="grid grid-cols-12 border-8 border-black bg-white mb-16">
-          <div className="col-span-12 lg:col-span-8 p-12 border-r-8 border-black">
-            <h1 className="text-6xl font-headline text-black mb-8 leading-none tracking-tighter">体験を<span className="text-secondary italic">記録する</span></h1>
-            <p className="text-xl font-serif italic text-on-surface-variant leading-relaxed">
-              行政の不作為や不祥事に関するあなたの体験を、証拠として記録します。
-              このデータは、AIによる法的精査とアーカイブの構築に使用されます。
-            </p>
-          </div>
-          <div className="col-span-12 lg:col-span-4 bg-mondrian-blue p-12 flex items-center justify-center">
-            <Send className="w-24 h-24 text-white" />
+        {/* Header Section - Elegant Editorial Style */}
+        <section className="mb-16">
+          <div className="flex flex-col lg:flex-row justify-between items-end gap-8 border-b border-border pb-12">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-8 h-[1px] bg-primary"></span>
+                <span className="editorial-label text-primary font-bold">Documenting Inaction</span>
+              </div>
+              <h1 className="text-6xl lg:text-7xl font-headline text-foreground mb-8 leading-[0.9] tracking-tighter">
+                体験を<span className="text-primary italic font-serif lowercase">記録する</span>
+              </h1>
+              <p className="text-xl font-serif italic text-on-surface-variant leading-relaxed">
+                行政の不作為や不祥事に関するあなたの体験を、証拠として記録します。
+                このデータは、AIによる法的精査とアーカイブの構築に使用されます。
+              </p>
+            </div>
+            <div className="hidden lg:flex w-20 h-20 rounded-full border border-border items-center justify-center">
+              <Send className="w-8 h-8 text-primary" />
+            </div>
           </div>
         </section>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-0 border-8 border-black bg-white shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] mb-16">
-          <div className="col-span-12 p-12 border-b-8 border-black bg-mondrian-yellow/10">
-            <label className="block text-xl font-headline uppercase tracking-widest mb-6">事案のタイトル</label>
-            <input 
-              required
-              type="text" 
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="例：〇〇市役所での窓口対応拒否"
-              className="w-full bg-white border-4 border-black px-8 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-yellow/20 transition-colors"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="bg-surface border border-border rounded-[2.5rem] overflow-hidden shadow-2xl shadow-primary/5 mb-16">
+          <div className="p-10 lg:p-16 space-y-12">
+            <div className="space-y-4">
+              <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">事案のタイトル</label>
+              <input 
+                required
+                type="text" 
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="例：〇〇市役所での窓口対応拒否"
+                className="w-full bg-transparent border-b border-border px-0 py-4 text-2xl font-serif italic outline-none focus:border-primary transition-colors placeholder:text-border/50"
+              />
+            </div>
 
-          <div className="col-span-12 md:col-span-6 p-12 border-b-8 md:border-b-0 md:border-r-8 border-black bg-white">
-            <label className="block text-xl font-headline uppercase tracking-widest mb-6">カテゴリー</label>
-            <div className="relative">
-              <select 
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full bg-white border-4 border-black px-8 py-6 text-xl font-serif italic appearance-none outline-none focus:bg-mondrian-blue/10 transition-colors"
-              >
-                <option value="inaction">不作為 (なすべきことをしない)</option>
-                <option value="misconduct">不祥事 (不正・不適切な行為)</option>
-                <option value="other">その他</option>
-              </select>
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
-                <div className="w-4 h-4 border-r-4 border-b-4 border-black rotate-45"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">カテゴリー</label>
+                <div className="relative">
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full bg-transparent border-b border-border px-0 py-4 text-lg font-serif italic appearance-none outline-none focus:border-primary transition-colors"
+                  >
+                    <option value="inaction">不作為 (なすべきことをしない)</option>
+                    <option value="misconduct">不祥事 (不正・不適切な行為)</option>
+                    <option value="other">その他</option>
+                  </select>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <div className="w-2 h-2 border-r border-b border-on-surface-variant rotate-45"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">発生場所</label>
+                <input 
+                  required
+                  type="text" 
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="例：〇〇県〇〇市"
+                  className="w-full bg-transparent border-b border-border px-0 py-4 text-lg font-serif italic outline-none focus:border-primary transition-colors placeholder:text-border/50"
+                />
               </div>
             </div>
-          </div>
 
-          <div className="col-span-12 md:col-span-6 p-12 bg-white">
-            <label className="block text-xl font-headline uppercase tracking-widest mb-6">発生場所</label>
-            <input 
-              required
-              type="text" 
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              placeholder="例：〇〇県〇〇市"
-              className="w-full bg-white border-4 border-black px-8 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-blue/10 transition-colors"
-            />
-          </div>
-
-          <div className="col-span-12 p-12 border-t-8 border-black bg-mondrian-blue/5">
-            <label className="block text-xl font-headline uppercase tracking-widest mb-6">発生時期</label>
-            <input 
-              required
-              type="date" 
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="w-full bg-white border-4 border-black px-8 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-blue/10 transition-colors"
-            />
-          </div>
-
-          <div className="col-span-12 p-12 border-t-8 border-black bg-white">
-            <label className="block text-xl font-headline uppercase tracking-widest mb-6">詳細な内容</label>
-            <textarea 
-              required
-              rows={6}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="どのような不作為や不祥事があったのか、具体的に記入してください。"
-              className="w-full bg-white border-4 border-black px-8 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-yellow/10 transition-colors resize-none"
-            />
-          </div>
-
-          {status === 'error' && (
-            <div className="col-span-12 p-12 bg-secondary text-white flex items-center gap-8 border-t-8 border-black">
-              <AlertCircle className="w-12 h-12 shrink-0" />
-              <p className="text-2xl font-headline uppercase tracking-tighter">{errorMessage}</p>
+            <div className="space-y-4">
+              <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">発生時期</label>
+              <input 
+                required
+                type="date" 
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                className="w-full bg-transparent border-b border-border px-0 py-4 text-lg font-serif italic outline-none focus:border-primary transition-colors"
+              />
             </div>
-          )}
 
-          <div className="col-span-12 p-12 border-t-8 border-black bg-black">
+            <div className="space-y-4">
+              <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">詳細な内容</label>
+              <textarea 
+                required
+                rows={6}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="どのような不作為や不祥事があったのか、具体的に記入してください。"
+                className="w-full bg-transparent border border-border rounded-2xl p-6 text-lg font-serif italic outline-none focus:border-primary transition-colors resize-none"
+              />
+            </div>
+
+            {status === 'error' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-6 bg-secondary/10 text-secondary border border-secondary/20 rounded-2xl flex items-center gap-4"
+              >
+                <AlertCircle className="w-6 h-6 shrink-0" />
+                <p className="text-sm font-bold uppercase tracking-widest">{errorMessage}</p>
+              </motion.div>
+            )}
+
             <button 
               type="submit"
               disabled={status === 'submitting'}
-              className="w-full bg-secondary text-white px-12 py-8 font-headline text-4xl border-4 border-black shadow-[12px_12px_0px_0px_rgba(255,255,255,0.2)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-8 disabled:opacity-50 disabled:scale-100"
+              className="w-full bg-primary text-white px-12 py-6 rounded-full font-headline text-2xl uppercase tracking-[0.2em] hover:bg-foreground transition-all flex items-center justify-center gap-6 disabled:opacity-30 disabled:cursor-not-allowed group"
             >
-              {status === 'submitting' ? 'SENDING...' : 'SUBMIT REPORT'}
-              <Send className="w-12 h-12" />
+              {status === 'submitting' ? 'Sending...' : 'Submit Report'}
+              <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </button>
           </div>
         </form>
 
-        <div className="grid grid-cols-12 border-8 border-black bg-white">
-          <div className="col-span-12 md:col-span-4 bg-mondrian-yellow p-12 flex items-center justify-center border-b-8 md:border-b-0 md:border-r-8 border-black">
-            <ShieldCheck className="w-24 h-24 text-black" />
+        <div className="bg-surface border border-border rounded-[2.5rem] p-10 lg:p-16 flex flex-col md:flex-row items-center gap-12">
+          <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-10 h-10 text-primary" />
           </div>
-          <div className="col-span-12 md:col-span-8 p-12">
-            <h3 className="text-4xl font-headline text-black mb-6 uppercase tracking-tighter">Privacy & Security</h3>
-            <p className="text-xl font-serif italic text-on-surface-variant leading-relaxed">
+          <div className="space-y-4">
+            <h3 className="text-3xl font-headline text-foreground tracking-tight">Privacy & Security</h3>
+            <p className="text-base font-serif italic text-on-surface-variant leading-relaxed">
               送信された情報は、Project Manaのデータベースに安全に保存されます。
               個人を特定できる情報は、本人の同意なく公開されることはありません。
               記録されたデータは、行政の透明性向上と法的精査の目的でのみ使用されます。

@@ -91,189 +91,232 @@ export default function TownCheck() {
   }));
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="max-w-screen-2xl mx-auto">
-        {/* Header - Mondrian Style */}
-        <header className="grid grid-cols-12 border-b-8 border-black bg-white">
-          <div className="col-span-12 lg:col-span-8 p-16 border-r-8 border-black">
-            <span className="editorial-label">Audit No. 03</span>
-            <h1 className="text-[10vw] font-headline mb-6 leading-none tracking-tighter">TOWN<br />CHECK</h1>
-            <p className="text-3xl font-serif italic text-on-surface-variant leading-relaxed max-w-2xl">
-              あなたの街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化し、より良い街づくりへの一歩を。
-            </p>
-          </div>
-          <div className="col-span-12 lg:col-span-4 grid grid-rows-2">
-            <div className="bg-mondrian-blue border-b-8 border-black p-12 flex items-center justify-center">
-               <MapPin className="w-24 h-24 text-white" />
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+        {/* Header - Elegant Editorial Style */}
+        <header className="mb-16 border-b border-border pb-12">
+          <div className="flex flex-col lg:flex-row justify-between items-end gap-8">
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-8 h-[1px] bg-primary"></span>
+                <span className="editorial-label text-primary font-bold">Audit No. 03</span>
+              </div>
+              <h1 className="text-7xl lg:text-9xl font-headline mb-8 leading-[0.9] tracking-tighter text-foreground">
+                TOWN<br />CHECK
+              </h1>
+              <p className="text-2xl lg:text-3xl font-serif italic text-on-surface-variant leading-relaxed">
+                あなたの街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化し、より良い街づくりへの一歩を。
+              </p>
             </div>
-            <div className="bg-mondrian-yellow p-12 flex flex-col items-center justify-center">
-               <span className="text-black font-headline text-5xl rotate-12">AUDIT</span>
+            <div className="hidden lg:flex flex-col items-end text-right">
+              <div className="w-24 h-24 rounded-full border border-border flex items-center justify-center mb-4">
+                <MapPin className="w-10 h-10 text-primary" />
+              </div>
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-on-surface-variant">Civic Audit System v2.0</span>
             </div>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-8 border-black">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Main Form Area */}
-          <div className="lg:col-span-7 border-r-8 border-black bg-white p-16">
-            <div className="max-w-3xl">
-              <h2 className="text-5xl font-headline mb-12 uppercase">診断を開始する</h2>
-              
-              <div className="space-y-16">
-                {/* Town Selection */}
-                <div className="p-10 border-8 border-black bg-mondrian-yellow/5">
-                  <label className="block text-xl font-bold uppercase tracking-widest mb-6">診断対象の街</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={townName}
-                      onChange={(e) => setTownName(e.target.value)}
-                      placeholder="例: 東京都新宿区, 兵庫県庁"
-                      className="w-full bg-white border-4 border-black px-12 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-yellow/10 transition-colors"
-                    />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-black" />
-                  </div>
-                </div>
-
-                {/* Evaluation Categories */}
+          <div className="lg:col-span-7">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-16"
+            >
+              <section>
+                <h2 className="text-3xl font-headline mb-10 flex items-center gap-4">
+                  <span className="text-sm font-mono text-primary/50">01</span>
+                  <span className="uppercase tracking-widest">診断を開始する</span>
+                </h2>
+                
                 <div className="space-y-12">
-                  {EVALUATION_DIMENSIONS.map((dim, index) => (
-                    <div key={dim.key} className="p-8 border-8 border-black bg-white hover:bg-mondrian-yellow/5 transition-colors">
-                      <div className="flex justify-between items-end mb-6">
-                        <div className="flex items-center gap-6">
-                          <span className="font-headline text-6xl text-black/20">
-                            {String(index + 1).padStart(2, '0')}
-                          </span>
-                          <div>
-                            <h3 className="font-headline text-2xl uppercase tracking-widest">{dim.label}</h3>
-                            <p className="text-sm text-on-surface-variant italic font-serif">{dim.description}</p>
+                  {/* Town Selection */}
+                  <div className="group">
+                    <label className="block text-xs font-bold uppercase tracking-[0.2em] mb-4 text-on-surface-variant">診断対象の街</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={townName}
+                        onChange={(e) => setTownName(e.target.value)}
+                        placeholder="例: 東京都新宿区, 兵庫県庁"
+                        className="w-full bg-surface border-b border-border px-0 py-6 text-3xl font-serif italic outline-none focus:border-primary transition-colors placeholder:text-border/50"
+                      />
+                      <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 text-on-surface-variant group-focus-within:text-primary transition-colors" />
+                    </div>
+                  </div>
+
+                  {/* Evaluation Categories */}
+                  <div className="grid gap-8">
+                    {EVALUATION_DIMENSIONS.map((dim, index) => (
+                      <div key={dim.key} className="p-8 bg-surface border border-border rounded-2xl hover:border-primary/30 transition-all group">
+                        <div className="flex justify-between items-start mb-8">
+                          <div className="flex gap-6">
+                            <span className="font-headline text-4xl text-primary/10 group-hover:text-primary/20 transition-colors">
+                              {String(index + 1).padStart(2, '0')}
+                            </span>
+                            <div>
+                              <h3 className="font-headline text-xl uppercase tracking-widest mb-1">{dim.label}</h3>
+                              <p className="text-sm text-on-surface-variant italic font-serif">{dim.description}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-4xl font-headline text-primary">{scores[dim.key]}</span>
+                            <span className="text-xs text-on-surface-variant ml-1 font-mono uppercase">/ 10</span>
                           </div>
                         </div>
-                        <span className="text-5xl font-headline text-secondary">{scores[dim.key]}<span className="text-sm text-black ml-1 font-sans">/ 10</span></span>
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          step="1"
+                          value={scores[dim.key]}
+                          onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
+                          className="w-full h-1.5 bg-border rounded-full appearance-none cursor-pointer accent-primary"
+                        />
                       </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        step="1"
-                        value={scores[dim.key]}
-                        onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
-                        className="w-full h-4 bg-black/10 rounded-none appearance-none cursor-pointer accent-secondary border-2 border-black"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="p-10 border-8 border-black bg-black text-white">
-                  <label className="block text-xl font-bold uppercase tracking-widest mb-6">具体的な理由・コメント</label>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="最近の行政の対応や、街の雰囲気について感じていることを自由に記述してください。"
-                    rows={6}
-                    className="w-full bg-white/10 border-2 border-white/20 p-6 text-xl font-serif italic outline-none focus:bg-white/20 transition-colors text-white"
-                  />
-                </div>
-
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving || !townName.trim()}
-                  className="w-full py-10 bg-secondary text-white font-headline text-4xl hover:bg-black transition-all border-8 border-black disabled:opacity-50"
-                >
-                  {isSaving ? <Loader2 className="w-12 h-12 animate-spin mx-auto" /> : "SUBMIT AUDIT"}
-                </button>
-
-                {error && (
-                  <div className="p-6 bg-secondary text-white border-8 border-black flex items-center gap-4">
-                    <AlertCircle className="w-8 h-8" />
-                    <span className="font-bold uppercase tracking-widest">{error}</span>
+                    ))}
                   </div>
-                )}
-                {success && (
-                  <div className="p-6 bg-mondrian-blue text-white border-8 border-black flex items-center gap-4">
-                    <CheckCircle2 className="w-8 h-8" />
-                    <span className="font-bold uppercase tracking-widest">{success}</span>
+
+                  <div className="space-y-4">
+                    <label className="block text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant">具体的な理由・コメント</label>
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="最近の行政の対応や、街の雰囲気について感じていることを自由に記述してください。"
+                      rows={6}
+                      className="w-full bg-surface border border-border rounded-2xl p-8 text-xl font-serif italic outline-none focus:border-primary transition-colors resize-none"
+                    />
                   </div>
-                )}
-              </div>
-            </div>
+
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving || !townName.trim()}
+                    className="w-full py-8 bg-primary text-white font-headline text-2xl uppercase tracking-[0.2em] hover:bg-foreground transition-all rounded-full disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  >
+                    {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : "Submit Audit"}
+                  </button>
+
+                  {error && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-6 bg-secondary/10 text-secondary border border-secondary/20 rounded-2xl flex items-center gap-4"
+                    >
+                      <AlertCircle className="w-6 h-6" />
+                      <span className="text-sm font-bold uppercase tracking-widest">{error}</span>
+                    </motion.div>
+                  )}
+                  {success && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-6 bg-primary/10 text-primary border border-primary/20 rounded-2xl flex items-center gap-4"
+                    >
+                      <CheckCircle2 className="w-6 h-6" />
+                      <span className="text-sm font-bold uppercase tracking-widest">{success}</span>
+                    </motion.div>
+                  )}
+                </div>
+              </section>
+            </motion.div>
           </div>
 
           {/* Sidebar / Visualization */}
-          <aside className="lg:col-span-5 bg-white flex flex-col">
-            <div className="p-12 border-b-8 border-black bg-mondrian-yellow aspect-square flex flex-col">
-               <span className="editorial-label !mb-8 text-black/60">Visual Analysis</span>
-               <h2 className="text-5xl font-headline text-black mb-12 text-center tracking-tighter">
-                 HUMAN RIGHTS<br />RADAR CHART
-               </h2>
-               <div className="flex-1 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                      <PolarGrid stroke="#000" strokeDasharray="3 3" />
-                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#000', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em' }} />
-                      <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
-                      <Radar
-                        name="Score"
-                        dataKey="A"
-                        stroke="#000"
-                        strokeWidth={4}
-                        fill="#F27D26"
-                        fillOpacity={0.6}
-                      />
-                    </RadarChart>
-                  </ResponsiveContainer>
-               </div>
-            </div>
+          <aside className="lg:col-span-5 space-y-12">
+            <div className="sticky top-32 space-y-12">
+              <div className="p-10 bg-surface border border-border rounded-3xl overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                <div className="relative z-10">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary mb-6 block">Visual Analysis</span>
+                  <h2 className="text-4xl font-headline text-foreground mb-10 leading-tight tracking-tighter">
+                    HUMAN RIGHTS<br />RADAR CHART
+                  </h2>
+                  <div className="aspect-square w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                        <PolarGrid stroke="var(--border)" strokeDasharray="4 4" />
+                        <PolarAngleAxis 
+                          dataKey="subject" 
+                          tick={{ fill: 'var(--on-surface-variant)', fontSize: 10, fontWeight: 500, letterSpacing: '0.1em' }} 
+                        />
+                        <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
+                        <Radar
+                          name="Score"
+                          dataKey="A"
+                          stroke="var(--primary)"
+                          strokeWidth={2}
+                          fill="var(--primary)"
+                          fillOpacity={0.15}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
 
-            <div className="p-12 border-b-8 border-black bg-mondrian-blue text-white flex-1">
-               <span className="editorial-label !mb-4 text-white/60">Community Voices</span>
-               <h2 className="text-5xl font-headline mb-12 uppercase tracking-tighter">
-                 AUDIT LOG: {townName || "GLOBAL"}
-               </h2>
-               <div className="space-y-8 max-h-[600px] overflow-y-auto pr-6 scrollbar-mondrian">
-                  {otherEvaluations.length > 0 ? otherEvaluations.map((evalItem) => (
-                    <div key={evalItem.id} className="p-8 bg-white border-8 border-black text-black hover:translate-x-2 transition-transform">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                  <h2 className="text-xl font-headline uppercase tracking-widest">
+                    Audit Log: <span className="text-primary italic font-serif lowercase">{townName || "Global"}</span>
+                  </h2>
+                  <MessageSquare className="w-5 h-5 text-on-surface-variant" />
+                </div>
+                
+                <div className="space-y-6 max-h-[800px] overflow-y-auto pr-4 scrollbar-thin">
+                  {otherEvaluations.length > 0 ? otherEvaluations.map((evalItem, idx) => (
+                    <motion.div 
+                      key={evalItem.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-8 bg-surface border border-border rounded-2xl hover:border-primary/30 transition-all"
+                    >
                       <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-secondary text-white border-4 border-black flex items-center justify-center font-headline text-2xl">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-headline text-lg">
                             {evalItem.townName.charAt(0)}
                           </div>
                           <div>
-                            <span className="text-xs font-bold uppercase tracking-widest block">Citizen Auditor</span>
-                            <span className="text-[10px] font-mono">
+                            <span className="text-[10px] font-bold uppercase tracking-widest block text-on-surface-variant">Citizen Auditor</span>
+                            <span className="text-[10px] font-mono text-border">
                               {evalItem.createdAt?.toDate().toLocaleDateString('ja-JP')}
                             </span>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                           <div className="w-8 h-8 bg-mondrian-yellow border-2 border-black" />
-                           <div className="w-8 h-8 bg-mondrian-blue border-2 border-black" />
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map(i => (
+                            <div key={i} className="w-1 h-1 rounded-full bg-border" />
+                          ))}
                         </div>
                       </div>
-                      <h3 className="text-2xl font-headline mb-4">{evalItem.townName}</h3>
-                      <p className="text-lg font-serif italic line-clamp-3 mb-6">
-                        {evalItem.comment}
+                      <h3 className="text-xl font-headline mb-4 text-foreground">{evalItem.townName}</h3>
+                      <p className="text-base font-serif italic text-on-surface-variant line-clamp-3 mb-6 leading-relaxed">
+                        "{evalItem.comment}"
                       </p>
-                      <div className="grid grid-cols-3 gap-4 border-t-4 border-black pt-4">
-                         <div className="text-center">
-                            <div className="text-[10px] font-bold uppercase">HR</div>
-                            <div className="font-headline text-xl">{evalItem.humanRights}</div>
+                      <div className="flex items-center gap-6 border-t border-border pt-6">
+                         <div className="flex flex-col">
+                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">HR</span>
+                            <span className="font-headline text-lg text-primary">{evalItem.humanRights}</span>
                          </div>
-                         <div className="text-center">
-                            <div className="text-[10px] font-bold uppercase">TR</div>
-                            <div className="font-headline text-xl">{evalItem.transparency}</div>
+                         <div className="flex flex-col">
+                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">TR</span>
+                            <span className="font-headline text-lg text-primary">{evalItem.transparency}</span>
                          </div>
-                         <div className="text-center">
-                            <div className="text-[10px] font-bold uppercase">QoL</div>
-                            <div className="font-headline text-xl">{evalItem.qol}</div>
+                         <div className="flex flex-col">
+                            <span className="text-[9px] font-mono uppercase tracking-widest text-border">AC</span>
+                            <span className="font-headline text-lg text-primary">{evalItem.accountability}</span>
                          </div>
                       </div>
-                    </div>
+                    </motion.div>
                   )) : (
-                    <div className="p-12 border-8 border-black border-dashed text-center opacity-40">
-                       <span className="font-headline text-2xl">NO AUDITS YET</span>
+                    <div className="py-20 border border-dashed border-border rounded-3xl text-center">
+                       <p className="font-serif italic text-on-surface-variant">No audits recorded yet for this location.</p>
                     </div>
                   )}
-               </div>
+                </div>
+              </div>
             </div>
           </aside>
         </div>
