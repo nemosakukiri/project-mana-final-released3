@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
+import { Search, Database, Activity, ArrowRight, Globe, Save, Loader2, AlertCircle, Clock, ExternalLink, Download, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
@@ -84,6 +85,34 @@ export default function Collector() {
     return () => unsubscribe();
   }, []);
 
+  const exportToCSV = () => {
+    if (recentCollections.length === 0) return;
+
+    const headers = ['Title', 'Category', 'Description', 'Severity', 'Impact', 'Recurrence', 'Date', 'Location', 'Source'];
+    const rows = recentCollections.map(item => [
+      `"${(item.title || '').replace(/"/g, '""')}"`,
+      item.category,
+      `"${(item.description || '').replace(/"/g, '""')}"`,
+      item.severityIndex,
+      item.impactIndex,
+      item.recurrenceRisk,
+      item.date,
+      item.location,
+      item.sources?.[0]?.uri || ''
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `project_mana_misconduct_db_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleCollect = async () => {
     if (!keyword.trim()) return;
     setIsCollecting(true);
@@ -125,6 +154,9 @@ export default function Collector() {
           title: item.title,
           description: item.description,
           category: item.category || "other",
+          severityIndex: item.severityIndex || 5,
+          impactIndex: item.impactIndex || 5,
+          recurrenceRisk: item.recurrenceRisk || 5,
           date: item.date || "",
           location: item.location || "",
           sources: [{ title: item.sourceTitle || "Source", uri: item.sourceUrl }],
@@ -143,243 +175,169 @@ export default function Collector() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-container-low pt-24 pb-12 px-8">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 mb-4"
-          >
-            <div className="p-3 bg-secondary/10 text-secondary rounded-xl">
-              <Database className="w-8 h-8" />
+    <div className="min-h-screen bg-white pt-24">
+      <div className="max-w-screen-2xl mx-auto">
+        {/* Header - Mondrian Style */}
+        <header className="grid grid-cols-12 border-b-8 border-black bg-white">
+          <div className="col-span-12 lg:col-span-8 p-16 border-r-8 border-black">
+            <span className="editorial-label">Archive No. 02</span>
+            <h1 className="text-[10vw] font-headline mb-6 leading-none tracking-tighter">MISCONDUCT<br />DATABASE</h1>
+            <p className="text-3xl font-serif italic text-on-surface-variant leading-relaxed max-w-2xl">
+              AIによる常時監視と記録。行政の不作為と不祥事を、記者や学者のための「一次ソース」として体系化します。
+            </p>
+          </div>
+          <div className="col-span-12 lg:col-span-4 grid grid-rows-2">
+            <div className="bg-mondrian-yellow border-b-8 border-black p-12 flex items-center justify-center">
+               <Database className="w-24 h-24 text-black" />
             </div>
-            <h1 className="text-4xl font-bold text-primary">AI自動収集システム</h1>
-          </motion.div>
-          <p className="text-on-surface-variant text-lg max-w-2xl">
-            AIがインターネット上のニュースや公開資料から、行政の不祥事や不作為に関する情報を**毎時自動的に収集**・要約します。
-          </p>
+            <div className="bg-secondary p-12 flex flex-col items-center justify-center gap-6">
+              <button 
+                onClick={exportToCSV}
+                className="w-full py-6 bg-white text-black font-headline text-2xl hover:bg-black hover:text-white transition-all border-4 border-black"
+              >
+                DOWNLOAD CSV
+              </button>
+            </div>
+          </div>
         </header>
 
-        {/* Search Area */}
-        <section className="bg-white p-8 rounded-3xl shadow-sm mb-12">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
+        {/* Search Area - Mondrian Style */}
+        <section className="grid grid-cols-12 border-b-8 border-black bg-white">
+          <div className="col-span-12 lg:col-span-9 p-16 border-r-8 border-black">
+            <h2 className="text-5xl font-headline mb-12 uppercase">AI自動収集リクエスト</h2>
+            <div className="flex flex-col md:flex-row gap-0 border-8 border-black">
               <input
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="例: 自治体 不祥事 2024, 道路建設 不作為"
-                className="w-full bg-surface-container-high border-0 border-b-2 border-outline-variant focus:border-secondary focus:ring-0 px-12 py-4 rounded-t-xl outline-none text-lg"
+                placeholder="キーワードを入力（例：自治体 不祥事 2024）"
+                className="flex-1 bg-white px-8 py-8 outline-none text-3xl font-serif italic"
               />
-              <Search className="absolute left-4 top-4.5 w-6 h-6 text-on-surface-variant" />
+              <button
+                onClick={handleCollect}
+                disabled={isCollecting || !keyword.trim()}
+                className="bg-black text-white px-16 py-8 font-headline text-3xl hover:bg-secondary transition-all disabled:opacity-50 border-l-8 border-black"
+              >
+                {isCollecting ? <Loader2 className="w-10 h-10 animate-spin" /> : "START"}
+              </button>
             </div>
-            <button
-              onClick={handleCollect}
-              disabled={isCollecting || !keyword.trim()}
-              className="bg-secondary text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-secondary/90 transition-all disabled:opacity-50"
-            >
-              {isCollecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Globe className="w-5 h-5" />}
-              AIで収集を開始
-            </button>
+          </div>
+          <div className="col-span-12 lg:col-span-3 bg-mondrian-blue p-12 flex items-center justify-center">
+             <span className="text-white font-headline text-6xl rotate-90 tracking-widest">SEARCH</span>
           </div>
         </section>
 
-        {/* Results Area */}
-        {(results.length > 0 || isCollecting) && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-8 mb-16"
-          >
-            <div className="bg-white p-10 rounded-3xl shadow-md relative">
-              <div className="flex justify-between items-center mb-8 border-b border-outline-variant/20 pb-4">
-                <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
-                  <Activity className="w-6 h-6 text-secondary" />
-                  AI収集結果 ({results.length}件)
-                </h2>
-                {results.length > 0 && (
-                  <button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="flex items-center gap-2 text-primary font-bold hover:text-secondary transition-colors disabled:opacity-50"
-                  >
-                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    全てDBに保存
-                  </button>
-                )}
-              </div>
+        {/* Results and Archive Grid - Mondrian Style */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-8 border-black">
+          {/* Main Feed */}
+          <div className="lg:col-span-8 border-r-8 border-black bg-white">
+            <div className="p-12 border-b-8 border-black flex items-center justify-between bg-mondrian-yellow/10">
+              <h2 className="text-6xl font-headline uppercase">Latest Discoveries</h2>
+              <span className="text-xl font-mono font-bold">UPDATED HOURLY</span>
+            </div>
 
-              {isCollecting ? (
-                <div className="py-20 flex flex-col items-center justify-center gap-4 text-on-surface-variant">
-                  <Loader2 className="w-12 h-12 animate-spin text-secondary" />
-                  <p className="animate-pulse">AIが最新情報を収集中です...</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-6">
-                  {results.map((item, idx) => (
-                    <div key={idx} className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex flex-col gap-1">
-                          <h3 className="text-xl font-bold text-primary">{item.title}</h3>
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full w-fit ${
-                            item.category === 'individual' ? 'bg-orange-100 text-orange-700' : 
-                            item.category === 'organizational' ? 'bg-blue-100 text-blue-700' : 
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                            {item.category === 'individual' ? '個人不祥事' : 
-                             item.category === 'organizational' ? '組織的不祥事' : 'その他'}
-                          </span>
-                        </div>
-                        <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">NEW</span>
+            {isCollecting && (
+              <div className="py-32 text-center border-b-8 border-black">
+                <Loader2 className="w-24 h-24 animate-spin mx-auto text-secondary mb-8" />
+                <p className="font-serif italic text-4xl">AIが深層ウェブから情報を抽出中...</p>
+              </div>
+            )}
+
+            <div className="divide-y-8 divide-black">
+              {(results.length > 0 ? results : recentCollections.slice(0, 15)).map((item, idx) => (
+                <motion.article 
+                  key={item.id || idx}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-12 hover:bg-mondrian-yellow/5 transition-colors group"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+                    <div className="md:col-span-4 aspect-[4/3] border-8 border-black bg-black overflow-hidden relative">
+                      <img 
+                        src={`https://picsum.photos/seed/${item.id || idx}/600/450?grayscale`} 
+                        alt="" 
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute top-4 left-4 bg-secondary text-white px-4 py-2 font-headline text-lg border-2 border-black">
+                        {item.category}
                       </div>
-                      <p className="text-on-surface-variant mb-4 leading-relaxed">{item.description}</p>
+                    </div>
+                    <div className="md:col-span-8 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-4 mb-4">
+                          <span className="text-sm font-mono font-bold bg-black text-white px-3 py-1">{item.date || "DATE UNKNOWN"}</span>
+                          <span className="text-sm font-mono font-bold border-2 border-black px-3 py-1">{item.location}</span>
+                        </div>
+                        <h3 className="text-5xl font-headline mb-6 leading-tight group-hover:text-secondary transition-colors uppercase">{item.title}</h3>
+                        <p className="text-xl font-serif italic text-on-surface-variant leading-relaxed line-clamp-3 mb-8">
+                          {item.description}
+                        </p>
+                      </div>
                       
-                      {/* Visual Indices */}
-                      <div className="grid grid-cols-3 gap-4 mb-6 bg-white/50 p-4 rounded-xl border border-outline-variant/5">
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
-                            <span>深刻度</span>
-                            <span>{item.severityIndex || 5}/10</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(item.severityIndex || 5) * 10}%` }}
-                              className="h-full bg-error"
-                            />
-                          </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="p-4 border-4 border-black bg-white">
+                          <span className="block text-xs font-bold uppercase mb-1">Severity</span>
+                          <span className="text-2xl font-headline">{item.severityIndex}/10</span>
                         </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
-                            <span>社会的影響</span>
-                            <span>{item.impactIndex || 5}/10</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(item.impactIndex || 5) * 10}%` }}
-                              className="h-full bg-secondary"
-                            />
-                          </div>
+                        <div className="p-4 border-4 border-black bg-white">
+                          <span className="block text-xs font-bold uppercase mb-1">Impact</span>
+                          <span className="text-2xl font-headline">{item.impactIndex}/10</span>
                         </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-primary uppercase tracking-tighter">
-                            <span>再発リスク</span>
-                            <span>{item.recurrenceRisk || 5}/10</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(item.recurrenceRisk || 5) * 10}%` }}
-                              className="h-full bg-primary"
-                            />
-                          </div>
+                        <div className="p-4 border-4 border-black bg-white">
+                          <span className="block text-xs font-bold uppercase mb-1">Risk</span>
+                          <span className="text-2xl font-headline">{item.recurrenceRisk}/10</span>
                         </div>
                       </div>
-
-                      <div className="flex flex-wrap gap-4 text-sm text-on-surface-variant mb-4">
-                        {item.date && <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {item.date}</span>}
-                        {item.location && <span className="flex items-center gap-1"><Globe className="w-4 h-4" /> {item.location}</span>}
-                      </div>
-                      <a 
-                        href={item.sourceUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-secondary font-bold hover:underline"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        {item.sourceTitle || "ソースを確認"}
-                      </a>
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {error && (
-                <div className="mt-6 p-4 bg-error-container text-on-error-container rounded-xl flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5" />
-                  {error}
-                </div>
-              )}
-              {success && (
-                <div className="mt-6 p-4 bg-primary-container text-primary-fixed rounded-xl flex items-center gap-2">
-                  <Save className="w-5 h-5" />
-                  {success}
-                </div>
-              )}
+                  </div>
+                </motion.article>
+              ))}
             </div>
-          </motion.section>
-        )}
-
-        {/* Recent Collections Feed */}
-        <section className="mt-16">
-          <div className="flex items-center gap-3 mb-8">
-            <Clock className="w-6 h-6 text-secondary" />
-            <h2 className="text-2xl font-bold text-primary">最近の収集アーカイブ</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {recentCollections.map((item) => (
-              <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary transition-all">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-secondary uppercase tracking-wider">AI Discovery</span>
-                    <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
-                      item.category === 'individual' ? 'bg-orange-50 text-orange-600' : 
-                      item.category === 'organizational' ? 'bg-blue-50 text-blue-600' : 
-                      'bg-gray-50 text-gray-600'
-                    }`}>
-                      {item.category === 'individual' ? '個人' : 
-                       item.category === 'organizational' ? '組織' : '他'}
-                    </span>
-                  </div>
-                  <span className="text-xs text-on-surface-variant">
-                    {item.createdAt?.toDate().toLocaleDateString('ja-JP')}
-                  </span>
-                </div>
-                <h4 className="text-lg font-bold text-primary mb-2 line-clamp-1">{item.title}</h4>
-                <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.description}</p>
-                
-                {/* Visual Indices (Mini) */}
-                <div className="flex gap-4 mb-4 bg-surface-container-low p-2 rounded-lg">
-                  <div className="flex-1 space-y-1">
-                    <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
-                      <span>深刻度</span>
-                      <span>{item.severityIndex || 5}</span>
-                    </div>
-                    <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
-                      <div className="h-full bg-error" style={{ width: `${(item.severityIndex || 5) * 10}%` }} />
-                    </div>
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex justify-between text-[8px] font-bold text-primary uppercase">
-                      <span>影響</span>
-                      <span>{item.impactIndex || 5}</span>
-                    </div>
-                    <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
-                      <div className="h-full bg-secondary" style={{ width: `${(item.impactIndex || 5) * 10}%` }} />
-                    </div>
-                  </div>
-                </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {item.sources?.slice(0, 3).map((source: any, idx: number) => (
-                    <a 
-                      key={idx} 
-                      href={source.uri} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-[10px] bg-surface-container-high px-2 py-1 rounded flex items-center gap-1 hover:bg-secondary/10 transition-colors"
+          {/* Sidebar - Mondrian Style */}
+          <aside className="lg:col-span-4 bg-white flex flex-col">
+            <div className="p-12 border-b-8 border-black bg-mondrian-blue text-white">
+               <h2 className="text-5xl font-headline mb-8 uppercase">Citizen Audit</h2>
+               <Link to="/town-check" className="group block p-10 border-8 border-black bg-white text-black hover:bg-black hover:text-white transition-all">
+                  <div className="flex items-center justify-between mb-8">
+                    <MapPin className="w-16 h-16" />
+                    <ArrowRight className="w-10 h-10 group-hover:translate-x-4 transition-transform" />
+                  </div>
+                  <h3 className="text-4xl font-headline mb-4 uppercase">街の診断へ</h3>
+                  <p className="text-xl font-serif italic opacity-80">
+                    あなたの街の住みやすさを評価。
+                  </p>
+               </Link>
+            </div>
+            
+            <div className="p-12 border-b-8 border-black bg-mondrian-yellow">
+               <h2 className="text-5xl font-headline mb-8 uppercase text-black">Resources</h2>
+               <div className="space-y-8">
+                  <div className="p-8 border-8 border-black bg-white">
+                    <h4 className="text-2xl font-headline mb-4 uppercase">Journalist Toolkit</h4>
+                    <p className="text-lg font-serif italic mb-6">
+                      すべてのデータはCSV形式でダウンロード可能です。
+                    </p>
+                    <button 
+                      onClick={exportToCSV}
+                      className="w-full py-4 bg-black text-white font-headline text-xl hover:bg-secondary transition-all"
                     >
-                      <ExternalLink className="w-3 h-3" />
-                      Source {idx + 1}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+                      DOWNLOAD CSV
+                    </button>
+                  </div>
+                  <div className="aspect-square bg-secondary border-8 border-black flex items-center justify-center">
+                     <Database className="w-32 h-32 text-white" />
+                  </div>
+               </div>
+            </div>
+            
+            <div className="flex-1 bg-black p-12 flex items-end">
+               <span className="text-white font-headline text-4xl tracking-tighter opacity-40">PROJECT MANA ARCHIVE</span>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );

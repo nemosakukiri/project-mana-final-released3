@@ -23,36 +23,34 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Top Navigation Bar */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        isHome ? 'bg-primary/80 text-white' : 'bg-background/80 text-on-surface'
-      } backdrop-blur-xl border-b border-outline-variant/20`}>
-        <div className="max-w-screen-2xl mx-auto px-8 py-4 flex justify-between items-center">
-          <Link to="/" className={`text-2xl font-bold tracking-tight font-headline ${isHome ? 'text-white' : 'text-primary'}`}>
-            Project Mana
+      <header className={`sticky top-0 z-50 transition-all duration-300 border-b-8 border-black ${
+        isHome ? 'bg-black text-white' : 'bg-white text-black'
+      }`}>
+        <div className="max-w-screen-2xl mx-auto px-8 flex justify-between items-center h-24">
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="w-12 h-12 bg-secondary border-4 border-black flex items-center justify-center group-hover:rotate-90 transition-transform">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+            <span className="text-4xl font-headline tracking-tighter uppercase">Project Mana</span>
           </Link>
           
-          <nav className="hidden lg:flex items-center gap-8">
-            <Link to="/" className={`font-headline font-bold text-lg transition-colors ${
-              isHome ? 'text-white border-b-2 border-white pb-1' : 'text-on-surface-variant hover:text-primary'
+          <nav className="hidden lg:flex items-center gap-0 h-full">
+            <Link to="/" className={`h-full px-6 flex items-center font-headline font-bold text-xl transition-colors border-l-4 border-black ${
+              location.pathname === '/' ? 'bg-mondrian-yellow text-black' : (isHome ? 'text-white/60 hover:bg-white/10' : 'text-on-surface-variant hover:bg-surface-container-low')
             }`}>ダッシュボード</Link>
-            <Link to="/collector" className={`font-headline font-bold text-lg transition-colors ${
-              location.pathname === '/collector' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
-            }`}>不祥事DB (AI収集)</Link>
-            <Link to="/town-check" className={`font-headline font-bold text-lg transition-colors ${
-              location.pathname === '/town-check' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            <Link to="/collector" className={`h-full px-6 flex items-center font-headline font-bold text-xl transition-colors border-l-4 border-black ${
+              location.pathname === '/collector' ? 'bg-secondary text-white' : (isHome ? 'text-white/60 hover:bg-white/10' : 'text-on-surface-variant hover:bg-surface-container-low')
+            }`}>不祥事DB</Link>
+            <Link to="/town-check" className={`h-full px-6 flex items-center font-headline font-bold text-xl transition-colors border-l-4 border-black ${
+              location.pathname === '/town-check' ? 'bg-mondrian-blue text-white' : (isHome ? 'text-white/60 hover:bg-white/10' : 'text-on-surface-variant hover:bg-surface-container-low')
             }`}>街の診断</Link>
-            <a href="https://fusakui-db.vercel.app/" target="_blank" rel="noopener noreferrer" className={`font-headline font-bold text-lg transition-colors ${
-              isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary'
-            }`}>不作為DB</a>
-            <Link to="/library" className={`font-headline font-bold text-lg transition-colors ${
-              location.pathname === '/library' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
-            }`}>公文書ライブラリ</Link>
-            <Link to="/report" className={`font-headline font-bold text-lg transition-colors ${
-              location.pathname === '/report' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
+            <Link to="/library" className={`h-full px-6 flex items-center font-headline font-bold text-xl transition-colors border-l-4 border-black ${
+              location.pathname === '/library' ? 'bg-black text-white' : (isHome ? 'text-white/60 hover:bg-white/10' : 'text-on-surface-variant hover:bg-surface-container-low')
+            }`}>ライブラリ</Link>
+            <Link to="/report" className={`h-full px-6 flex items-center font-headline font-bold text-xl transition-colors border-l-4 border-black ${
+              location.pathname === '/report' ? 'bg-secondary text-white' : (isHome ? 'text-white/60 hover:bg-white/10' : 'text-on-surface-variant hover:bg-surface-container-low')
             }`}>体験報告</Link>
-            <Link to="/analysis" className={`font-headline font-bold text-lg transition-colors ${
-              location.pathname === '/analysis' ? 'text-secondary border-b-2 border-secondary pb-1' : (isHome ? 'text-primary-fixed-dim hover:text-white' : 'text-on-surface-variant hover:text-primary')
-            }`}>AI解析</Link>
+            <div className="h-full border-l-4 border-black" />
           </nav>
 
           <div className="flex items-center gap-4">

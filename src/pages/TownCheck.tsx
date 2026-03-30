@@ -91,167 +91,191 @@ export default function TownCheck() {
   }));
 
   return (
-    <div className="min-h-screen bg-surface-container-low pt-24 pb-12 px-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-12 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex p-3 bg-primary/10 text-primary rounded-2xl mb-6"
-          >
-            <MapPin className="w-10 h-10" />
-          </motion.div>
-          <h1 className="text-5xl font-bold text-primary mb-4 font-headline">街の人権・住みやすさ診断</h1>
-          <p className="text-on-surface-variant text-xl max-w-3xl mx-auto leading-relaxed">
-            あなたの住んでいる街を、人権と透明性の観点から客観的に評価してみましょう。<br />
-            市民一人一人の「気づき」が、より良い街づくりへの第一歩となります。
-          </p>
+    <div className="min-h-screen bg-white pt-24">
+      <div className="max-w-screen-2xl mx-auto">
+        {/* Header - Mondrian Style */}
+        <header className="grid grid-cols-12 border-b-8 border-black bg-white">
+          <div className="col-span-12 lg:col-span-8 p-16 border-r-8 border-black">
+            <span className="editorial-label">Audit No. 03</span>
+            <h1 className="text-[10vw] font-headline mb-6 leading-none tracking-tighter">TOWN<br />CHECK</h1>
+            <p className="text-3xl font-serif italic text-on-surface-variant leading-relaxed max-w-2xl">
+              あなたの街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化し、より良い街づくりへの一歩を。
+            </p>
+          </div>
+          <div className="col-span-12 lg:col-span-4 grid grid-rows-2">
+            <div className="bg-mondrian-blue border-b-8 border-black p-12 flex items-center justify-center">
+               <MapPin className="w-24 h-24 text-white" />
+            </div>
+            <div className="bg-mondrian-yellow p-12 flex flex-col items-center justify-center">
+               <span className="text-black font-headline text-5xl rotate-12">AUDIT</span>
+            </div>
+          </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Evaluation Form */}
-          <section className="bg-white p-10 rounded-[40px] shadow-sm border border-outline-variant/10">
-            <div className="mb-10">
-              <label className="block text-sm font-bold text-primary uppercase tracking-widest mb-3">診断対象の自治体</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={townName}
-                  onChange={(e) => setTownName(e.target.value)}
-                  placeholder="例: 東京都新宿区, 兵庫県庁"
-                  className="w-full bg-surface-container-low border-2 border-outline-variant/30 focus:border-primary focus:ring-0 px-12 py-4 rounded-2xl outline-none text-lg transition-all"
-                />
-                <Search className="absolute left-4 top-4.5 w-6 h-6 text-on-surface-variant" />
-              </div>
-            </div>
-
-            <div className="space-y-8 mb-10">
-              {EVALUATION_DIMENSIONS.map((dim) => (
-                <div key={dim.key} className="space-y-3">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <h3 className="font-bold text-primary text-lg">{dim.label}</h3>
-                      <p className="text-xs text-on-surface-variant">{dim.description}</p>
-                    </div>
-                    <span className="text-2xl font-bold text-secondary">{scores[dim.key]}<span className="text-sm text-on-surface-variant ml-1">/ 10</span></span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-8 border-black">
+          {/* Main Form Area */}
+          <div className="lg:col-span-7 border-r-8 border-black bg-white p-16">
+            <div className="max-w-3xl">
+              <h2 className="text-5xl font-headline mb-12 uppercase">診断を開始する</h2>
+              
+              <div className="space-y-16">
+                {/* Town Selection */}
+                <div className="p-10 border-8 border-black bg-mondrian-yellow/5">
+                  <label className="block text-xl font-bold uppercase tracking-widest mb-6">診断対象の街</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={townName}
+                      onChange={(e) => setTownName(e.target.value)}
+                      placeholder="例: 東京都新宿区, 兵庫県庁"
+                      className="w-full bg-white border-4 border-black px-12 py-6 text-2xl font-serif italic outline-none focus:bg-mondrian-yellow/10 transition-colors"
+                    />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-black" />
                   </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    step="1"
-                    value={scores[dim.key]}
-                    onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
-                    className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary"
+                </div>
+
+                {/* Evaluation Categories */}
+                <div className="space-y-12">
+                  {EVALUATION_DIMENSIONS.map((dim, index) => (
+                    <div key={dim.key} className="p-8 border-8 border-black bg-white hover:bg-mondrian-yellow/5 transition-colors">
+                      <div className="flex justify-between items-end mb-6">
+                        <div className="flex items-center gap-6">
+                          <span className="font-headline text-6xl text-black/20">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <div>
+                            <h3 className="font-headline text-2xl uppercase tracking-widest">{dim.label}</h3>
+                            <p className="text-sm text-on-surface-variant italic font-serif">{dim.description}</p>
+                          </div>
+                        </div>
+                        <span className="text-5xl font-headline text-secondary">{scores[dim.key]}<span className="text-sm text-black ml-1 font-sans">/ 10</span></span>
+                      </div>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        step="1"
+                        value={scores[dim.key]}
+                        onChange={(e) => handleScoreChange(dim.key, parseInt(e.target.value))}
+                        className="w-full h-4 bg-black/10 rounded-none appearance-none cursor-pointer accent-secondary border-2 border-black"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-10 border-8 border-black bg-black text-white">
+                  <label className="block text-xl font-bold uppercase tracking-widest mb-6">具体的な理由・コメント</label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="最近の行政の対応や、街の雰囲気について感じていることを自由に記述してください。"
+                    rows={6}
+                    className="w-full bg-white/10 border-2 border-white/20 p-6 text-xl font-serif italic outline-none focus:bg-white/20 transition-colors text-white"
                   />
                 </div>
-              ))}
+
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving || !townName.trim()}
+                  className="w-full py-10 bg-secondary text-white font-headline text-4xl hover:bg-black transition-all border-8 border-black disabled:opacity-50"
+                >
+                  {isSaving ? <Loader2 className="w-12 h-12 animate-spin mx-auto" /> : "SUBMIT AUDIT"}
+                </button>
+
+                {error && (
+                  <div className="p-6 bg-secondary text-white border-8 border-black flex items-center gap-4">
+                    <AlertCircle className="w-8 h-8" />
+                    <span className="font-bold uppercase tracking-widest">{error}</span>
+                  </div>
+                )}
+                {success && (
+                  <div className="p-6 bg-mondrian-blue text-white border-8 border-black flex items-center gap-4">
+                    <CheckCircle2 className="w-8 h-8" />
+                    <span className="font-bold uppercase tracking-widest">{success}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar / Visualization */}
+          <aside className="lg:col-span-5 bg-white flex flex-col">
+            <div className="p-12 border-b-8 border-black bg-mondrian-yellow aspect-square flex flex-col">
+               <span className="editorial-label !mb-8 text-black/60">Visual Analysis</span>
+               <h2 className="text-5xl font-headline text-black mb-12 text-center tracking-tighter">
+                 HUMAN RIGHTS<br />RADAR CHART
+               </h2>
+               <div className="flex-1 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                      <PolarGrid stroke="#000" strokeDasharray="3 3" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#000', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em' }} />
+                      <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
+                      <Radar
+                        name="Score"
+                        dataKey="A"
+                        stroke="#000"
+                        strokeWidth={4}
+                        fill="#F27D26"
+                        fillOpacity={0.6}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+               </div>
             </div>
 
-            <div className="mb-10">
-              <label className="block text-sm font-bold text-primary uppercase tracking-widest mb-3">具体的な気づき・コメント</label>
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="最近の行政の対応や、街の雰囲気について感じていることを自由に記述してください。"
-                rows={4}
-                className="w-full bg-surface-container-low border-2 border-outline-variant/30 focus:border-primary focus:ring-0 px-6 py-4 rounded-2xl outline-none text-lg transition-all"
-              />
-            </div>
-
-            <button
-              onClick={handleSave}
-              disabled={isSaving || !townName.trim()}
-              className="w-full bg-primary text-white py-5 rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/20"
-            >
-              {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
-              診断結果を保存する
-            </button>
-
-            {error && (
-              <div className="mt-6 p-4 bg-error-container text-on-error-container rounded-2xl flex items-center gap-3">
-                <AlertCircle className="w-5 h-5" />
-                <span className="font-medium">{error}</span>
-              </div>
-            )}
-            {success && (
-              <div className="mt-6 p-4 bg-primary-container text-primary-fixed rounded-2xl flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5" />
-                <span className="font-medium">{success}</span>
-              </div>
-            )}
-          </section>
-
-          {/* Visualization & Insights */}
-          <div className="space-y-12">
-            {/* Radar Chart */}
-            <section className="bg-white p-10 rounded-[40px] shadow-sm border border-outline-variant/10 aspect-square flex flex-col items-center justify-center">
-              <h2 className="text-2xl font-bold text-primary mb-8 flex items-center gap-2">
-                <BarChart3 className="w-6 h-6 text-secondary" />
-                人権・住みやすさチャート
-              </h2>
-              <div className="w-full h-full max-h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                    <PolarGrid stroke="#e5e7eb" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: 12, fontWeight: 600 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
-                    <Radar
-                      name="Score"
-                      dataKey="A"
-                      stroke="#F27D26"
-                      fill="#F27D26"
-                      fillOpacity={0.6}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            </section>
-
-            {/* Other Evaluations */}
-            {townName.trim() && (
-              <section className="bg-white p-10 rounded-[40px] shadow-sm border border-outline-variant/10">
-                <h2 className="text-2xl font-bold text-primary mb-8 flex items-center gap-2">
-                  <Users className="w-6 h-6 text-secondary" />
-                  {townName} の他の評価 ({otherEvaluations.length}件)
-                </h2>
-                <div className="space-y-6 max-h-[400px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-outline-variant/20">
+            <div className="p-12 border-b-8 border-black bg-mondrian-blue text-white flex-1">
+               <span className="editorial-label !mb-4 text-white/60">Community Voices</span>
+               <h2 className="text-5xl font-headline mb-12 uppercase tracking-tighter">
+                 AUDIT LOG: {townName || "GLOBAL"}
+               </h2>
+               <div className="space-y-8 max-h-[600px] overflow-y-auto pr-6 scrollbar-mondrian">
                   {otherEvaluations.length > 0 ? otherEvaluations.map((evalItem) => (
-                    <div key={evalItem.id} className="p-6 bg-surface-container-low rounded-3xl border border-outline-variant/5">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center text-secondary">
-                            <Users className="w-4 h-4" />
+                    <div key={evalItem.id} className="p-8 bg-white border-8 border-black text-black hover:translate-x-2 transition-transform">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-secondary text-white border-4 border-black flex items-center justify-center font-headline text-2xl">
+                            {evalItem.townName.charAt(0)}
                           </div>
-                          <span className="text-sm font-bold text-primary">市民ユーザー</span>
+                          <div>
+                            <span className="text-xs font-bold uppercase tracking-widest block">Citizen Auditor</span>
+                            <span className="text-[10px] font-mono">
+                              {evalItem.createdAt?.toDate().toLocaleDateString('ja-JP')}
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-xs text-on-surface-variant">
-                          {evalItem.createdAt?.toDate().toLocaleDateString('ja-JP')}
-                        </span>
+                        <div className="flex gap-2">
+                           <div className="w-8 h-8 bg-mondrian-yellow border-2 border-black" />
+                           <div className="w-8 h-8 bg-mondrian-blue border-2 border-black" />
+                        </div>
                       </div>
-                      <div className="grid grid-cols-5 gap-1 mb-4">
-                        {EVALUATION_DIMENSIONS.map(dim => (
-                          <div key={dim.key} className="text-center">
-                            <div className="text-[8px] text-on-surface-variant uppercase font-bold truncate">{dim.label.slice(0, 2)}</div>
-                            <div className="text-sm font-bold text-secondary">{evalItem[dim.key]}</div>
-                          </div>
-                        ))}
+                      <h3 className="text-2xl font-headline mb-4">{evalItem.townName}</h3>
+                      <p className="text-lg font-serif italic line-clamp-3 mb-6">
+                        {evalItem.comment}
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 border-t-4 border-black pt-4">
+                         <div className="text-center">
+                            <div className="text-[10px] font-bold uppercase">HR</div>
+                            <div className="font-headline text-xl">{evalItem.humanRights}</div>
+                         </div>
+                         <div className="text-center">
+                            <div className="text-[10px] font-bold uppercase">TR</div>
+                            <div className="font-headline text-xl">{evalItem.transparency}</div>
+                         </div>
+                         <div className="text-center">
+                            <div className="text-[10px] font-bold uppercase">QoL</div>
+                            <div className="font-headline text-xl">{evalItem.qol}</div>
+                         </div>
                       </div>
-                      {evalItem.comment && (
-                        <p className="text-on-surface-variant text-sm leading-relaxed italic">
-                          "{evalItem.comment}"
-                        </p>
-                      )}
                     </div>
                   )) : (
-                    <div className="text-center py-12 text-on-surface-variant italic">
-                      まだこの街の評価はありません。
+                    <div className="p-12 border-8 border-black border-dashed text-center opacity-40">
+                       <span className="font-headline text-2xl">NO AUDITS YET</span>
                     </div>
                   )}
-                </div>
-              </section>
-            )}
-          </div>
+               </div>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

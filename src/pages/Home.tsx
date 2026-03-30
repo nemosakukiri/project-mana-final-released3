@@ -44,111 +44,101 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-primary">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#a1cfcf_0%,transparent_50%)]"></div>
-        </div>
-        
-        <div className="relative z-10 text-center px-8 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 inline-block bg-secondary/20 text-secondary-fixed px-4 py-1 rounded-full text-sm font-bold tracking-widest uppercase"
-          >
-            Project Mana: 尊厳の奪還作戦
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-7xl md:text-8xl font-bold text-white mb-8 leading-tight font-headline"
-          >
-            不作為を、<br />可視化する。
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl md:text-2xl text-primary-fixed-dim mb-12 leading-relaxed font-body max-w-2xl mx-auto"
-          >
-            なされるべきことが、なされない。その空白を記録し、<br />
-            市民の力で行政の責任を問い直します。
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-6"
-          >
-            <Link to="/report" className="bg-secondary text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-secondary/90 transition-all flex items-center gap-2 group">
-              体験を報告する
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+      {/* Hero Section - Mondrian Style */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white pt-24">
+        <div className="absolute inset-0 grid grid-cols-12 grid-rows-6">
+          <div className="col-span-8 row-span-4 border-r-8 border-b-8 border-black bg-white relative overflow-hidden">
+            <img 
+              src="https://picsum.photos/seed/mondrian-1/1200/800?grayscale" 
+              alt="" 
+              className="w-full h-full object-cover opacity-20 grayscale"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.h1 
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-[12vw] font-headline text-black leading-[0.75] select-none"
+              >
+                PROJECT<br />MANA
+              </motion.h1>
+            </div>
+          </div>
+          <div className="col-span-4 row-span-2 border-b-8 border-black bg-secondary flex items-center justify-center">
+             <span className="text-white font-headline text-4xl rotate-90">TRUTH</span>
+          </div>
+          <div className="col-span-4 row-span-2 border-b-8 border-black bg-mondrian-blue flex items-center justify-center">
+             <span className="text-white font-headline text-4xl -rotate-90">JUSTICE</span>
+          </div>
+          <div className="col-span-2 row-span-2 border-r-8 border-black bg-mondrian-yellow"></div>
+          <div className="col-span-6 row-span-2 border-r-8 border-black bg-white p-8 flex items-center">
+             <h2 className="text-5xl font-serif italic text-black tracking-tight">
+                不作為を、可視化する。
+             </h2>
+          </div>
+          <div className="col-span-4 row-span-2 bg-black flex flex-col items-center justify-center gap-4">
+            <Link to="/report" className="w-full h-1/2 flex items-center justify-center bg-secondary text-white font-headline text-3xl hover:bg-white hover:text-black transition-all border-b-4 border-black">
+              REPORT NOW
             </Link>
-            <Link to="/library" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
-              ライブラリを探索
+            <Link to="/library" className="w-full h-1/2 flex items-center justify-center bg-mondrian-yellow text-black font-headline text-3xl hover:bg-black hover:text-white transition-all">
+              EXPLORE
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Database Grid */}
-      <section className="py-24 px-8 max-w-screen-2xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-primary mb-4">統合データベース</h2>
-          <p className="text-on-surface-variant max-w-xl mx-auto">
-            Project Manaが提供する3つの主要なアーカイブ。それぞれの視点から行政の透明性を追求します。
-          </p>
-        </div>
+      {/* Editorial Grid Section - Mondrian Style */}
+      <section className="py-32 px-8 max-w-screen-2xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-8 border-black">
+          <div className="lg:col-span-5 p-12 border-r-8 border-black bg-white">
+            <span className="editorial-label">The Mission</span>
+            <h2 className="text-8xl mb-8">沈黙を、<br />記録に。</h2>
+            <p className="text-2xl font-serif italic text-on-surface-variant leading-relaxed mb-12">
+              行政の「不作為」を可視化すること。何が行われたかだけでなく、何が行われなかったかを記録することで、真の透明性を追求します。
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+               <div className="aspect-square bg-secondary border-4 border-black"></div>
+               <div className="aspect-square bg-mondrian-blue border-4 border-black"></div>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <DBLinkCard 
-            title="不作為DB"
-            description="なすべき公務が行われなかった事例を体系的に記録。市民の権利を守るためのデータベース。"
-            icon={<Shield className="w-12 h-12" />}
-            color="bg-primary-container"
-            textColor="text-primary-fixed"
-            link="https://fusakui-db.vercel.app/"
-          />
-          <DBLinkCard 
-            title="不祥事DB"
-            description="AIがネット上のニュースや公開資料から、行政の不祥事や不作為を自動的に収集・要約。市民による常時監視を実現します。"
-            icon={<Database className="w-12 h-12" />}
-            color="bg-secondary-fixed"
-            textColor="text-on-secondary-fixed"
-            link="/collector"
-          />
-          <DBLinkCard 
-            title="公文書ライブラリ"
-            description="開示された公文書をデジタル化して保存。誰でも自由に閲覧・検索が可能です。"
-            icon={<FileSearch className="w-12 h-12" />}
-            color="bg-tertiary-fixed"
-            textColor="text-on-tertiary-fixed"
-            link="/library"
-          />
-          <DBLinkCard 
-            title="体験報告"
-            description="あなたの体験をデータ化し、不作為のデータベースへ。沈黙を強いられた人々の記録。"
-            icon={<Activity className="w-12 h-12" />}
-            color="bg-error-container"
-            textColor="text-on-error-container"
-            link="/report"
-          />
-          <DBLinkCard 
-            title="AI法的精査"
-            description="記録された証言をAIが法的・倫理的観点から解析。証拠としての価値を最大化します。"
-            icon={<Scale className="w-12 h-12" />}
-            color="bg-primary-fixed"
-            textColor="text-primary-fixed-dim"
-            link="/analysis"
-          />
-          <DBLinkCard 
-            title="街の診断"
-            description="あなたの住む街の「人権・住みやすさ」を客観的に診断。市民の視点から行政の質を可視化します。"
-            icon={<MapPin className="w-12 h-12" />}
-            color="bg-secondary-container"
-            textColor="text-on-secondary-container"
-            link="/town-check"
-          />
+          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-0">
+            <DBLinkCard 
+              title="不作為DB"
+              description="なすべき公務が行われなかった事例を体系的に記録。"
+              icon={<Shield className="w-12 h-12" />}
+              color="bg-white"
+              textColor="text-black"
+              link="https://fusakui-db.vercel.app/"
+              className="border-b-8 md:border-b-8 md:border-r-8 border-black"
+            />
+            <DBLinkCard 
+              title="不祥事DB"
+              description="AIがネット上のニュースや公開資料から自動収集。"
+              icon={<Database className="w-12 h-12" />}
+              color="bg-mondrian-yellow"
+              textColor="text-black"
+              link="/collector"
+              className="border-b-8 border-black"
+            />
+            <DBLinkCard 
+              title="街の診断"
+              description="あなたの住む街の「人権・住みやすさ」を客観的に診断。"
+              icon={<MapPin className="w-12 h-12" />}
+              color="bg-mondrian-blue"
+              textColor="text-white"
+              link="/town-check"
+              className="md:border-r-8 border-black"
+            />
+            <DBLinkCard 
+              title="公文書"
+              description="開示された公文書をデジタル化して保存。"
+              icon={<FileSearch className="w-12 h-12" />}
+              color="bg-secondary"
+              textColor="text-white"
+              link="/library"
+            />
+          </div>
         </div>
       </section>
 
@@ -352,19 +342,29 @@ export default function Home() {
   );
 }
 
-function DBLinkCard({ title, description, icon, color, textColor, link }: any) {
+function DBLinkCard({ title, description, icon, color, textColor, link, className = "" }: any) {
   const isExternal = link.startsWith('http');
   const isPlaceholder = link === '#';
   
   const content = (
-    <div className={`p-10 rounded-3xl ${color} ${textColor} hover:scale-[1.02] transition-all cursor-pointer shadow-sm flex flex-col h-full`}>
-      <div className="mb-8 opacity-80">{icon}</div>
-      <h3 className="text-3xl font-bold mb-4">{title}</h3>
-      <p className="text-lg opacity-90 leading-relaxed mb-8 flex-1">{description}</p>
-      <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-sm">
-        {isPlaceholder ? '準備中' : 'アクセスする'}
-        {!isPlaceholder && <ArrowRight className="w-4 h-4" />}
+    <div className={`p-12 border-8 border-black ${color} ${textColor} hover:z-10 relative overflow-hidden flex flex-col justify-between h-[450px] transition-all group ${className}`}>
+      <div className="relative z-10">
+        <div className="mb-8 transform group-hover:scale-110 group-hover:rotate-6 transition-transform inline-block">
+          {icon}
+        </div>
+        <h3 className="text-5xl font-headline mb-4 tracking-tighter uppercase leading-none">{title}</h3>
+        <p className="text-xl font-serif italic opacity-80 leading-relaxed max-w-xs">
+          {description}
+        </p>
       </div>
+      
+      <div className="relative z-10 flex items-center gap-2 font-headline text-sm tracking-widest uppercase mt-8">
+        <span>{isPlaceholder ? 'COMING SOON' : 'EXPLORE DATABASE'}</span>
+        {!isPlaceholder && <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />}
+      </div>
+
+      {/* Mondrian Hover Effect */}
+      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity" />
     </div>
   );
 
