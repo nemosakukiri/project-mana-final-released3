@@ -32,6 +32,18 @@ const INITIAL_CASES = [
     sourceTitle: "NHK NEWS WEB - 政治資金問題"
   },
   {
+    title: "地方公務員による酒気帯び運転・ひき逃げ事件",
+    description: "2024年、某自治体の職員が酒気帯び状態で運転し、歩行者をはねて逃走した疑いで逮捕。公務員としての倫理観が問われる個人による重大な不祥事案。",
+    category: "individual",
+    severityIndex: 7,
+    impactIndex: 5,
+    recurrenceRisk: 6,
+    date: "2024年",
+    location: "地方自治体",
+    sourceUrl: "https://www.google.com/search?q=公務員+酒気帯び運転+逮捕",
+    sourceTitle: "報道各社"
+  },
+  {
     title: "マイナンバーカード 紐付けミス・情報漏洩",
     description: "健康保険証や公金受取口座が別人の情報と紐付けられるトラブルが全国で相次いだ。デジタル庁の管理体制の不備や、不具合発覚後の対応の遅れが「行政の不作為」として厳しく批判された。",
     category: "organizational",
@@ -97,10 +109,21 @@ export default function Collector() {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const model = "gemini-3-flash-preview";
       
-      const prompt = `Search for recent administrative misconduct, scandals, or corruption news in Japan related to: ${keyword}. 
-      Return a list of cases in JSON format with the following fields: 
-      title, date, location, category, summary, url, source.
-      Focus on factual reports from reputable news sources.`;
+      const prompt = `Search for the most recent and significant misconduct, scandals, or corruption news in Japan (2024-2025) related to: ${keyword}. 
+      Please provide a total of 14 cases, specifically:
+      - 7 cases of organizational/administrative misconduct (行政組織・団体・自治体全体としての不祥事)
+      - 7 cases of misconduct by individual civil servants (公務員個人による不祥事・犯罪)
+      
+      Return a JSON object with a "cases" array. Each object in the array must have:
+      title (in Japanese), 
+      date (in Japanese, e.g. 2024年3月), 
+      location (in Japanese), 
+      category (strictly either "organizational" or "individual"), 
+      summary (in Japanese, concise but detailed), 
+      url (source news URL), 
+      source (news organization name in Japanese).
+      
+      Ensure the data is factual and from reputable Japanese news sources (NHK, Asahi, Yomiuri, Nikkei, etc.).`;
 
       const response = await ai.models.generateContent({
         model,
@@ -235,6 +258,18 @@ export default function Collector() {
                   {success}
                 </div>
               )}
+              <div className="flex flex-wrap gap-3">
+                <span className="text-[10px] font-bold text-primary/40 uppercase tracking-widest pt-2">Recommended:</span>
+                {['最新の不祥事', '自治体 汚職', '公務員 逮捕', '裏金問題', 'パワハラ 行政'].map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setKeyword(tag)}
+                    className="px-3 py-1 bg-primary/5 hover:bg-tertiary hover:text-on-tertiary text-[10px] font-bold uppercase tracking-widest transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
               <p className="text-[10px] font-bold text-primary/30 uppercase tracking-[0.3em]">Protocol: Deep Web Extraction v4.2</p>
             </div>
           </div>
@@ -283,7 +318,7 @@ export default function Collector() {
                       <div className="absolute inset-0 bg-primary/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <div className="absolute -top-4 -left-4 bg-primary text-on-primary px-4 py-1 text-[10px] font-bold tracking-widest uppercase">
-                      {item.category}
+                      {item.category === 'organizational' ? '行政組織・団体' : '公務員個人'}
                     </div>
                     <div className="absolute -bottom-4 -right-4 bg-tertiary text-on-tertiary px-4 py-1 text-[10px] font-bold tracking-widest uppercase">
                       ID: {String(item.id || idx).slice(0, 8)}
